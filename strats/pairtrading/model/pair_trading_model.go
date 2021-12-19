@@ -7,12 +7,12 @@ import (
 )
 
 type PairTradingModel struct {
-	ExpensiveStockSymbol 							string
-	CheapStockSymbol string
-	EntryNetValue float64
-	ExitNetValue float64
-	LoserNums int
-	MinProfitThreshold float64
+	ExpensiveStockSymbol                              string
+	CheapStockSymbol                                  string
+	EntryNetValue                                     float64
+	ExitNetValue                                      float64
+	LoserNums                                         int
+	MinProfitThreshold                                float64
 	PriceRatioThreshold                               float64
 	CheapStockEntryVolume                             float64
 	ExpensiveStockEntryVolume                         float64
@@ -34,13 +34,15 @@ type PairTradingModel struct {
 	LongExpensiveStockShortCheapStockRepeatNumber     int
 	ShortExpensiveStockLongCheapStockPriceRatioRecord []float64
 	LongExpensiveStockShortCheapStockPriceRatioRecord []float64
-	RepeatArray []int
-	RepeatNumThreshold int
-	DefaultRepeatArrayLength int
-	DefaultPriceRatioArrayLength int
+	RepeatArray                                       []int
+	RepeatNumThreshold                                int
+	DefaultRepeatArrayLength                          int
+	DefaultPriceRatioArrayLength                      int
 }
 
-func (model *PairTradingModel) Initialize(shortLongPath, longShortPath, repeatNumPath string) {
+func (model *PairTradingModel) Initialize(expensiveStockSymbol, cheapStockSymbol, shortLongPath, longShortPath, repeatNumPath string) {
+	model.ExpensiveStockSymbol = expensiveStockSymbol
+	model.CheapStockSymbol = cheapStockSymbol
 	model.ShortExpensiveStockLongCheapStockPriceRatioRecord = readwrite.ReadRecordFloat(shortLongPath)
 	model.LongExpensiveStockShortCheapStockPriceRatioRecord = readwrite.ReadRecordFloat(longShortPath)
 	model.RepeatArray = readwrite.ReadRecordInt(repeatNumPath)
@@ -48,13 +50,13 @@ func (model *PairTradingModel) Initialize(shortLongPath, longShortPath, repeatNu
 	model.LongExpensiveStockShortCheapStockRepeatNumber = 0
 	model.LongExpensiveStockShortCheapStockPriceRatio = 0.0
 	model.ShortExpensiveStockLongCheapStockPriceRatio = 0.0
-	model.LongExpensiveStockShortCheapStockPreviousRatio = 0.0 
+	model.LongExpensiveStockShortCheapStockPreviousRatio = 0.0
 	model.ShortExpensiveStockLongCheapStockPreviousRatio = 0.0
-	model.IsLongExpensiveStockShortCheapStock = false 
-	model.IsShortExpensiveStockLongCheapStock = false 
+	model.IsLongExpensiveStockShortCheapStock = false
+	model.IsShortExpensiveStockLongCheapStock = false
 	model.CheapStockLongQuotePrice = 0.0
 	model.CheapStockShortQuotePrice = 0.0
-	model.ExpensiveStockLongQuotePrice = 0.0 
+	model.ExpensiveStockLongQuotePrice = 0.0
 	model.ExpensiveStockShortQuotePrice = 0.0
 	model.CheapStockFilledPrice = 0.0
 	model.ExpensiveStockFilledPrice = 0.0
@@ -69,11 +71,7 @@ func (model *PairTradingModel) Initialize(shortLongPath, longShortPath, repeatNu
 	model.RepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.RepeatArray)
 	model.DefaultRepeatArrayLength = len(model.RepeatArray)
 	model.DefaultPriceRatioArrayLength = len(model.ShortExpensiveStockLongCheapStockPriceRatioRecord)
-	model.EntryNetValue = 0.0 
+	model.EntryNetValue = 0.0
 	model.ExitNetValue = 0.0
 	model.LoserNums = 0
 }
-
-
-
-
