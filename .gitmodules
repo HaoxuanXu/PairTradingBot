@@ -1,0 +1,3 @@
+[submodule "configs/credentials"]
+	path = configs/credentials
+	url = git@github.com:HaoxuanXu/TradingBotCredentials.git
