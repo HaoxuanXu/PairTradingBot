@@ -14,4 +14,8 @@ func GetAndProcessPairQuotes(model *model.PairTradingModel, dataEngine *dataengi
 	model.CheapStockShortQuotePrice = pairQuotes[model.CheapStockSymbol].BidPrice
 	model.ExpensiveStockLongQuotePrice = pairQuotes[model.ExpensiveStockSymbol].AskPrice
 	model.ExpensiveStockShortQuotePrice = pairQuotes[model.ExpensiveStockSymbol].BidPrice
+
+	model.LongExpensiveStockShortCheapStockPriceRatio = float64(model.ExpensiveStockLongQuotePrice / model.CheapStockShortQuotePrice)
+	model.ShortExpensiveStockLongCheapStockPriceRatio = float64(model.ExpensiveStockShortQuotePrice / model.CheapStockLongQuotePrice)
+
 }

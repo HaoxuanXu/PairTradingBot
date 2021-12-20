@@ -38,6 +38,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 		time.Sleep(timeToOpen)
 	}
 	log.Println("Start Trading ...")
+	log.Printf("The repeat time is %d\n", dataModel.RepeatNumThreshold)
 	var wg *sync.WaitGroup
 	// Start the main trading loop
 	for time.Until(tradingBroker.Clock.NextClose) > 20*time.Minute {
