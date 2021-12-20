@@ -40,9 +40,15 @@ type PairTradingModel struct {
 	DefaultPriceRatioArrayLength                      int
 }
 
-func (model *PairTradingModel) Initialize(expensiveStockSymbol, cheapStockSymbol, shortLongPath, longShortPath, repeatNumPath string) {
-	model.ExpensiveStockSymbol = expensiveStockSymbol
-	model.CheapStockSymbol = cheapStockSymbol
+func (model *PairTradingModel) getStockSymbols(assetType string) (string, string) {
+	if assetType == "gold" {
+		return "GLD", "IAU"
+	}
+	return "", ""
+}
+
+func (model *PairTradingModel) Initialize(assetType, shortLongPath, longShortPath, repeatNumPath string) {
+	model.ExpensiveStockSymbol, model.CheapStockSymbol = model.getStockSymbols(assetType)
 	model.ShortExpensiveStockLongCheapStockPriceRatioRecord = readwrite.ReadRecordFloat(shortLongPath)
 	model.LongExpensiveStockShortCheapStockPriceRatioRecord = readwrite.ReadRecordFloat(longShortPath)
 	model.RepeatArray = readwrite.ReadRecordInt(repeatNumPath)

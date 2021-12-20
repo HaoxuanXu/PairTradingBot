@@ -15,7 +15,7 @@ import (
 	"github.com/HaoxuanXu/TradingBot/tools/util"
 )
 
-func PairTradingJob(expensiveStockSymbol, cheapStockSymbol, assetType, accountType string, entryPercent float64) {
+func PairTradingJob(assetType, accountType string, entryPercent float64) {
 	// This job will not run if we are on weekends, so we will simply return if it is the weekends
 	today := time.Now().Weekday().String()
 	if today == "Saturday" || today == "Sunday" {
@@ -27,7 +27,7 @@ func PairTradingJob(expensiveStockSymbol, cheapStockSymbol, assetType, accountTy
 	tradingBroker := &broker.AlpacaBroker{}
 	dataEngine := &dataengine.MarketDataEngine{}
 	shortLongPath, longShortPath, repeatNumPath := db.MapRecordPath("gold")
-	dataModel.Initialize(expensiveStockSymbol, cheapStockSymbol, shortLongPath, longShortPath, repeatNumPath)
+	dataModel.Initialize(assetType, shortLongPath, longShortPath, repeatNumPath)
 	tradingBroker.Initialize(accountType, entryPercent)
 
 	// We will check if the market is open currently
