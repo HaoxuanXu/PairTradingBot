@@ -15,7 +15,7 @@ func findMinMax(sli []float64) (float64, float64) {
 }
 
 func UpdatePriceRatioThreshold(longShortRatios, shortLongRatios []float64) float64 {
-	minVal, _ := findMinMax(longShortRatios)
+	minVal, _ := findMinMax(longShortRatios[1:])
 	_, maxVal := findMinMax(shortLongRatios)
 
 	return (minVal + maxVal) / 2.0

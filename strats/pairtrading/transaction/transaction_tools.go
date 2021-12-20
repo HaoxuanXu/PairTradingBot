@@ -37,13 +37,15 @@ func UpdateFieldsFromQuotes(m *model.PairTradingModel) {
 }
 
 func UpdateFieldsAfterTransaction(m *model.PairTradingModel, broker *broker.AlpacaBroker, cheapStockOrder, expensiveStockOrder *alpaca.Order) {
-	m.CheapStockFilledPrice = cheapStockOrder.FilledAvgPrice.InexactFloat64()
-	m.CheapStockFilledQuantity = cheapStockOrder.FilledQty.InexactFloat64()
-	m.ExpensiveStockFilledPrice = expensiveStockOrder.FilledAvgPrice.InexactFloat64()
-	m.ExpensiveStockFilledQuantity = expensiveStockOrder.FilledQty.InexactFloat64()
+	m.CheapStockFilledPrice = math.Abs(cheapStockOrder.FilledAvgPrice.InexactFloat64())
+	m.CheapStockFilledQuantity = math.Abs(cheapStockOrder.FilledQty.InexactFloat64())
+	m.ExpensiveStockFilledPrice = math.Abs(expensiveStockOrder.FilledAvgPrice.InexactFloat64())
+	m.ExpensiveStockFilledQuantity = math.Abs(expensiveStockOrder.FilledQty.InexactFloat64())
 	m.MinProfitThreshold = broker.CalculateMinProfitThreshold(1.0)
 	m.ExpensiveStockEntryVolume = math.Abs(m.ExpensiveStockFilledQuantity)
 	m.CheapStockEntryVolume = math.Abs(m.CheapStockFilledQuantity)
+
+	log.Printf("The minimum threshold now is %f", m.PriceRatioThreshold)
 
 }
 

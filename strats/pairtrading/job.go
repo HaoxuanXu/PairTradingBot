@@ -1,7 +1,6 @@
 package pairtrading
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -42,7 +41,6 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 	// Start the main trading loop
 	for time.Until(tradingBroker.Clock.NextClose) > 20*time.Minute {
 		quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
-		fmt.Println(dataModel.LongExpensiveStockShortCheapStockRepeatNumber)
 		if signalcatcher.GetEntrySignal(true, dataModel, tradingBroker) {
 			pipeline.EntryShortExpensiveLongCheap(
 				dataModel,
