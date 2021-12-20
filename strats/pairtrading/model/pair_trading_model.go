@@ -47,7 +47,13 @@ func (model *PairTradingModel) getStockSymbols(assetType string) (string, string
 	return "", ""
 }
 
-func (model *PairTradingModel) Initialize(assetType, shortLongPath, longShortPath, repeatNumPath string) {
+func GetModel(assetType, shortLongPath, longShortPath, repeatNumPath string) *PairTradingModel {
+	dataModel := &PairTradingModel{}
+	dataModel.initialize(assetType, shortLongPath, longShortPath, repeatNumPath)
+	return dataModel
+}
+
+func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPath, repeatNumPath string) {
 	model.ExpensiveStockSymbol, model.CheapStockSymbol = model.getStockSymbols(assetType)
 	model.ShortExpensiveStockLongCheapStockPriceRatioRecord = readwrite.ReadRecordFloat(shortLongPath)
 	model.LongExpensiveStockShortCheapStockPriceRatioRecord = readwrite.ReadRecordFloat(longShortPath)

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/HaoxuanXu/TradingBot/internal/broker"
 	"github.com/go-co-op/gocron"
 )
 
@@ -22,5 +23,9 @@ func main() {
 	})
 	fmt.Printf("Planning to run the %s job for %.1f%% of the portfolio on the %s account...\n", *assetType, *entryPercent*100, *accountType)
 	fmt.Printf("Wait for the job to begin at %s EST\n", *startTime)
+
+	if broker.GetBroker(*accountType, *entryPercent).Clock.IsOpen {
+		JobRunner(*assetType, *accountType, *entryPercent)
+	}
 	s.StartBlocking()
 }

@@ -9,16 +9,21 @@ type MarketDataEngine struct {
 	client marketdata.Client
 }
 
-func (engine *MarketDataEngine) Initialize(accountType string) {
+func GetDataEngine(accountType string) *MarketDataEngine {
+	engine := &MarketDataEngine{}
+	engine.initialize(accountType)
+	return engine
+}
+
+func (engine *MarketDataEngine) initialize(accountType string) {
 	cred := configs.GetCredentials(accountType)
 	engine.client = marketdata.NewClient(
 		marketdata.ClientOpts{
-			ApiKey:     cred.API_KEY,
-			ApiSecret:  cred.API_SECRET,
-			BaseURL:    cred.BASE_URL,
+			ApiKey:    cred.API_KEY,
+			ApiSecret: cred.API_SECRET,
+			BaseURL:   cred.BASE_URL,
 		})
 }
-
 
 func (engine *MarketDataEngine) GetMultiQuotes(symbols []string) map[string]marketdata.Quote {
 	quotes, _ := engine.client.GetLatestQuotes(symbols)

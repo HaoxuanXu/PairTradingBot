@@ -23,12 +23,10 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 		return
 	}
 	// initialize the data model struct and the broker struct
-	dataModel := &model.PairTradingModel{}
-	tradingBroker := &broker.AlpacaBroker{}
-	dataEngine := &dataengine.MarketDataEngine{}
+	tradingBroker := broker.GetBroker(accountType, entryPercent)
+	dataEngine := dataengine.GetDataEngine(accountType)
 	shortLongPath, longShortPath, repeatNumPath := db.MapRecordPath("gold")
-	dataModel.Initialize(assetType, shortLongPath, longShortPath, repeatNumPath)
-	tradingBroker.Initialize(accountType, entryPercent)
+	dataModel := model.GetModel(assetType, shortLongPath, longShortPath, repeatNumPath)
 
 	// We will check if the market is open currently
 	// If the market is not open, we will wait till it is open
