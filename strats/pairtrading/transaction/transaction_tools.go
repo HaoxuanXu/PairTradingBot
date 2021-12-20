@@ -2,6 +2,7 @@ package transaction
 
 import (
 	"log"
+	"math"
 
 	"github.com/HaoxuanXu/TradingBot/internal/broker"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/model"
@@ -35,12 +36,15 @@ func UpdateFieldsFromQuotes(m *model.PairTradingModel) {
 	}
 }
 
-func UpdateFieldsAfterTransaction(m *model.PairTradingModel, broker *broker.AlpacaBroker, cheapStockOrder, expensiveStockOrder alpaca.Order) {
+func UpdateFieldsAfterTransaction(m *model.PairTradingModel, broker *broker.AlpacaBroker, cheapStockOrder, expensiveStockOrder *alpaca.Order) {
 	m.CheapStockFilledPrice = cheapStockOrder.FilledAvgPrice.InexactFloat64()
 	m.CheapStockFilledQuantity = cheapStockOrder.FilledQty.InexactFloat64()
 	m.ExpensiveStockFilledPrice = expensiveStockOrder.FilledAvgPrice.InexactFloat64()
 	m.ExpensiveStockFilledQuantity = expensiveStockOrder.FilledQty.InexactFloat64()
 	m.MinProfitThreshold = broker.CalculateMinProfitThreshold(1.0)
+	m.ExpensiveStockEntryVolume = math.Abs(m.ExpensiveStockFilledQuantity)
+	m.CheapStockEntryVolume = math.Abs(m.CheapStockFilledQuantity)
+
 }
 
 func VetPosition(broker *broker.AlpacaBroker, model *model.PairTradingModel) {

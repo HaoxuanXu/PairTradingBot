@@ -1,8 +1,6 @@
 package broker
 
 import (
-	"log"
-	"sync"
 	"time"
 
 	"github.com/HaoxuanXu/TradingBot/configs"
@@ -19,7 +17,6 @@ type AlpacaBroker struct {
 	MaxPortfolioPercent float64
 	HasPosition         bool
 	MinProfitThreshold  float64
-	OrderMap            map[string]alpaca.Order
 }
 
 // You can treat this as a constructor of the broker class
@@ -46,7 +43,6 @@ func (broker *AlpacaBroker) initialize(accountType string, entryPercent float64)
 	broker.MaxPortfolioPercent = entryPercent
 	broker.HasPosition = false
 	broker.MinProfitThreshold = broker.CalculateMinProfitThreshold(1.0)
-	broker.OrderMap = make(map[string]alpaca.Order)
 }
 
 func (broker *AlpacaBroker) CalculateMinProfitThreshold(baseNum float64) float64 {
@@ -78,12 +74,10 @@ func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) (*alpaca.Order, bo
 			status, updatedOrder = broker.refreshOrderStatus(orderID)
 		}
 	}
-	log.Printf("The final state of the order is %s\n", status)
 	return updatedOrder, success
 }
 
-func (broker *AlpacaBroker) SubmitOrderAsync(qty float64, symbol, side, orderType, timeInForce string, wg *sync.WaitGroup) {
-	defer wg.Done()
+func (broker *AlpacaBroker) SubmitOrderAsync(qty float64, symbol, side, orderType, timeInForce string, channel chan *alpaca.Order) {
 	quantity := decimal.NewFromFloat(qty)
 	order, _ := broker.client.PlaceOrder(
 		alpaca.PlaceOrderRequest{
@@ -96,7 +90,7 @@ func (broker *AlpacaBroker) SubmitOrderAsync(qty float64, symbol, side, orderTyp
 		},
 	)
 	finalOrder, _ := broker.MonitorOrder(order)
-	broker.OrderMap[symbol] = *finalOrder
+	channel <- finalOrder
 }
 
 func (broker *AlpacaBroker) CloseAllPositions() {

@@ -1,8 +1,8 @@
 package pairtrading
 
 import (
+	"fmt"
 	"log"
-	"sync"
 	"time"
 
 	"github.com/HaoxuanXu/TradingBot/db"
@@ -39,15 +39,14 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 	}
 	log.Println("Start Trading ...")
 	log.Printf("The repeat time is %d\n", dataModel.RepeatNumThreshold)
-	var wg sync.WaitGroup
 	// Start the main trading loop
 	for time.Until(tradingBroker.Clock.NextClose) > 20*time.Minute {
 		quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
+		fmt.Println(dataModel.LongExpensiveStockShortCheapStockRepeatNumber)
 		if signalcatcher.GetEntrySignal(true, dataModel, tradingBroker) {
 			pipeline.EntryShortExpensiveLongCheap(
 				dataModel,
 				tradingBroker,
-				wg,
 			)
 			// halt trading for a minute so the account is still treated as retail account
 			util.TimedFuncRun(
@@ -61,7 +60,6 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 			pipeline.EntryLongExpensiveShortCheap(
 				dataModel,
 				tradingBroker,
-				wg,
 			)
 			util.TimedFuncRun(
 				time.Minute,
@@ -74,7 +72,6 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 			pipeline.ExitShortExpensiveLongCheap(
 				dataModel,
 				tradingBroker,
-				wg,
 			)
 			util.TimedFuncRun(
 				time.Minute,
@@ -87,7 +84,6 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 			pipeline.ExitLongExpensiveShortCheap(
 				dataModel,
 				tradingBroker,
-				wg,
 			)
 			util.TimedFuncRun(
 				time.Minute,
@@ -107,14 +103,12 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 			pipeline.ExitShortExpensiveLongCheap(
 				dataModel,
 				tradingBroker,
-				wg,
 			)
 			break
 		} else if dataModel.IsLongExpensiveStockShortCheapStock && signalcatcher.GetExitSignal(dataModel, tradingBroker) {
 			pipeline.ExitLongExpensiveShortCheap(
 				dataModel,
 				tradingBroker,
-				wg,
 			)
 			break
 		} else {
