@@ -35,7 +35,7 @@ func UpdateFieldsFromQuotes(m *model.PairTradingModel) {
 	}
 }
 
-func UpdateFieldsAfterTransaction(m *model.PairTradingModel, broker *broker.AlpacaBroker, cheapStockOrder, expensiveStockOrder *alpaca.Order) {
+func UpdateFieldsAfterTransaction(m *model.PairTradingModel, broker *broker.AlpacaBroker, cheapStockOrder, expensiveStockOrder alpaca.Order) {
 	m.CheapStockFilledPrice = cheapStockOrder.FilledAvgPrice.InexactFloat64()
 	m.CheapStockFilledQuantity = cheapStockOrder.FilledQty.InexactFloat64()
 	m.ExpensiveStockFilledPrice = expensiveStockOrder.FilledAvgPrice.InexactFloat64()
@@ -62,7 +62,6 @@ func VetPosition(broker *broker.AlpacaBroker, model *model.PairTradingModel) {
 		log.Println("minimum profit adjusted")
 	}
 }
-
 
 func SlideRepeatAndPriceRatioArrays(model *model.PairTradingModel) {
 	model.RepeatArray = windowslider.SlideWindowInt(model.RepeatArray, model.DefaultRepeatArrayLength)

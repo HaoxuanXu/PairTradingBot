@@ -1,6 +1,7 @@
 package pipeline
 
 import (
+	"log"
 	"sync"
 
 	"github.com/HaoxuanXu/TradingBot/db"
@@ -9,15 +10,13 @@ import (
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/model"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/transaction"
 	"github.com/HaoxuanXu/TradingBot/tools/readwrite"
-	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
 )
 
-func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, wg *sync.WaitGroup) {
-	expensiveStockOrderChannel := make(chan *alpaca.Order)
-	cheapStockOrderChannel := make(chan *alpaca.Order)
+func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, wg sync.WaitGroup) {
 	entryValue := broker.MaxPortfolioPercent * broker.PortfolioValue
 	model.ExpensiveStockEntryVolume = float64(int((entryValue / 2.0) / model.ExpensiveStockShortQuotePrice))
 	model.CheapStockEntryVolume = (model.ExpensiveStockEntryVolume * model.ExpensiveStockShortQuotePrice) / model.CheapStockLongQuotePrice
+	log.Println("start goroutine")
 	wg.Add(2)
 	go broker.SubmitOrderAsync(
 		model.ExpensiveStockEntryVolume,
@@ -25,8 +24,7 @@ func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.
 		"sell",
 		"market",
 		"day",
-		expensiveStockOrderChannel,
-		wg,
+		&wg,
 	)
 	go broker.SubmitOrderAsync(
 		model.CheapStockEntryVolume,
@@ -34,29 +32,25 @@ func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.
 		"buy",
 		"market",
 		"day",
-		cheapStockOrderChannel,
-		wg,
+		&wg,
 	)
 	wg.Wait()
-
+	log.Println("goroutine complete")
 	model.IsShortExpensiveStockLongCheapStock = true
-	model.IsLongExpensiveStockShortCheapStock = false 
+	model.IsLongExpensiveStockShortCheapStock = false
 
-	transaction.UpdateFieldsAfterTransaction(model, broker, <- cheapStockOrderChannel, <- expensiveStockOrderChannel)
+	transaction.UpdateFieldsAfterTransaction(model, broker, broker.OrderMap[model.CheapStockSymbol], broker.OrderMap[model.ExpensiveStockSymbol])
+	log.Println("begin logging")
 	logging.LogTransaction(model, broker)
 	transaction.VetPosition(broker, model)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
-
-	close(expensiveStockOrderChannel)
-	close(cheapStockOrderChannel)
 }
 
-func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, wg *sync.WaitGroup) {
-	expensiveStockOrderChannel := make(chan *alpaca.Order)
-	cheapStockOrderChannel := make(chan *alpaca.Order)
+func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, wg sync.WaitGroup) {
 	entryValue := broker.MaxPortfolioPercent * broker.PortfolioValue
 	model.CheapStockEntryVolume = float64(int((entryValue / 2.0) / model.CheapStockShortQuotePrice))
 	model.ExpensiveStockEntryVolume = (model.CheapStockEntryVolume * model.CheapStockShortQuotePrice) / model.ExpensiveStockLongQuotePrice
+	log.Println("start goroutine")
 	wg.Add(2)
 	go broker.SubmitOrderAsync(
 		model.CheapStockEntryVolume,
@@ -64,8 +58,7 @@ func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.
 		"sell",
 		"market",
 		"day",
-		cheapStockOrderChannel,
-		wg,
+		&wg,
 	)
 	go broker.SubmitOrderAsync(
 		model.ExpensiveStockEntryVolume,
@@ -73,27 +66,21 @@ func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.
 		"buy",
 		"market",
 		"day",
-		expensiveStockOrderChannel,
-		wg,
+		&wg,
 	)
 	wg.Wait()
-
+	log.Println("goroutine complete")
 	model.IsLongExpensiveStockShortCheapStock = true
-	model.IsShortExpensiveStockLongCheapStock = false 
+	model.IsShortExpensiveStockLongCheapStock = false
 
-	transaction.UpdateFieldsAfterTransaction(model, broker, <- cheapStockOrderChannel, <- expensiveStockOrderChannel)
+	transaction.UpdateFieldsAfterTransaction(model, broker, broker.OrderMap[model.CheapStockSymbol], broker.OrderMap[model.ExpensiveStockSymbol])
 	logging.LogTransaction(model, broker)
 	transaction.VetPosition(broker, model)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
-
-	close(cheapStockOrderChannel)
-	close(expensiveStockOrderChannel)
 }
 
-
-func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, wg *sync.WaitGroup) {
-	expensiveStockOrderChannel := make(chan *alpaca.Order)
-	cheapStockOrderChannel := make(chan *alpaca.Order)
+func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, wg sync.WaitGroup) {
+	log.Println("start goroutine")
 	wg.Add(2)
 	go broker.SubmitOrderAsync(
 		model.CheapStockEntryVolume,
@@ -101,8 +88,7 @@ func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.A
 		"sell",
 		"market",
 		"day",
-		cheapStockOrderChannel,
-		wg,
+		&wg,
 	)
 	go broker.SubmitOrderAsync(
 		model.ExpensiveStockEntryVolume,
@@ -110,27 +96,21 @@ func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.A
 		"buy",
 		"market",
 		"day",
-		expensiveStockOrderChannel,
-		wg,
+		&wg,
 	)
 	wg.Wait()
-
+	log.Println("goroutine complete")
 	model.IsLongExpensiveStockShortCheapStock = false
-	model.IsShortExpensiveStockLongCheapStock = false 
+	model.IsShortExpensiveStockLongCheapStock = false
 
-	transaction.UpdateFieldsAfterTransaction(model, broker, <- cheapStockOrderChannel, <- expensiveStockOrderChannel)
+	transaction.UpdateFieldsAfterTransaction(model, broker, broker.OrderMap[model.CheapStockSymbol], broker.OrderMap[model.ExpensiveStockSymbol])
 	logging.LogTransaction(model, broker)
 	transaction.VetPosition(broker, model)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
-
-	close(cheapStockOrderChannel)
-	close(expensiveStockOrderChannel)
 }
 
-
-func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, wg *sync.WaitGroup) {
-	expensiveStockOrderChannel := make(chan *alpaca.Order)
-	cheapStockOrderChannel := make(chan *alpaca.Order)
+func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, wg sync.WaitGroup) {
+	log.Println("start goroutine")
 	wg.Add(2)
 	go broker.SubmitOrderAsync(
 		model.ExpensiveStockEntryVolume,
@@ -138,8 +118,7 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 		"sell",
 		"market",
 		"day",
-		expensiveStockOrderChannel,
-		wg,
+		&wg,
 	)
 	go broker.SubmitOrderAsync(
 		model.CheapStockEntryVolume,
@@ -147,24 +126,19 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 		"buy",
 		"market",
 		"day",
-		cheapStockOrderChannel,
-		wg,
+		&wg,
 	)
 	wg.Wait()
-
+	log.Println("goroutine complete")
 	model.IsLongExpensiveStockShortCheapStock = false
-	model.IsShortExpensiveStockLongCheapStock = false 
+	model.IsShortExpensiveStockLongCheapStock = false
 
-	transaction.UpdateFieldsAfterTransaction(model, broker, <- cheapStockOrderChannel, <- expensiveStockOrderChannel)
+	transaction.UpdateFieldsAfterTransaction(model, broker, broker.OrderMap[model.CheapStockSymbol], broker.OrderMap[model.ExpensiveStockSymbol])
 	logging.LogTransaction(model, broker)
 	transaction.VetPosition(broker, model)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
 
-	close(cheapStockOrderChannel)
-	close(expensiveStockOrderChannel)
-
 }
-
 
 func WriteRecord(model *model.PairTradingModel, strat string) {
 	shortExpensiveLongCheapPath, longExpensiveShortCheapPath, repeatNumsPath := db.MapRecordPath(strat)

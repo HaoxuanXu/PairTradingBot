@@ -19,6 +19,7 @@ type AlpacaBroker struct {
 	MaxPortfolioPercent float64
 	HasPosition         bool
 	MinProfitThreshold  float64
+	OrderMap            map[string]alpaca.Order
 }
 
 // You can treat this as a constructor of the broker class
@@ -45,6 +46,7 @@ func (broker *AlpacaBroker) initialize(accountType string, entryPercent float64)
 	broker.MaxPortfolioPercent = entryPercent
 	broker.HasPosition = false
 	broker.MinProfitThreshold = broker.CalculateMinProfitThreshold(1.0)
+	broker.OrderMap = make(map[string]alpaca.Order)
 }
 
 func (broker *AlpacaBroker) CalculateMinProfitThreshold(baseNum float64) float64 {
@@ -52,17 +54,17 @@ func (broker *AlpacaBroker) CalculateMinProfitThreshold(baseNum float64) float64
 }
 
 func (broker *AlpacaBroker) refreshOrderStatus(orderID string) (string, *alpaca.Order) {
-	newOrder, _ := alpaca.GetOrder(orderID)
+	newOrder, _ := broker.client.GetOrder(orderID)
 	orderStatus := newOrder.Status
 
 	return orderStatus, newOrder
 }
 
-func (broker *AlpacaBroker) monitorOrder(order *alpaca.Order) (*alpaca.Order, bool) {
-	var success bool
+func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) (*alpaca.Order, bool) {
+	success := false
 	orderID := order.ID
 	status, updatedOrder := broker.refreshOrderStatus(orderID)
-	for success {
+	for !success {
 		switch status {
 		case "new", "accepted", "partially_filled":
 			time.Sleep(time.Second)
@@ -80,21 +82,21 @@ func (broker *AlpacaBroker) monitorOrder(order *alpaca.Order) (*alpaca.Order, bo
 	return updatedOrder, success
 }
 
-func (broker *AlpacaBroker) SubmitOrderAsync(qty float64, symbol, side, orderType, timeInForce string, channel chan *alpaca.Order, wg *sync.WaitGroup) {
+func (broker *AlpacaBroker) SubmitOrderAsync(qty float64, symbol, side, orderType, timeInForce string, wg *sync.WaitGroup) {
 	defer wg.Done()
 	quantity := decimal.NewFromFloat(qty)
 	order, _ := broker.client.PlaceOrder(
 		alpaca.PlaceOrderRequest{
-			AccountID:   broker.account.ID,
 			AssetKey:    &symbol,
+			AccountID:   broker.account.ID,
 			Qty:         &quantity,
 			Side:        alpaca.Side(side),
 			Type:        alpaca.OrderType(orderType),
 			TimeInForce: alpaca.TimeInForce(timeInForce),
 		},
 	)
-	finalOrder, _ := broker.monitorOrder(order)
-	channel <- finalOrder
+	finalOrder, _ := broker.MonitorOrder(order)
+	broker.OrderMap[symbol] = *finalOrder
 }
 
 func (broker *AlpacaBroker) CloseAllPositions() {

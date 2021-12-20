@@ -10,8 +10,8 @@ func calculateHypotheticalProfit(repeatMapper map[int]int, repeatNum int) int {
 	for key, val := range repeatMapper {
 		if key < repeatNum {
 			continue
-		} else if key >= repeatNum && key <= repeatNum+1 {
-			profit -= 4*val
+		} else if key >= repeatNum && key <= repeatNum {
+			profit -= 3 * val
 		} else {
 			profit += val
 		}
@@ -32,7 +32,7 @@ func CalculateOptimalRepeatNum(repeatArray []int) int {
 
 	for repeatNum := 1; repeatNum < util.GetMaxInt(repeatArray)+1; repeatNum++ {
 		currentProfit := calculateHypotheticalProfit(repeatMapper, repeatNum)
-		if  currentProfit > highestProfit {
+		if currentProfit > highestProfit {
 			highestProfit = currentProfit
 			optimalNum = repeatNum
 		}

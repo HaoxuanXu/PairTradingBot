@@ -3,6 +3,7 @@ package quotesprocessor
 import (
 	"github.com/HaoxuanXu/TradingBot/internal/dataengine"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/model"
+	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/transaction"
 )
 
 func GetAndProcessPairQuotes(model *model.PairTradingModel, dataEngine *dataengine.MarketDataEngine) {
@@ -17,5 +18,7 @@ func GetAndProcessPairQuotes(model *model.PairTradingModel, dataEngine *dataengi
 
 	model.LongExpensiveStockShortCheapStockPriceRatio = float64(model.ExpensiveStockLongQuotePrice / model.CheapStockShortQuotePrice)
 	model.ShortExpensiveStockLongCheapStockPriceRatio = float64(model.ExpensiveStockShortQuotePrice / model.CheapStockLongQuotePrice)
+
+	transaction.UpdateFieldsFromQuotes(model)
 
 }
