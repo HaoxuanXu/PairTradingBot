@@ -45,8 +45,6 @@ func UpdateFieldsAfterTransaction(m *model.PairTradingModel, broker *broker.Alpa
 	m.ExpensiveStockEntryVolume = math.Abs(m.ExpensiveStockFilledQuantity)
 	m.CheapStockEntryVolume = math.Abs(m.CheapStockFilledQuantity)
 
-	log.Printf("The minimum threshold now is %f", m.PriceRatioThreshold)
-
 }
 
 func VetPosition(broker *broker.AlpacaBroker, model *model.PairTradingModel) {
@@ -85,4 +83,6 @@ func SlideRepeatAndPriceRatioArrays(model *model.PairTradingModel) {
 		model.LongExpensiveStockShortCheapStockPriceRatioRecord,
 		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
 	)
+
+	log.Printf("The price threshold now is %f; the repeat threshold now is %d", model.PriceRatioThreshold, model.RepeatNumThreshold)
 }

@@ -3,7 +3,6 @@ package windowslider
 func SlideWindowInt(array []int, windowSize int) []int {
 	arrayLength := len(array)
 	offset := arrayLength - windowSize
-
 	if offset > 0 {
 		array = array[offset:]
 	}

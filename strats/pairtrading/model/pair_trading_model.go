@@ -4,6 +4,7 @@ import (
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/updater"
 	"github.com/HaoxuanXu/TradingBot/tools/readwrite"
 	"github.com/HaoxuanXu/TradingBot/tools/repeater"
+	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
 )
 
 type PairTradingModel struct {
@@ -38,6 +39,8 @@ type PairTradingModel struct {
 	RepeatNumThreshold                                int
 	DefaultRepeatArrayLength                          int
 	DefaultPriceRatioArrayLength                      int
+	ExpensiveStockOrderChannel                        chan *alpaca.Order
+	CheapStockOrderChannel                            chan *alpaca.Order
 }
 
 func (model *PairTradingModel) getStockSymbols(assetType string) (string, string) {
@@ -86,4 +89,6 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 	model.EntryNetValue = 0.0
 	model.ExitNetValue = 0.0
 	model.LoserNums = 0
+	model.ExpensiveStockOrderChannel = make(chan *alpaca.Order)
+	model.CheapStockOrderChannel = make(chan *alpaca.Order)
 }
