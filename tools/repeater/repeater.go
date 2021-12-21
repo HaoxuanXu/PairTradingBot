@@ -10,7 +10,7 @@ func calculateHypotheticalProfit(repeatMapper map[int]int, repeatNum int) int {
 	for key, val := range repeatMapper {
 		if key < repeatNum {
 			continue
-		} else if key >= repeatNum && key <= repeatNum {
+		} else if key >= repeatNum && key <= repeatNum+1 {
 			profit -= 3 * val
 		} else {
 			profit += val

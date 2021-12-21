@@ -95,7 +95,6 @@ func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.A
 
 	transaction.UpdateFieldsAfterTransaction(model, broker, CheapStockOrder, ExpensiveStockOrder)
 	logging.LogTransaction(model, broker)
-	transaction.VetPosition(broker, model)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
 }
 
@@ -123,7 +122,6 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 
 	transaction.UpdateFieldsAfterTransaction(model, broker, CheapStockOrder, ExpensiveStockOrder)
 	logging.LogTransaction(model, broker)
-	transaction.VetPosition(broker, model)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
 }
 

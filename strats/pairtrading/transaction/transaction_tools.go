@@ -84,5 +84,6 @@ func SlideRepeatAndPriceRatioArrays(model *model.PairTradingModel) {
 		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
 	)
 
-	log.Printf("The price threshold now is %f; the repeat threshold now is %d", model.PriceRatioThreshold, model.RepeatNumThreshold)
+	// log.Printf("The price threshold now is %f; the repeat threshold now is %d\n; the min profit now is $%f\n",
+	// 	model.PriceRatioThreshold, model.RepeatNumThreshold, model.MinProfitThreshold)
 }
