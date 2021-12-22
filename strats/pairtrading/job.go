@@ -12,7 +12,6 @@ import (
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/pipeline"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/quotesprocessor"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/signalcatcher"
-	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/transaction"
 	"github.com/HaoxuanXu/TradingBot/tools/util"
 )
 
@@ -122,7 +121,6 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 
 	// Close all positions and record data
 	tradingBroker.CloseAllPositions()
-	transaction.SlideRepeatAndPriceRatioArrays(dataModel)
 	log.Printf("The amount you made today: $%.2f\n", tradingBroker.GetDailyProfit())
 	log.Printf("The number of round trips you made today: %d\n", tradingBroker.TransactionNums)
 	log.Printf("The number of losing trips you made todau: %d\n", dataModel.LoserNums)
