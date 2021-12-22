@@ -12,7 +12,7 @@ func calculateHypotheticalProfit(repeatMapper map[int]int, repeatNum int) float6
 		if key < repeatNum {
 			continue
 		} else if key == repeatNum {
-			profit -= 2.5 * float64(val)
+			profit -= 2 * float64(val)
 		} else {
 			profit += float64(val)
 		}

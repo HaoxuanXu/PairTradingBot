@@ -12,14 +12,24 @@ func LogTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroker) 
 	if !broker.HasPosition {
 		if model.IsLongExpensiveStockShortCheapStock {
 			model.EntryNetValue = math.Abs(model.CheapStockFilledPrice*model.CheapStockFilledQuantity) - math.Abs(model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity)
-			log.Printf("long %s: %f shares; short %s: %f shares\n",
+			log.Printf("long %s: %f shares; short %s: %f shares   --  (repeatNum -> %d, priceRatio -> %f)\n",
 				model.ExpensiveStockSymbol,
-				model.ExpensiveStockEntryVolume, model.CheapStockSymbol, model.CheapStockEntryVolume)
+				model.ExpensiveStockEntryVolume,
+				model.CheapStockSymbol,
+				model.CheapStockEntryVolume,
+				model.RepeatNumThreshold,
+				model.PriceRatioThreshold,
+			)
 		} else {
 			model.EntryNetValue = math.Abs(model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity) - math.Abs(model.CheapStockFilledPrice*model.CheapStockFilledQuantity)
-			log.Printf("short %s: %f shares; long %s: %f shares\n",
-				model.ExpensiveStockSymbol, model.ExpensiveStockEntryVolume, model.CheapStockSymbol,
-				model.CheapStockEntryVolume)
+			log.Printf("short %s: %f shares; long %s: %f shares   --   (repeatNum -> %d, priceRatio -> %f)\n",
+				model.ExpensiveStockSymbol,
+				model.ExpensiveStockEntryVolume,
+				model.CheapStockSymbol,
+				model.CheapStockEntryVolume,
+				model.RepeatNumThreshold,
+				model.PriceRatioThreshold,
+			)
 		}
 		broker.HasPosition = true
 	} else if broker.HasPosition {
@@ -34,8 +44,12 @@ func LogTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroker) 
 		if actualProfit < 0 {
 			model.LoserNums++
 		}
-		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f\n",
-			presumedProfit, actualProfit)
+		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f   --   (repeatNum -> %d, priceRatio -> %f)\n",
+			presumedProfit,
+			actualProfit,
+			model.RepeatNumThreshold,
+			model.PriceRatioThreshold,
+		)
 		broker.HasPosition = false
 		broker.TransactionNums++
 	}

@@ -35,9 +35,9 @@ func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.
 	model.IsLongExpensiveStockShortCheapStock = false
 
 	transaction.UpdateFieldsAfterTransaction(model, CheapStockOrder, ExpensiveStockOrder)
-	logging.LogTransaction(model, broker)
 	transaction.VetPosition(model)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
+	logging.LogTransaction(model, broker)
 }
 
 func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
@@ -66,9 +66,9 @@ func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.
 	model.IsShortExpensiveStockLongCheapStock = false
 
 	transaction.UpdateFieldsAfterTransaction(model, CheapStockOrder, ExpensiveStockOrder)
-	logging.LogTransaction(model, broker)
 	transaction.VetPosition(model)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
+	logging.LogTransaction(model, broker)
 }
 
 func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
@@ -92,8 +92,8 @@ func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.A
 	ExpensiveStockOrder := <-model.ExpensiveStockOrderChannel
 
 	transaction.UpdateFieldsAfterTransaction(model, CheapStockOrder, ExpensiveStockOrder)
-	logging.LogTransaction(model, broker)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
+	logging.LogTransaction(model, broker)
 
 	model.IsLongExpensiveStockShortCheapStock = false
 	model.IsShortExpensiveStockLongCheapStock = false
@@ -120,8 +120,8 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 	ExpensiveStockOrder := <-model.ExpensiveStockOrderChannel
 
 	transaction.UpdateFieldsAfterTransaction(model, CheapStockOrder, ExpensiveStockOrder)
-	logging.LogTransaction(model, broker)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
+	logging.LogTransaction(model, broker)
 
 	model.IsLongExpensiveStockShortCheapStock = false
 	model.IsShortExpensiveStockLongCheapStock = false

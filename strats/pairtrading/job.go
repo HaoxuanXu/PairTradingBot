@@ -38,8 +38,8 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 		time.Sleep(timeToOpen)
 	}
 	log.Println("Start Trading ...")
-	log.Printf("The repeat time thresold is %d and the price ratio threshold is %f and minprofitthreshold is $%f\n",
-		dataModel.RepeatNumThreshold, dataModel.PriceRatioThreshold, dataModel.MinProfitThreshold)
+	log.Printf("The repeat time thresold is %d and the price ratio threshold is %f\n",
+		dataModel.RepeatNumThreshold, dataModel.PriceRatioThreshold)
 	// Start the main trading loop
 	for time.Until(tradingBroker.Clock.NextClose) > 20*time.Minute {
 		quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
