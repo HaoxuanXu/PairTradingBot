@@ -88,8 +88,8 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
 	)
 	model.RepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.RepeatArray)
-	model.DefaultRepeatArrayLength = len(model.RepeatArray)
-	model.DefaultPriceRatioArrayLength = len(model.ShortExpensiveStockLongCheapStockPriceRatioRecord)
+	model.DefaultRepeatArrayLength = 5000
+	model.DefaultPriceRatioArrayLength = 10000
 	model.EntryNetValue = 0.0
 	model.ExitNetValue = 0.0
 	model.LoserNums = 0
