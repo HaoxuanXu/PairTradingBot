@@ -7,6 +7,7 @@ import (
 	"github.com/HaoxuanXu/TradingBot/db"
 	"github.com/HaoxuanXu/TradingBot/internal/broker"
 	"github.com/HaoxuanXu/TradingBot/internal/dataengine"
+	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/logging"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/model"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/pipeline"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/quotesprocessor"
@@ -27,6 +28,9 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 	dataEngine := dataengine.GetDataEngine(accountType)
 	shortLongPath, longShortPath, repeatNumPath := db.MapRecordPath("gold")
 	dataModel := model.GetModel(assetType, shortLongPath, longShortPath, repeatNumPath)
+
+	// set up log file for today
+	logging.SetLogging(assetType)
 
 	// We will check if the market is open currently
 	// If the market is not open, we will wait till it is open
@@ -99,7 +103,9 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 	log.Println("Preparing to close the trading session ...")
 	for time.Until(tradingBroker.Clock.NextClose) > time.Minute {
 		quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
-		if dataModel.IsShortExpensiveStockLongCheapStock && signalcatcher.GetExitSignal(dataModel) {
+		if !tradingBroker.HasPosition {
+			break
+		} else if dataModel.IsShortExpensiveStockLongCheapStock && signalcatcher.GetExitSignal(dataModel) {
 			pipeline.ExitShortExpensiveLongCheap(
 				dataModel,
 				tradingBroker,

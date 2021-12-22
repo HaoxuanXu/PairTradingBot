@@ -92,5 +92,6 @@ func (broker *AlpacaBroker) CloseAllPositions() {
 }
 
 func (broker *AlpacaBroker) GetDailyProfit() float64 {
-	return broker.account.PortfolioValue.InexactFloat64() - broker.PortfolioValue
+	newAccount, _ := broker.client.GetAccount()
+	return newAccount.PortfolioValue.InexactFloat64() - broker.PortfolioValue
 }

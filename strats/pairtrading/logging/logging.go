@@ -3,10 +3,26 @@ package logging
 import (
 	"log"
 	"math"
+	"os"
+	"time"
 
+	"github.com/HaoxuanXu/TradingBot/db"
 	"github.com/HaoxuanXu/TradingBot/internal/broker"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/model"
 )
+
+func SetLogging(assetType string) {
+	logName := time.Now().Format("2021/12/22") + "_" + "TradingLog.log"
+	fullLogPath := db.MapLogPath(assetType) + logName
+	logFile, err := os.OpenFile(fullLogPath, os.O_CREATE|os.O_APPEND, 0644)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer logFile.Close()
+
+	log.SetOutput(logFile)
+	log.Printf("logging the trading record to %s\n", fullLogPath)
+}
 
 func LogTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
 	if !broker.HasPosition {
