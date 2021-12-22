@@ -34,9 +34,9 @@ func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.
 	model.IsShortExpensiveStockLongCheapStock = true
 	model.IsLongExpensiveStockShortCheapStock = false
 
-	transaction.UpdateFieldsAfterTransaction(model, broker, CheapStockOrder, ExpensiveStockOrder)
+	transaction.UpdateFieldsAfterTransaction(model, CheapStockOrder, ExpensiveStockOrder)
 	logging.LogTransaction(model, broker)
-	transaction.VetPosition(broker, model)
+	transaction.VetPosition(model)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
 }
 
@@ -65,9 +65,9 @@ func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.
 	model.IsLongExpensiveStockShortCheapStock = true
 	model.IsShortExpensiveStockLongCheapStock = false
 
-	transaction.UpdateFieldsAfterTransaction(model, broker, CheapStockOrder, ExpensiveStockOrder)
+	transaction.UpdateFieldsAfterTransaction(model, CheapStockOrder, ExpensiveStockOrder)
 	logging.LogTransaction(model, broker)
-	transaction.VetPosition(broker, model)
+	transaction.VetPosition(model)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
 }
 
@@ -90,12 +90,13 @@ func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.A
 	)
 	CheapStockOrder := <-model.CheapStockOrderChannel
 	ExpensiveStockOrder := <-model.ExpensiveStockOrderChannel
-	model.IsLongExpensiveStockShortCheapStock = false
-	model.IsShortExpensiveStockLongCheapStock = false
 
-	transaction.UpdateFieldsAfterTransaction(model, broker, CheapStockOrder, ExpensiveStockOrder)
+	transaction.UpdateFieldsAfterTransaction(model, CheapStockOrder, ExpensiveStockOrder)
 	logging.LogTransaction(model, broker)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
+
+	model.IsLongExpensiveStockShortCheapStock = false
+	model.IsShortExpensiveStockLongCheapStock = false
 }
 
 func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
@@ -117,12 +118,13 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 	)
 	CheapStockOrder := <-model.CheapStockOrderChannel
 	ExpensiveStockOrder := <-model.ExpensiveStockOrderChannel
-	model.IsLongExpensiveStockShortCheapStock = false
-	model.IsShortExpensiveStockLongCheapStock = false
 
-	transaction.UpdateFieldsAfterTransaction(model, broker, CheapStockOrder, ExpensiveStockOrder)
+	transaction.UpdateFieldsAfterTransaction(model, CheapStockOrder, ExpensiveStockOrder)
 	logging.LogTransaction(model, broker)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
+
+	model.IsLongExpensiveStockShortCheapStock = false
+	model.IsShortExpensiveStockLongCheapStock = false
 }
 
 func WriteRecord(model *model.PairTradingModel, strat string) {

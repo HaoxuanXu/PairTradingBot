@@ -5,15 +5,16 @@ import (
 )
 
 // This function calculates the hypothetical profit given that we choose to enter a position after repeatNum number of repeats
-func calculateHypotheticalProfit(repeatMapper map[int]int, repeatNum int) int {
-	profit := 0
+func calculateHypotheticalProfit(repeatMapper map[int]int, repeatNum int) float64 {
+	var profit float64
+	profit = 0.0
 	for key, val := range repeatMapper {
 		if key < repeatNum {
 			continue
-		} else if key >= repeatNum && key <= repeatNum+1 {
-			profit -= 3 * val
+		} else if key == repeatNum {
+			profit -= 2.5 * float64(val)
 		} else {
-			profit += val
+			profit += float64(val)
 		}
 	}
 	return profit
@@ -21,7 +22,7 @@ func calculateHypotheticalProfit(repeatMapper map[int]int, repeatNum int) int {
 
 func CalculateOptimalRepeatNum(repeatArray []int) int {
 	repeatMapper := make(map[int]int)
-	highestProfit := 0
+	highestProfit := 0.0
 	optimalNum := 0
 	for _, val := range repeatArray {
 		if _, ok := repeatMapper[val]; !ok {

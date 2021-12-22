@@ -4,7 +4,6 @@ import (
 	"log"
 	"math"
 
-	"github.com/HaoxuanXu/TradingBot/internal/broker"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/model"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/updater"
 	"github.com/HaoxuanXu/TradingBot/tools/repeater"
@@ -36,18 +35,18 @@ func UpdateFieldsFromQuotes(m *model.PairTradingModel) {
 	}
 }
 
-func UpdateFieldsAfterTransaction(m *model.PairTradingModel, broker *broker.AlpacaBroker, cheapStockOrder, expensiveStockOrder *alpaca.Order) {
+func UpdateFieldsAfterTransaction(m *model.PairTradingModel, cheapStockOrder, expensiveStockOrder *alpaca.Order) {
 	m.CheapStockFilledPrice = math.Abs(cheapStockOrder.FilledAvgPrice.InexactFloat64())
 	m.CheapStockFilledQuantity = math.Abs(cheapStockOrder.FilledQty.InexactFloat64())
 	m.ExpensiveStockFilledPrice = math.Abs(expensiveStockOrder.FilledAvgPrice.InexactFloat64())
 	m.ExpensiveStockFilledQuantity = math.Abs(expensiveStockOrder.FilledQty.InexactFloat64())
-	m.MinProfitThreshold = broker.CalculateMinProfitThreshold(1.0)
+	m.MinProfitThreshold = m.CalculateMinProfitThreshold(1.0)
 	m.ExpensiveStockEntryVolume = math.Abs(m.ExpensiveStockFilledQuantity)
 	m.CheapStockEntryVolume = math.Abs(m.CheapStockFilledQuantity)
 
 }
 
-func VetPosition(broker *broker.AlpacaBroker, model *model.PairTradingModel) {
+func VetPosition(model *model.PairTradingModel) {
 	var longPosition float64
 	var shortPosition float64
 
@@ -62,7 +61,7 @@ func VetPosition(broker *broker.AlpacaBroker, model *model.PairTradingModel) {
 	overboughtPercent := (longPosition - shortPosition) / longPosition
 
 	if overboughtPercent > 0.00003 {
-		broker.MinProfitThreshold = broker.MinProfitThreshold - (longPosition - shortPosition)
+		model.MinProfitThreshold = model.MinProfitThreshold - (longPosition - shortPosition)
 		log.Println("minimum profit adjusted")
 	}
 }
@@ -84,6 +83,6 @@ func SlideRepeatAndPriceRatioArrays(model *model.PairTradingModel) {
 		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
 	)
 
-	// log.Printf("The price threshold now is %f; the repeat threshold now is %d\n; the min profit now is $%f\n",
+	// log.Printf("The price threshold now is %f; the repeat threshold now is %d; minprofitthreshold is %f\n",
 	// 	model.PriceRatioThreshold, model.RepeatNumThreshold, model.MinProfitThreshold)
 }

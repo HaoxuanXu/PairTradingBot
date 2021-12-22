@@ -38,8 +38,8 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 		time.Sleep(timeToOpen)
 	}
 	log.Println("Start Trading ...")
-	log.Printf("The repeat time thresold is %d and the price ratio threshold is %f\n",
-		dataModel.RepeatNumThreshold, dataModel.PriceRatioThreshold)
+	log.Printf("The repeat time thresold is %d and the price ratio threshold is %f and minprofitthreshold is $%f\n",
+		dataModel.RepeatNumThreshold, dataModel.PriceRatioThreshold, dataModel.MinProfitThreshold)
 	// Start the main trading loop
 	for time.Until(tradingBroker.Clock.NextClose) > 20*time.Minute {
 		quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
@@ -68,7 +68,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 				},
 				10*time.Millisecond,
 			)
-		} else if dataModel.IsShortExpensiveStockLongCheapStock && signalcatcher.GetExitSignal(dataModel, tradingBroker) {
+		} else if dataModel.IsShortExpensiveStockLongCheapStock && signalcatcher.GetExitSignal(dataModel) {
 			pipeline.ExitShortExpensiveLongCheap(
 				dataModel,
 				tradingBroker,
@@ -80,7 +80,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 				},
 				10*time.Millisecond,
 			)
-		} else if dataModel.IsLongExpensiveStockShortCheapStock && signalcatcher.GetExitSignal(dataModel, tradingBroker) {
+		} else if dataModel.IsLongExpensiveStockShortCheapStock && signalcatcher.GetExitSignal(dataModel) {
 			pipeline.ExitLongExpensiveShortCheap(
 				dataModel,
 				tradingBroker,
@@ -99,13 +99,13 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 	log.Println("Preparing to close the trading session ...")
 	for time.Until(tradingBroker.Clock.NextClose) > time.Minute {
 		quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
-		if dataModel.IsShortExpensiveStockLongCheapStock && signalcatcher.GetExitSignal(dataModel, tradingBroker) {
+		if dataModel.IsShortExpensiveStockLongCheapStock && signalcatcher.GetExitSignal(dataModel) {
 			pipeline.ExitShortExpensiveLongCheap(
 				dataModel,
 				tradingBroker,
 			)
 			break
-		} else if dataModel.IsLongExpensiveStockShortCheapStock && signalcatcher.GetExitSignal(dataModel, tradingBroker) {
+		} else if dataModel.IsLongExpensiveStockShortCheapStock && signalcatcher.GetExitSignal(dataModel) {
 			pipeline.ExitLongExpensiveShortCheap(
 				dataModel,
 				tradingBroker,

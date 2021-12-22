@@ -22,16 +22,16 @@ func GetEntrySignal(shortExpensiveStock bool, model *model.PairTradingModel, bro
 	return false
 }
 
-func GetExitSignal(model *model.PairTradingModel, broker *broker.AlpacaBroker) bool {
+func GetExitSignal(model *model.PairTradingModel) bool {
 	if model.IsShortExpensiveStockLongCheapStock &&
 		model.LongExpensiveStockShortCheapStockRepeatNumber >= model.RepeatNumThreshold {
 		model.ExitNetValue = model.CheapStockShortQuotePrice*model.CheapStockEntryVolume - model.ExpensiveStockLongQuotePrice*model.ExpensiveStockEntryVolume
-		if model.ExitNetValue+model.EntryNetValue >= broker.MinProfitThreshold {
+		if model.ExitNetValue+model.EntryNetValue >= model.MinProfitThreshold {
 			return true
 		}
 	} else if model.IsLongExpensiveStockShortCheapStock && model.ShortExpensiveStockLongCheapStockRepeatNumber >= model.RepeatNumThreshold {
 		model.ExitNetValue = model.ExpensiveStockShortQuotePrice*model.ExpensiveStockEntryVolume - model.CheapStockLongQuotePrice*model.CheapStockEntryVolume
-		if model.ExitNetValue+model.EntryNetValue >= broker.MinProfitThreshold {
+		if model.ExitNetValue+model.EntryNetValue >= model.MinProfitThreshold {
 			return true
 		}
 	}

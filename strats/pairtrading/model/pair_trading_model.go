@@ -56,6 +56,10 @@ func GetModel(assetType, shortLongPath, longShortPath, repeatNumPath string) *Pa
 	return dataModel
 }
 
+func (model *PairTradingModel) CalculateMinProfitThreshold(baseNum float64) float64 {
+	return baseNum * (model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity + model.CheapStockFilledPrice*model.CheapStockFilledQuantity) / 120000
+}
+
 func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPath, repeatNumPath string) {
 	model.ExpensiveStockSymbol, model.CheapStockSymbol = model.getStockSymbols(assetType)
 	model.ShortExpensiveStockLongCheapStockPriceRatioRecord = readwrite.ReadRecordFloat(shortLongPath)
@@ -91,4 +95,5 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 	model.LoserNums = 0
 	model.ExpensiveStockOrderChannel = make(chan *alpaca.Order)
 	model.CheapStockOrderChannel = make(chan *alpaca.Order)
+	model.MinProfitThreshold = 0.0
 }

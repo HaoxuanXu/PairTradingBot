@@ -16,7 +16,6 @@ type AlpacaBroker struct {
 	TransactionNums     int
 	MaxPortfolioPercent float64
 	HasPosition         bool
-	MinProfitThreshold  float64
 }
 
 // You can treat this as a constructor of the broker class
@@ -42,11 +41,6 @@ func (broker *AlpacaBroker) initialize(accountType string, entryPercent float64)
 	broker.TransactionNums = 0
 	broker.MaxPortfolioPercent = entryPercent
 	broker.HasPosition = false
-	broker.MinProfitThreshold = broker.CalculateMinProfitThreshold(1.0)
-}
-
-func (broker *AlpacaBroker) CalculateMinProfitThreshold(baseNum float64) float64 {
-	return baseNum * (broker.PortfolioValue * broker.MaxPortfolioPercent) / 120000
 }
 
 func (broker *AlpacaBroker) refreshOrderStatus(orderID string) (string, *alpaca.Order) {
