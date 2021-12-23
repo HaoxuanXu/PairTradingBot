@@ -6,6 +6,15 @@ import (
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/transaction"
 )
 
+func checkIfNotZeros(input []float64) bool {
+	for _, val := range input {
+		if val == 0.0 {
+			return false
+		}
+	}
+	return true
+}
+
 func GetAndProcessPairQuotes(model *model.PairTradingModel, dataEngine *dataengine.MarketDataEngine) {
 	pairQuotes := dataEngine.GetMultiQuotes(
 		[]string{model.ExpensiveStockSymbol, model.CheapStockSymbol},
@@ -16,9 +25,14 @@ func GetAndProcessPairQuotes(model *model.PairTradingModel, dataEngine *dataengi
 	model.ExpensiveStockLongQuotePrice = pairQuotes[model.ExpensiveStockSymbol].AskPrice
 	model.ExpensiveStockShortQuotePrice = pairQuotes[model.ExpensiveStockSymbol].BidPrice
 
-	model.LongExpensiveStockShortCheapStockPriceRatio = float64(model.ExpensiveStockLongQuotePrice / model.CheapStockShortQuotePrice)
-	model.ShortExpensiveStockLongCheapStockPriceRatio = float64(model.ExpensiveStockShortQuotePrice / model.CheapStockLongQuotePrice)
-
-	transaction.UpdateFieldsFromQuotes(model)
-
+	if checkIfNotZeros([]float64{
+		model.CheapStockLongQuotePrice,
+		model.CheapStockShortQuotePrice,
+		model.ExpensiveStockLongQuotePrice,
+		model.ExpensiveStockShortQuotePrice,
+	}) {
+		model.LongExpensiveStockShortCheapStockPriceRatio = float64(model.ExpensiveStockLongQuotePrice / model.CheapStockShortQuotePrice)
+		model.ShortExpensiveStockLongCheapStockPriceRatio = float64(model.ExpensiveStockShortQuotePrice / model.CheapStockLongQuotePrice)
+		transaction.UpdateFieldsFromQuotes(model)
+	}
 }

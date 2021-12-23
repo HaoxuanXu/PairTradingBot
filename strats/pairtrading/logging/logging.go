@@ -1,6 +1,7 @@
 package logging
 
 import (
+	"fmt"
 	"log"
 	"math"
 	"os"
@@ -12,7 +13,8 @@ import (
 )
 
 func SetLogging(assetType string) {
-	logName := time.Now().Format("2021/12/22") + "_" + "TradingLog.log"
+	dt := time.Now()
+	logName := fmt.Sprintf("%d-%d-%d", dt.Year(), dt.Month(), dt.Day()) + "_" + "TradingLog.log"
 	fullLogPath := db.MapLogPath(assetType) + logName
 	logFile, err := os.OpenFile(fullLogPath, os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
