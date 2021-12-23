@@ -40,7 +40,10 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 		log.Printf("Waiting for %d hours until the market opens\n", int(timeToOpen.Hours()))
 		time.Sleep(timeToOpen)
 	}
-	log.Println("Start Trading ...")
+	log.Printf("Start Trading   --  (repeatNum -> %d, priceRatio -> %f)\n",
+		dataModel.RepeatNumThreshold,
+		dataModel.PriceRatioThreshold,
+	)
 	// Start the main trading loop
 	for time.Until(tradingBroker.Clock.NextClose) > 20*time.Minute {
 		quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)

@@ -14,7 +14,7 @@ import (
 func SetLogging(assetType string) {
 	logName := time.Now().Format("2021/12/22") + "_" + "TradingLog.log"
 	fullLogPath := db.MapLogPath(assetType) + logName
-	logFile, err := os.OpenFile(fullLogPath, os.O_CREATE|os.O_APPEND, 0644)
+	logFile, err := os.OpenFile(fullLogPath, os.O_CREATE|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatal(err)
 	}

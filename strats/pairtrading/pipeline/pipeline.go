@@ -129,7 +129,7 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 
 func WriteRecord(model *model.PairTradingModel, strat string) {
 	shortExpensiveLongCheapPath, longExpensiveShortCheapPath, repeatNumsPath := db.MapRecordPath(strat)
-	readwrite.WriteIntSlice(model.RepeatArray, repeatNumsPath)
-	readwrite.WriteFloatSlice(model.ShortExpensiveStockLongCheapStockPriceRatioRecord, shortExpensiveLongCheapPath)
-	readwrite.WriteFloatSlice(model.LongExpensiveStockShortCheapStockPriceRatioRecord, longExpensiveShortCheapPath)
+	readwrite.WriteIntSlice(&model.RepeatArray, repeatNumsPath)
+	readwrite.WriteFloatSlice(&model.ShortExpensiveStockLongCheapStockPriceRatioRecord, shortExpensiveLongCheapPath)
+	readwrite.WriteFloatSlice(&model.LongExpensiveStockShortCheapStockPriceRatioRecord, longExpensiveShortCheapPath)
 }

@@ -20,18 +20,18 @@ func UpdateFieldsFromQuotes(m *model.PairTradingModel) {
 		m.ShortExpensiveStockLongCheapStockRepeatNumber++
 	} else {
 		util.UpdateIntSlice(&m.RepeatArray, m.ShortExpensiveStockLongCheapStockRepeatNumber)
-		util.UpdateFloatSlice(&m.ShortExpensiveStockLongCheapStockPriceRatioRecord, m.ShortExpensiveStockLongCheapStockPreviousRatio)
 		m.ShortExpensiveStockLongCheapStockRepeatNumber = 1
 		m.ShortExpensiveStockLongCheapStockPreviousRatio = m.ShortExpensiveStockLongCheapStockPriceRatio
+		util.UpdateFloatSlice(&m.ShortExpensiveStockLongCheapStockPriceRatioRecord, m.ShortExpensiveStockLongCheapStockPreviousRatio)
 	}
 
 	if m.LongExpensiveStockShortCheapStockPriceRatio == m.LongExpensiveStockShortCheapStockPreviousRatio {
 		m.LongExpensiveStockShortCheapStockRepeatNumber++
 	} else {
 		util.UpdateIntSlice(&m.RepeatArray, m.LongExpensiveStockShortCheapStockRepeatNumber)
-		util.UpdateFloatSlice(&m.LongExpensiveStockShortCheapStockPriceRatioRecord, m.LongExpensiveStockShortCheapStockPreviousRatio)
 		m.LongExpensiveStockShortCheapStockRepeatNumber = 1
 		m.LongExpensiveStockShortCheapStockPreviousRatio = m.LongExpensiveStockShortCheapStockPriceRatio
+		util.UpdateFloatSlice(&m.LongExpensiveStockShortCheapStockPriceRatioRecord, m.LongExpensiveStockShortCheapStockPreviousRatio)
 	}
 }
 

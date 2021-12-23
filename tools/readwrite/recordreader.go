@@ -13,8 +13,11 @@ func ReadRecordInt(path string) []int {
 	errUnmarshal := json.Unmarshal(recordBytes, &recordContainer)
 
 	for errReadBytes != nil || errUnmarshal != nil {
-		log.Printf("Error in unmarshalling for int slice: %s\n", errUnmarshal.Error())
-		log.Printf("Error in errReadBytes for int slice: %s\n", errReadBytes.Error())
+		if errUnmarshal != nil {
+			log.Printf("Error in unmarshalling for int slice: %s\n", errUnmarshal.Error())
+		} else if errReadBytes != nil {
+			log.Printf("Error in errReadBytes for int slice: %s\n", errReadBytes.Error())
+		}
 		log.Println("Re-reading ...")
 		recordBytes, errReadBytes = ioutil.ReadFile(path)
 		errUnmarshal = json.Unmarshal(recordBytes, &recordContainer)
@@ -30,8 +33,11 @@ func ReadRecordFloat(path string) []float64 {
 	errUnmarshal := json.Unmarshal(recordBytes, &recordContainer)
 
 	for errReadBytes != nil || errUnmarshal != nil {
-		log.Printf("Error in unmarshalling for float slice: %s\n", errUnmarshal.Error())
-		log.Printf("Error in errReadBytes for float slice: %s\n", errReadBytes.Error())
+		if errUnmarshal != nil {
+			log.Printf("Error in unmarshalling for float slice: %s\n", errUnmarshal.Error())
+		} else if errReadBytes != nil {
+			log.Printf("Error in errReadBytes for float slice: %s\n", errReadBytes.Error())
+		}
 		log.Println("Re-reading ...")
 		recordBytes, errReadBytes = ioutil.ReadFile(path)
 		errUnmarshal = json.Unmarshal(recordBytes, &recordContainer)
