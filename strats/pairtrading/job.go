@@ -7,11 +7,11 @@ import (
 	"github.com/HaoxuanXu/TradingBot/db"
 	"github.com/HaoxuanXu/TradingBot/internal/broker"
 	"github.com/HaoxuanXu/TradingBot/internal/dataengine"
-	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/logging"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/model"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/pipeline"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/quotesprocessor"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/signalcatcher"
+	"github.com/HaoxuanXu/TradingBot/tools/logging"
 	"github.com/HaoxuanXu/TradingBot/tools/util"
 )
 

@@ -3,7 +3,6 @@ package pipeline
 import (
 	"github.com/HaoxuanXu/TradingBot/db"
 	"github.com/HaoxuanXu/TradingBot/internal/broker"
-	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/logging"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/model"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/transaction"
 	"github.com/HaoxuanXu/TradingBot/tools/readwrite"
@@ -37,7 +36,7 @@ func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.
 	transaction.UpdateFieldsAfterTransaction(model, CheapStockOrder, ExpensiveStockOrder)
 	transaction.VetPosition(model)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
-	logging.LogTransaction(model, broker)
+	transaction.RecordTransaction(model, broker)
 }
 
 func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
@@ -68,7 +67,7 @@ func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.
 	transaction.UpdateFieldsAfterTransaction(model, CheapStockOrder, ExpensiveStockOrder)
 	transaction.VetPosition(model)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
-	logging.LogTransaction(model, broker)
+	transaction.RecordTransaction(model, broker)
 }
 
 func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
@@ -93,7 +92,7 @@ func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.A
 
 	transaction.UpdateFieldsAfterTransaction(model, CheapStockOrder, ExpensiveStockOrder)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
-	logging.LogTransaction(model, broker)
+	transaction.RecordTransaction(model, broker)
 
 	model.IsLongExpensiveStockShortCheapStock = false
 	model.IsShortExpensiveStockLongCheapStock = false
@@ -121,7 +120,7 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 
 	transaction.UpdateFieldsAfterTransaction(model, CheapStockOrder, ExpensiveStockOrder)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
-	logging.LogTransaction(model, broker)
+	transaction.RecordTransaction(model, broker)
 
 	model.IsLongExpensiveStockShortCheapStock = false
 	model.IsShortExpensiveStockLongCheapStock = false
