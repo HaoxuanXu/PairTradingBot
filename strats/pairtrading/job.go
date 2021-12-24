@@ -29,7 +29,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 	dataModel := model.GetModel(assetType, shortLongPath, longShortPath, repeatNumPath)
 
 	// set up log file for today
-	logging.SetLogging(assetType)
+	logFile := logging.SetLogging(assetType)
 
 	// We will check if the market is open currently
 	// If the market is not open, we will wait till it is open
@@ -130,4 +130,5 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 	log.Println("Writing out record to json ...")
 	pipeline.WriteRecord(dataModel, assetType)
 	log.Println("Data successfully written to json!")
+	logFile.Close()
 }
