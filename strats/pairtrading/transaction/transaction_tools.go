@@ -3,6 +3,7 @@ package transaction
 import (
 	"log"
 	"math"
+	"strings"
 
 	"github.com/HaoxuanXu/TradingBot/internal/broker"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/model"
@@ -97,6 +98,12 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 				model.RepeatNumThreshold,
 				model.PriceRatioThreshold,
 			)
+			log.Printf("%s: %s   -----------------    %s: %s\n",
+				model.ExpensiveStockSymbol,
+				strings.Join(model.QuotesConditions[model.ExpensiveStockSymbol][:], ", "),
+				model.CheapStockSymbol,
+				strings.Join(model.QuotesConditions[model.CheapStockSymbol][:], ", "),
+			)
 		} else {
 			model.EntryNetValue = math.Abs(model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity) - math.Abs(model.CheapStockFilledPrice*model.CheapStockFilledQuantity)
 			log.Printf("short %s: %f shares; long %s: %f shares   --   (repeatNum -> %d, priceRatio -> %f)\n",
@@ -106,6 +113,12 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 				model.CheapStockEntryVolume,
 				model.RepeatNumThreshold,
 				model.PriceRatioThreshold,
+			)
+			log.Printf("%s: %s   -----------------    %s: %s\n",
+				model.ExpensiveStockSymbol,
+				strings.Join(model.QuotesConditions[model.ExpensiveStockSymbol][:], ", "),
+				model.CheapStockSymbol,
+				strings.Join(model.QuotesConditions[model.CheapStockSymbol][:], ", "),
 			)
 		}
 		broker.HasPosition = true
@@ -126,6 +139,12 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 			actualProfit,
 			model.RepeatNumThreshold,
 			model.PriceRatioThreshold,
+		)
+		log.Printf("%s: %s   -----------------    %s: %s\n",
+			model.ExpensiveStockSymbol,
+			strings.Join(model.QuotesConditions[model.ExpensiveStockSymbol][:], ", "),
+			model.CheapStockSymbol,
+			strings.Join(model.QuotesConditions[model.CheapStockSymbol][:], ", "),
 		)
 		broker.HasPosition = false
 		broker.TransactionNums++
