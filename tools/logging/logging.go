@@ -18,7 +18,7 @@ func SetLogging(assetType string) *os.File {
 	if err != nil {
 		log.Fatal(err)
 	}
-	multiWrite := io.MultiWriter(os.Stdout, logFile)
+	multiWrite := io.MultiWriter(logFile)
 
 	log.SetOutput(multiWrite)
 	log.Printf("logging the trading record to %s\n", fullLogPath)
