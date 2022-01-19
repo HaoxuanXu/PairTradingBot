@@ -12,7 +12,7 @@ import (
 func main() {
 	assetType := flag.String("assettype", "gold", "this is the asset type we will run the job with")
 	accountType := flag.String("accounttype", "paper", "This determines if we will run the job on paper or live accounts")
-	startTime := flag.String("starttime", "9:36", "this is the time we will start trading each day")
+	startTime := flag.String("starttime", "9:45", "this is the time we will start trading each day")
 	entryPercent := flag.Float64("entrypercent", 0.12, "this is the percent of portfolio value we will commit")
 	flag.Parse()
 
