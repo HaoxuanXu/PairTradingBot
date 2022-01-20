@@ -5,6 +5,7 @@ const (
 	shortGLDLongIAU = "./db/pairtrading/gold/price_ratio/short_gld_long_iau.json"
 	goldRepeatNums  = "./db/pairtrading/gold/repeat_num/price_ratio_num_repeat.json"
 	goldLogPath     = "./db/pairtrading/gold/log/"
+	monitorLogPath = "~/TradingBotLogs/"
 )
 
 func MapRecordPath(strat string) (string, string, string) {
@@ -17,6 +18,8 @@ func MapRecordPath(strat string) (string, string, string) {
 func MapLogPath(strat string) string {
 	if strat == "gold" {
 		return goldLogPath
+	} else if strat == "monitor" {
+		return monitorLogPath
 	}
 	return ""
 }
