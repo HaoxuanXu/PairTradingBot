@@ -5,7 +5,7 @@ const (
 	shortGLDLongIAU = "./db/pairtrading/gold/price_ratio/short_gld_long_iau.json"
 	goldRepeatNums  = "./db/pairtrading/gold/repeat_num/price_ratio_num_repeat.json"
 	goldLogPath     = "./db/pairtrading/gold/log/"
-	monitorLogPath  = "/home/pi/TradingBotLogs/"
+	monitorLogPath  = "/var/log/"
 )
 
 func MapRecordPath(strat string) (string, string, string) {
