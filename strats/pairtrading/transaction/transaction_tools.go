@@ -90,7 +90,7 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 	if !broker.HasPosition {
 		if model.IsLongExpensiveStockShortCheapStock {
 			model.EntryNetValue = math.Abs(model.CheapStockFilledPrice*model.CheapStockFilledQuantity) - math.Abs(model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity)
-			log.Printf("long %s: %f shares; short %s: %f shares -- (repeatNum -> %d, priceRatio -> %f) -- (%s: [%s <--> %d milliseconds] -- %s: [%s <--> %d milliseconds])\n",
+			log.Printf("long %s: %f shares; short %s: %f shares -- (repeatNum -> %d, priceRatio -> %f) -- (%s: [%s] -- %s: [%s])\n",
 				model.ExpensiveStockSymbol,
 				model.ExpensiveStockEntryVolume,
 				model.CheapStockSymbol,
@@ -99,14 +99,12 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 				model.PriceRatioThreshold,
 				model.ExpensiveStockSymbol,
 				strings.Join(model.QuotesConditions[model.ExpensiveStockSymbol][:], ", "),
-				model.QuotesTimestamps[model.ExpensiveStockSymbol],
 				model.CheapStockSymbol,
 				strings.Join(model.QuotesConditions[model.CheapStockSymbol][:], ", "),
-				model.QuotesTimestamps[model.CheapStockSymbol],
 			)
 		} else {
 			model.EntryNetValue = math.Abs(model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity) - math.Abs(model.CheapStockFilledPrice*model.CheapStockFilledQuantity)
-			log.Printf("short %s: %f shares; long %s: %f shares -- (repeatNum -> %d, priceRatio -> %f) -- (%s: [%s <--> %d milliseconds] -- %s: [%s <--> %d milliseconds])\n",
+			log.Printf("short %s: %f shares; long %s: %f shares -- (repeatNum -> %d, priceRatio -> %f) -- (%s: [%s] -- %s: [%s])\n",
 				model.ExpensiveStockSymbol,
 				model.ExpensiveStockEntryVolume,
 				model.CheapStockSymbol,
@@ -115,10 +113,8 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 				model.PriceRatioThreshold,
 				model.ExpensiveStockSymbol,
 				strings.Join(model.QuotesConditions[model.ExpensiveStockSymbol][:], ", "),
-				model.QuotesTimestamps[model.ExpensiveStockSymbol],
 				model.CheapStockSymbol,
 				strings.Join(model.QuotesConditions[model.CheapStockSymbol][:], ", "),
-				model.QuotesTimestamps[model.CheapStockSymbol],
 			)
 		}
 		broker.HasPosition = true
@@ -134,17 +130,15 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 		if actualProfit < 0 {
 			model.LoserNums++
 		}
-		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f -- (repeatNum -> %d, priceRatio -> %f) -- (%s: [%s <--> %d milliseconds] -- %s: [%s <--> %d milliseconds])\n",
+		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f -- (repeatNum -> %d, priceRatio -> %f) -- (%s: [%s] -- %s: [%s])\n",
 			presumedProfit,
 			actualProfit,
 			model.RepeatNumThreshold,
 			model.PriceRatioThreshold,
 			model.ExpensiveStockSymbol,
 			strings.Join(model.QuotesConditions[model.ExpensiveStockSymbol][:], ", "),
-			model.QuotesTimestamps[model.ExpensiveStockSymbol],
 			model.CheapStockSymbol,
 			strings.Join(model.QuotesConditions[model.CheapStockSymbol][:], ", "),
-			model.QuotesTimestamps[model.CheapStockSymbol],
 		)
 		broker.HasPosition = false
 		broker.TransactionNums++

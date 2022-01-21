@@ -1,8 +1,6 @@
 package quotesprocessor
 
 import (
-	"time"
-
 	"github.com/HaoxuanXu/TradingBot/internal/dataengine"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/model"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/transaction"
@@ -23,9 +21,6 @@ func GetAndProcessPairQuotes(model *model.PairTradingModel, dataEngine *dataengi
 	)
 	model.QuotesConditions[model.CheapStockSymbol] = pairQuotes[model.CheapStockSymbol].Conditions
 	model.QuotesConditions[model.ExpensiveStockSymbol] = pairQuotes[model.ExpensiveStockSymbol].Conditions
-
-	model.QuotesTimestamps[model.CheapStockSymbol] = time.Since(pairQuotes[model.CheapStockSymbol].Timestamp).Milliseconds()
-	model.QuotesTimestamps[model.ExpensiveStockSymbol] = time.Since(pairQuotes[model.ExpensiveStockSymbol].Timestamp).Milliseconds()
 
 	model.CheapStockLongQuotePrice = pairQuotes[model.CheapStockSymbol].AskPrice
 	model.CheapStockShortQuotePrice = pairQuotes[model.CheapStockSymbol].BidPrice
