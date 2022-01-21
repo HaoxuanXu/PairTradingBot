@@ -18,13 +18,13 @@ func main() {
 
 	loc, _ := time.LoadLocation("America/New_York")
 	s := gocron.NewScheduler(loc)
-	s.Every(1).Days().At(*startTime).Do(func() {
-		JobRunner(*assetType, *accountType, *entryPercent)
+	s.Every(1).Days().At("9:30").Do(func() {
+		JobRunner(*assetType, *accountType, *entryPercent, *startTime)
 	})
 	fmt.Printf("Planning to run the %s job for %.1f%% of the portfolio on the %s account...\n", *assetType, *entryPercent*100, *accountType)
-	fmt.Printf("Wait for the job to begin at %s EST\n", *startTime)
+	fmt.Printf("Wait for the actual trading to begin at %s EST\n", *startTime)
 	if broker.GetBroker(*accountType, *entryPercent).Clock.IsOpen {
-		JobRunner(*assetType, *accountType, *entryPercent)
+		JobRunner(*assetType, *accountType, *entryPercent, *startTime)
 	}
 	s.StartBlocking()
 

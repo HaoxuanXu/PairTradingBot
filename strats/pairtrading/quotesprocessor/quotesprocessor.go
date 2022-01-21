@@ -1,8 +1,13 @@
 package quotesprocessor
 
 import (
+	"log"
+	"time"
+
+	"github.com/HaoxuanXu/TradingBot/internal/broker"
 	"github.com/HaoxuanXu/TradingBot/internal/dataengine"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/model"
+	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/pipeline"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/transaction"
 )
 
@@ -37,4 +42,19 @@ func GetAndProcessPairQuotes(model *model.PairTradingModel, dataEngine *dataengi
 		model.ShortExpensiveStockLongCheapStockPriceRatio = float64(model.ExpensiveStockShortQuotePrice / model.CheapStockLongQuotePrice)
 		transaction.UpdateFieldsFromQuotes(model)
 	}
+}
+
+func WarmUpData(timeUntil, assetType string, model *model.PairTradingModel, dataEngine *dataengine.MarketDataEngine, broker *broker.AlpacaBroker) {
+	parsedTime, err := time.Parse("9:30", timeUntil)
+	if err != nil {
+		log.Println(err)
+	}
+	log.Printf("Start Warming up data until %s...\n", timeUntil)
+	for time.Until(parsedTime) > 0 {
+		GetAndProcessPairQuotes(model, dataEngine)
+	}
+	transaction.SlideRepeatAndPriceRatioArrays(model)
+	model.UpdateParameters()
+	pipeline.WriteRecord(model, assetType)
+	log.Println("Data-warming complete!")
 }

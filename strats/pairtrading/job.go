@@ -15,7 +15,7 @@ import (
 	"github.com/HaoxuanXu/TradingBot/tools/util"
 )
 
-func PairTradingJob(assetType, accountType string, entryPercent float64) {
+func PairTradingJob(assetType, accountType string, entryPercent float64, startTime string) {
 	// This job will not run if we are on weekends, so we will simply return if it is the weekends
 	today := time.Now().Weekday().String()
 	if today == "Saturday" || today == "Sunday" {
@@ -40,6 +40,8 @@ func PairTradingJob(assetType, accountType string, entryPercent float64) {
 		log.Printf("Waiting for %d hours until the market opens\n", int(timeToOpen.Hours()))
 		time.Sleep(timeToOpen)
 	}
+	// Warm up data for a specified period of time before trading
+	quotesprocessor.WarmUpData(startTime, assetType, dataModel, dataEngine, tradingBroker)
 	log.Printf("Start Trading   --  (repeatNum -> %d, priceRatio -> %f)\n",
 		dataModel.RepeatNumThreshold,
 		dataModel.PriceRatioThreshold,

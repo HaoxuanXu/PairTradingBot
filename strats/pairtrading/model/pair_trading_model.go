@@ -99,3 +99,11 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 	model.MinProfitThreshold = 0.0
 	model.QuotesConditions = make(map[string][]string)
 }
+
+func (model *PairTradingModel) UpdateParameters() {
+	model.PriceRatioThreshold = updater.UpdatePriceRatioThreshold(
+		model.LongExpensiveStockShortCheapStockPriceRatioRecord,
+		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
+	)
+	model.RepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.RepeatArray)
+}
