@@ -2,6 +2,7 @@ package quotesprocessor
 
 import (
 	"log"
+	"strconv"
 	"time"
 
 	"github.com/HaoxuanXu/TradingBot/internal/broker"
@@ -46,9 +47,10 @@ func GetAndProcessPairQuotes(model *model.PairTradingModel, dataEngine *dataengi
 
 func WarmUpData(timeDuration, assetType string, model *model.PairTradingModel, dataEngine *dataengine.MarketDataEngine, broker *broker.AlpacaBroker) {
 	now := time.Now()
+	timeDurationInt, _ := strconv.Atoi(timeDuration)
 	loc, _ := time.LoadLocation("America/New_York")
 	marketOpen := time.Date(now.Year(), now.Month(), now.Day(), 9, 30, 0, 0, loc)
-	for time.Since(marketOpen) < 30*time.Minute {
+	for time.Since(marketOpen) < time.Duration(timeDurationInt)*time.Minute {
 		GetAndProcessPairQuotes(model, dataEngine)
 	}
 	transaction.SlideRepeatAndPriceRatioArrays(model)

@@ -22,7 +22,7 @@ func main() {
 		JobRunner(*assetType, *accountType, *entryPercent, *startTime)
 	})
 	fmt.Printf("Planning to run the %s job for %.1f%% of the portfolio on the %s account...\n", *assetType, *entryPercent*100, *accountType)
-	fmt.Printf("Wait for the actual trading to begin at %s EST\n", *startTime)
+	fmt.Printf("Wait for the actual trading to begin at %s minutes after the market opens\n", *startTime)
 	if broker.GetBroker(*accountType, *entryPercent).Clock.IsOpen {
 		JobRunner(*assetType, *accountType, *entryPercent, *startTime)
 	}
