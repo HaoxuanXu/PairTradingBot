@@ -45,7 +45,7 @@ func GetAndProcessPairQuotes(model *model.PairTradingModel, dataEngine *dataengi
 }
 
 func WarmUpData(timeUntil, assetType string, model *model.PairTradingModel, dataEngine *dataengine.MarketDataEngine, broker *broker.AlpacaBroker) {
-	parsedTime, err := time.Parse("9:30", timeUntil)
+	parsedTime, err := time.Parse("10:00:00", timeUntil)
 	if err != nil {
 		log.Println(err)
 	}

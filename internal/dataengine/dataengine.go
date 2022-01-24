@@ -1,6 +1,8 @@
 package dataengine
 
 import (
+	"log"
+
 	"github.com/HaoxuanXu/TradingBot/configs"
 	"github.com/alpacahq/alpaca-trade-api-go/v2/marketdata"
 )
@@ -26,6 +28,9 @@ func (engine *MarketDataEngine) initialize(accountType string) {
 
 func (engine *MarketDataEngine) GetMultiQuotes(symbols []string) map[string]marketdata.Quote {
 
-	quotes, _ := engine.client.GetLatestQuotes(symbols)
+	quotes, err := engine.client.GetLatestQuotes(symbols)
+	if err != nil {
+		log.Println(err)
+	}
 	return quotes
 }
