@@ -44,13 +44,11 @@ func GetAndProcessPairQuotes(model *model.PairTradingModel, dataEngine *dataengi
 	}
 }
 
-func WarmUpData(timeUntil, assetType string, model *model.PairTradingModel, dataEngine *dataengine.MarketDataEngine, broker *broker.AlpacaBroker) {
-	parsedTime, err := time.Parse("10:00:00", timeUntil)
-	if err != nil {
-		log.Println(err)
-	}
-	log.Printf("Start Warming up data until %s...\n", timeUntil)
-	for time.Until(parsedTime) > 0 {
+func WarmUpData(timeDuration, assetType string, model *model.PairTradingModel, dataEngine *dataengine.MarketDataEngine, broker *broker.AlpacaBroker) {
+	now := time.Now()
+	loc, _ := time.LoadLocation("America/New_York")
+	marketOpen := time.Date(now.Year(), now.Month(), now.Day(), 9, 30, 0, 0, loc)
+	for time.Since(marketOpen) < 30*time.Minute {
 		GetAndProcessPairQuotes(model, dataEngine)
 	}
 	transaction.SlideRepeatAndPriceRatioArrays(model)
