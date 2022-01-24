@@ -50,6 +50,7 @@ func WarmUpData(timeDuration, assetType string, model *model.PairTradingModel, d
 	timeDurationInt, _ := strconv.Atoi(timeDuration)
 	loc, _ := time.LoadLocation("America/New_York")
 	marketOpen := time.Date(now.Year(), now.Month(), now.Day(), 9, 30, 0, 0, loc)
+	log.Printf("Start warming data until %s minutes after the market opens...", timeDuration)
 	for time.Since(marketOpen) < time.Duration(timeDurationInt)*time.Minute {
 		GetAndProcessPairQuotes(model, dataEngine)
 	}
