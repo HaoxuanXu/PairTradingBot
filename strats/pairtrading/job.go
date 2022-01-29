@@ -47,7 +47,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 		dataModel.PriceRatioThreshold,
 	)
 	// Start the main trading loop
-	for time.Until(tradingBroker.Clock.NextClose) > 15*time.Minute {
+	for time.Until(tradingBroker.Clock.NextClose) > 20*time.Minute {
 		quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 		if signalcatcher.GetEntrySignal(true, dataModel, tradingBroker) {
 			pipeline.EntryShortExpensiveLongCheap(
