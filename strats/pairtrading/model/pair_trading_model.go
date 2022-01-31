@@ -35,8 +35,10 @@ type PairTradingModel struct {
 	LongExpensiveStockShortCheapStockRepeatNumber     int
 	ShortExpensiveStockLongCheapStockPriceRatioRecord []float64
 	LongExpensiveStockShortCheapStockPriceRatioRecord []float64
-	RepeatArray                                       []int
-	RepeatNumThreshold                                int
+	LongExpensiveShortCheapRepeatArray                []int
+	ShortExpensiveLongCheapRepeatArray                []int
+	LongExpensiveShortCheapRepeatNumThreshold         int
+	ShortExpensiveLongCheapRepeatNumThreshold         int
 	DefaultRepeatArrayLength                          int
 	DefaultPriceRatioArrayLength                      int
 	ExpensiveStockOrderChannel                        chan *alpaca.Order
@@ -51,9 +53,9 @@ func (model *PairTradingModel) getStockSymbols(assetType string) (string, string
 	return "", ""
 }
 
-func GetModel(assetType, shortLongPath, longShortPath, repeatNumPath string) *PairTradingModel {
+func GetModel(assetType, shortLongPath, longShortPath, longExpensiveShortCheapRepeatNumPath, shortExpensiveLongCheapRepeatNumPath string) *PairTradingModel {
 	dataModel := &PairTradingModel{}
-	dataModel.initialize(assetType, shortLongPath, longShortPath, repeatNumPath)
+	dataModel.initialize(assetType, shortLongPath, longShortPath, longExpensiveShortCheapRepeatNumPath, shortExpensiveLongCheapRepeatNumPath)
 	return dataModel
 }
 
@@ -61,11 +63,11 @@ func (model *PairTradingModel) CalculateMinProfitThreshold(baseNum float64) floa
 	return baseNum * (model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity + model.CheapStockFilledPrice*model.CheapStockFilledQuantity) / 120000
 }
 
-func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPath, repeatNumPath string) {
+func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPath, longExpensiveShortCheapRepeatNumPath, shortExpensiveLongCheapRepeatNumPath string) {
 	model.ExpensiveStockSymbol, model.CheapStockSymbol = model.getStockSymbols(assetType)
 	model.ShortExpensiveStockLongCheapStockPriceRatioRecord = readwrite.ReadRecordFloat(shortLongPath)
 	model.LongExpensiveStockShortCheapStockPriceRatioRecord = readwrite.ReadRecordFloat(longShortPath)
-	model.RepeatArray = readwrite.ReadRecordInt(repeatNumPath)
+	model.LongExpensiveShortCheapRepeatArray = readwrite.ReadRecordInt(longExpensiveShortCheapRepeatNumPath)
 	model.ShortExpensiveStockLongCheapStockRepeatNumber = 0
 	model.LongExpensiveStockShortCheapStockRepeatNumber = 0
 	model.LongExpensiveStockShortCheapStockPriceRatio = 0.0
@@ -88,7 +90,8 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 		model.LongExpensiveStockShortCheapStockPriceRatioRecord,
 		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
 	)
-	model.RepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.RepeatArray)
+	model.LongExpensiveShortCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray)
+	model.ShortExpensiveLongCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray)
 	model.DefaultRepeatArrayLength = 6000
 	model.DefaultPriceRatioArrayLength = 10000
 	model.EntryNetValue = 0.0
@@ -105,5 +108,6 @@ func (model *PairTradingModel) UpdateParameters() {
 		model.LongExpensiveStockShortCheapStockPriceRatioRecord,
 		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
 	)
-	model.RepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.RepeatArray)
+	model.LongExpensiveShortCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray)
+	model.ShortExpensiveLongCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray)
 }

@@ -3,12 +3,9 @@ package transaction
 import (
 	"log"
 	"math"
-	"strings"
 
 	"github.com/HaoxuanXu/TradingBot/internal/broker"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/model"
-	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/updater"
-	"github.com/HaoxuanXu/TradingBot/tools/repeater"
 	"github.com/HaoxuanXu/TradingBot/tools/util"
 	"github.com/HaoxuanXu/TradingBot/tools/windowslider"
 	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
@@ -21,7 +18,7 @@ func UpdateFieldsFromQuotes(m *model.PairTradingModel) {
 	if m.ShortExpensiveStockLongCheapStockPriceRatio == m.ShortExpensiveStockLongCheapStockPreviousRatio {
 		m.ShortExpensiveStockLongCheapStockRepeatNumber++
 	} else {
-		util.UpdateIntSlice(&m.RepeatArray, m.ShortExpensiveStockLongCheapStockRepeatNumber)
+		util.UpdateIntSlice(&m.ShortExpensiveLongCheapRepeatArray, m.ShortExpensiveStockLongCheapStockRepeatNumber)
 		m.ShortExpensiveStockLongCheapStockRepeatNumber = 1
 		m.ShortExpensiveStockLongCheapStockPreviousRatio = m.ShortExpensiveStockLongCheapStockPriceRatio
 		util.UpdateFloatSlice(&m.ShortExpensiveStockLongCheapStockPriceRatioRecord, m.ShortExpensiveStockLongCheapStockPreviousRatio)
@@ -30,7 +27,7 @@ func UpdateFieldsFromQuotes(m *model.PairTradingModel) {
 	if m.LongExpensiveStockShortCheapStockPriceRatio == m.LongExpensiveStockShortCheapStockPreviousRatio {
 		m.LongExpensiveStockShortCheapStockRepeatNumber++
 	} else {
-		util.UpdateIntSlice(&m.RepeatArray, m.LongExpensiveStockShortCheapStockRepeatNumber)
+		util.UpdateIntSlice(&m.LongExpensiveShortCheapRepeatArray, m.LongExpensiveStockShortCheapStockRepeatNumber)
 		m.LongExpensiveStockShortCheapStockRepeatNumber = 1
 		m.LongExpensiveStockShortCheapStockPreviousRatio = m.LongExpensiveStockShortCheapStockPriceRatio
 		util.UpdateFloatSlice(&m.LongExpensiveStockShortCheapStockPriceRatioRecord, m.LongExpensiveStockShortCheapStockPreviousRatio)
@@ -69,9 +66,14 @@ func VetPosition(model *model.PairTradingModel) {
 }
 
 func SlideRepeatAndPriceRatioArrays(model *model.PairTradingModel) {
-	model.RepeatArray = windowslider.SlideWindowInt(model.RepeatArray, model.DefaultRepeatArrayLength)
-	model.RepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.RepeatArray)
-
+	model.LongExpensiveShortCheapRepeatArray = windowslider.SlideWindowInt(
+		model.LongExpensiveShortCheapRepeatArray,
+		model.DefaultRepeatArrayLength,
+	)
+	model.ShortExpensiveLongCheapRepeatArray = windowslider.SlideWindowInt(
+		model.ShortExpensiveLongCheapRepeatArray,
+		model.DefaultRepeatArrayLength,
+	)
 	model.LongExpensiveStockShortCheapStockPriceRatioRecord = windowslider.SlideWindowFloat(
 		model.LongExpensiveStockShortCheapStockPriceRatioRecord,
 		model.DefaultPriceRatioArrayLength,
@@ -80,43 +82,34 @@ func SlideRepeatAndPriceRatioArrays(model *model.PairTradingModel) {
 		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
 		model.DefaultPriceRatioArrayLength,
 	)
-	model.PriceRatioThreshold = updater.UpdatePriceRatioThreshold(
-		model.LongExpensiveStockShortCheapStockPriceRatioRecord,
-		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
-	)
+	model.UpdateParameters()
 }
 
 func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
 	if !broker.HasPosition {
 		if model.IsLongExpensiveStockShortCheapStock {
 			model.EntryNetValue = math.Abs(model.CheapStockFilledPrice*model.CheapStockFilledQuantity) - math.Abs(model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity)
-			log.Printf("long %s: %f shares; short %s: %f shares -- (repeatNum: %d, priceRatio: %f) -- (%s: [%s], %s: [%s]) -- (long: %d, short: %d)\n",
+			log.Printf("long %s: %f shares; short %s: %f shares -- (longRepeatNum: %d, shortRepeatNum: %d, priceRatio: %f) -- (long: %d, short: %d)\n",
 				model.ExpensiveStockSymbol,
 				model.ExpensiveStockEntryVolume,
 				model.CheapStockSymbol,
 				model.CheapStockEntryVolume,
-				model.RepeatNumThreshold,
+				model.LongExpensiveShortCheapRepeatNumThreshold,
+				model.ShortExpensiveLongCheapRepeatNumThreshold,
 				model.PriceRatioThreshold,
-				model.ExpensiveStockSymbol,
-				strings.Join(model.QuotesConditions[model.ExpensiveStockSymbol][:], ", "),
-				model.CheapStockSymbol,
-				strings.Join(model.QuotesConditions[model.CheapStockSymbol][:], ", "),
 				model.LongExpensiveStockShortCheapStockRepeatNumber,
 				model.ShortExpensiveStockLongCheapStockRepeatNumber,
 			)
 		} else {
 			model.EntryNetValue = math.Abs(model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity) - math.Abs(model.CheapStockFilledPrice*model.CheapStockFilledQuantity)
-			log.Printf("short %s: %f shares; long %s: %f shares -- (repeatNum: %d, priceRatio: %f) -- (%s: [%s], %s: [%s]) -- (long: %d, short: %d)\n",
+			log.Printf("short %s: %f shares; long %s: %f shares -- (longRepeatNum: %d, shortRepeatNum: %d, priceRatio: %f) -- (long: %d, short: %d)\n",
 				model.ExpensiveStockSymbol,
 				model.ExpensiveStockEntryVolume,
 				model.CheapStockSymbol,
 				model.CheapStockEntryVolume,
-				model.RepeatNumThreshold,
+				model.LongExpensiveShortCheapRepeatNumThreshold,
+				model.ShortExpensiveLongCheapRepeatNumThreshold,
 				model.PriceRatioThreshold,
-				model.ExpensiveStockSymbol,
-				strings.Join(model.QuotesConditions[model.ExpensiveStockSymbol][:], ", "),
-				model.CheapStockSymbol,
-				strings.Join(model.QuotesConditions[model.CheapStockSymbol][:], ", "),
 				model.LongExpensiveStockShortCheapStockRepeatNumber,
 				model.ShortExpensiveStockLongCheapStockRepeatNumber,
 			)
@@ -134,15 +127,12 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 		if actualProfit < 0 {
 			model.LoserNums++
 		}
-		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f -- (repeatNum: %d, priceRatio: %f) -- (%s: [%s], %s: [%s]) -- (long: %d, short: %d)\n",
+		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f -- (longRepeatNum: %d, shortRepeatNum: %d, priceRatio: %f) -- (long: %d, short: %d)\n",
 			presumedProfit,
 			actualProfit,
-			model.RepeatNumThreshold,
+			model.LongExpensiveShortCheapRepeatNumThreshold,
+			model.ShortExpensiveLongCheapRepeatNumThreshold,
 			model.PriceRatioThreshold,
-			model.ExpensiveStockSymbol,
-			strings.Join(model.QuotesConditions[model.ExpensiveStockSymbol][:], ", "),
-			model.CheapStockSymbol,
-			strings.Join(model.QuotesConditions[model.CheapStockSymbol][:], ", "),
 			model.LongExpensiveStockShortCheapStockRepeatNumber,
 			model.ShortExpensiveStockLongCheapStockRepeatNumber,
 		)

@@ -25,8 +25,8 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 	// initialize the data model struct and the broker struct
 	tradingBroker := broker.GetBroker(accountType, entryPercent)
 	dataEngine := dataengine.GetDataEngine(accountType)
-	shortLongPath, longShortPath, repeatNumPath := db.MapRecordPath("gold")
-	dataModel := model.GetModel(assetType, shortLongPath, longShortPath, repeatNumPath)
+	shortLongPath, longShortPath, longExpensiveShortCheapRepeatNumPath, shortExpensiveLongCheapRepeatNumPath := db.MapRecordPath("gold")
+	dataModel := model.GetModel(assetType, shortLongPath, longShortPath, longExpensiveShortCheapRepeatNumPath, shortExpensiveLongCheapRepeatNumPath)
 
 	// set up log file for today
 	logFile := logging.SetLogging(assetType)
@@ -42,8 +42,9 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 	}
 	// Warm up data for a specified period of time before trading
 	quotesprocessor.WarmUpData(startTime, assetType, dataModel, dataEngine, tradingBroker)
-	log.Printf("Start Trading   --  (repeatNum -> %d, priceRatio -> %f)\n",
-		dataModel.RepeatNumThreshold,
+	log.Printf("Start Trading   --  (longExpensiveShortCheapRepeatNum -> %d, shortExpensiveLongCheapRepeatNum -> %d, priceRatio -> %f)\n",
+		dataModel.LongExpensiveShortCheapRepeatNumThreshold,
+		dataModel.ShortExpensiveLongCheapRepeatNumThreshold,
 		dataModel.PriceRatioThreshold,
 	)
 	// Start the main trading loop
