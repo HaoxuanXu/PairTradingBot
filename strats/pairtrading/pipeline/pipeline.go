@@ -1,6 +1,8 @@
 package pipeline
 
 import (
+	"time"
+
 	"github.com/HaoxuanXu/TradingBot/db"
 	"github.com/HaoxuanXu/TradingBot/internal/broker"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/model"
@@ -124,6 +126,13 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 
 	model.IsLongExpensiveStockShortCheapStock = false
 	model.IsShortExpensiveStockLongCheapStock = false
+}
+
+func UpdateSignalThresholds(model *model.PairTradingModel, baseTime *time.Time) {
+	if time.Since(*baseTime) > time.Minute {
+		transaction.SlideRepeatAndPriceRatioArrays(model)
+		*baseTime = time.Now()
+	}
 }
 
 func WriteRecord(model *model.PairTradingModel, strat string) {
