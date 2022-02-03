@@ -107,6 +107,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 	}
 	log.Println("Preparing to close the trading session ...")
 	for time.Until(tradingBroker.Clock.NextClose) > time.Minute {
+		pipeline.UpdateSignalThresholds(dataModel, &baseTime)
 		quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 		if !tradingBroker.HasPosition {
 			break
