@@ -135,9 +135,9 @@ func UpdateSignalThresholds(model *model.PairTradingModel, baseTime *time.Time) 
 	}
 }
 
-func WriteRecord(model *model.PairTradingModel, strat string) {
+func WriteRecord(model *model.PairTradingModel) {
 	shortExpensiveLongCheapPath, longExpensiveShortCheapPath,
-		longExpensiveShortCheapRepeatNumsPath, shortExpensiveLongCheapRepeatNumsPath := db.MapRecordPath(strat)
+		longExpensiveShortCheapRepeatNumsPath, shortExpensiveLongCheapRepeatNumsPath := db.MapRecordPath(model.StrategyAssetType)
 	readwrite.WriteIntSlice(&model.LongExpensiveShortCheapRepeatArray, longExpensiveShortCheapRepeatNumsPath)
 	readwrite.WriteIntSlice(&model.ShortExpensiveLongCheapRepeatArray, shortExpensiveLongCheapRepeatNumsPath)
 	readwrite.WriteFloatSlice(&model.ShortExpensiveStockLongCheapStockPriceRatioRecord, shortExpensiveLongCheapPath)

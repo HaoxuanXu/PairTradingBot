@@ -134,7 +134,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 	log.Printf("The number of round trips you made today: %d\n", tradingBroker.TransactionNums)
 	log.Printf("The number of losing trips you made todau: %d\n", dataModel.LoserNums)
 	log.Println("Writing out record to json ...")
-	pipeline.WriteRecord(dataModel, assetType)
+	pipeline.WriteRecord(dataModel)
 	log.Println("Data successfully written to json!")
 	logFile.Close()
 }

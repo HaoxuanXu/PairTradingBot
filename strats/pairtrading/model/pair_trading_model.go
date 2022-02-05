@@ -8,6 +8,7 @@ import (
 )
 
 type PairTradingModel struct {
+	StrategyAssetType                                 string
 	ExpensiveStockSymbol                              string
 	CheapStockSymbol                                  string
 	EntryNetValue                                     float64
@@ -63,7 +64,8 @@ func (model *PairTradingModel) CalculateMinProfitThreshold(baseNum float64) floa
 }
 
 func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPath, longExpensiveShortCheapRepeatNumPath, shortExpensiveLongCheapRepeatNumPath string) {
-	model.ExpensiveStockSymbol, model.CheapStockSymbol = model.getStockSymbols(assetType)
+	model.StrategyAssetType = assetType
+	model.ExpensiveStockSymbol, model.CheapStockSymbol = model.getStockSymbols(model.StrategyAssetType)
 	model.ShortExpensiveStockLongCheapStockPriceRatioRecord = readwrite.ReadRecordFloat(shortLongPath)
 	model.LongExpensiveStockShortCheapStockPriceRatioRecord = readwrite.ReadRecordFloat(longShortPath)
 	model.LongExpensiveShortCheapRepeatArray = readwrite.ReadRecordInt(longExpensiveShortCheapRepeatNumPath)

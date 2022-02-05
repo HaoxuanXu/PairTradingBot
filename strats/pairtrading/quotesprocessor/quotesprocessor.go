@@ -54,6 +54,6 @@ func WarmUpData(timeDuration, assetType string, model *model.PairTradingModel, d
 	}
 	transaction.SlideRepeatAndPriceRatioArrays(model)
 	model.UpdateParameters()
-	pipeline.WriteRecord(model, assetType)
+	pipeline.WriteRecord(model)
 	log.Println("Data-warming complete!")
 }
