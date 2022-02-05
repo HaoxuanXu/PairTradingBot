@@ -39,6 +39,9 @@ func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.
 	transaction.VetPosition(model)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
 	transaction.RecordTransaction(model, broker)
+
+	// Write the current data to disk
+	WriteRecord(model)
 }
 
 func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
@@ -70,6 +73,9 @@ func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.
 	transaction.VetPosition(model)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
 	transaction.RecordTransaction(model, broker)
+
+	// Write the current data to disk
+	WriteRecord(model)
 }
 
 func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
@@ -98,6 +104,9 @@ func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.A
 
 	model.IsLongExpensiveStockShortCheapStock = false
 	model.IsShortExpensiveStockLongCheapStock = false
+
+	// Write the current data to disk
+	WriteRecord(model)
 }
 
 func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
@@ -126,6 +135,9 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 
 	model.IsLongExpensiveStockShortCheapStock = false
 	model.IsShortExpensiveStockLongCheapStock = false
+
+	// Write the current data to disk
+	WriteRecord(model)
 }
 
 func UpdateSignalThresholds(model *model.PairTradingModel, baseTime *time.Time) {
