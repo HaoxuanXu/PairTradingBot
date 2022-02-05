@@ -25,8 +25,6 @@ func GetAndProcessPairQuotes(model *model.PairTradingModel, dataEngine *dataengi
 	pairQuotes := dataEngine.GetMultiQuotes(
 		[]string{model.ExpensiveStockSymbol, model.CheapStockSymbol},
 	)
-	model.QuotesConditions[model.CheapStockSymbol] = pairQuotes[model.CheapStockSymbol].Conditions
-	model.QuotesConditions[model.ExpensiveStockSymbol] = pairQuotes[model.ExpensiveStockSymbol].Conditions
 
 	model.CheapStockLongQuotePrice = pairQuotes[model.CheapStockSymbol].AskPrice
 	model.CheapStockShortQuotePrice = pairQuotes[model.CheapStockSymbol].BidPrice
