@@ -20,7 +20,7 @@ func SetLogging(assetType string) *os.File {
 	if err != nil {
 		log.Fatal(err)
 	}
-	monitorLog, err := os.OpenFile(monitorLogPath, os.O_RDWR|os.O_CREATE, 0644)
+	monitorLog, err := os.OpenFile(monitorLogPath, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0755)
 	if err != nil {
 		log.Fatal(err)
 	}
