@@ -39,7 +39,7 @@ func UpdateFieldsAfterTransaction(m *model.PairTradingModel, cheapStockOrder, ex
 	m.CheapStockFilledQuantity = math.Abs(cheapStockOrder.FilledQty.InexactFloat64())
 	m.ExpensiveStockFilledPrice = math.Abs(expensiveStockOrder.FilledAvgPrice.InexactFloat64())
 	m.ExpensiveStockFilledQuantity = math.Abs(expensiveStockOrder.FilledQty.InexactFloat64())
-	m.MinProfitThreshold = m.CalculateMinProfitThreshold(1.0)
+	m.MinProfitThreshold = m.CalculateMinProfitThreshold(2.0)
 	m.ExpensiveStockEntryVolume = math.Abs(m.ExpensiveStockFilledQuantity)
 	m.CheapStockEntryVolume = math.Abs(m.CheapStockFilledQuantity)
 
