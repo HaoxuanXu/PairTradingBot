@@ -1,12 +1,15 @@
 package broker
 
 import (
+	"sync"
 	"time"
 
 	"github.com/HaoxuanXu/TradingBot/configs"
 	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
 	"github.com/shopspring/decimal"
 )
+
+var lock = &sync.Mutex{}
 
 type AlpacaBroker struct {
 	client              alpaca.Client
@@ -18,10 +21,20 @@ type AlpacaBroker struct {
 	HasPosition         bool
 }
 
+var (
+	generatedBroker *AlpacaBroker
+)
+
 // You can treat this as a constructor of the broker class
 func GetBroker(accountType string, entryPercent float64) *AlpacaBroker {
-	generatedBroker := &AlpacaBroker{}
-	generatedBroker.initialize(accountType, entryPercent)
+
+	lock.Lock()
+	defer lock.Unlock()
+
+	if generatedBroker == nil {
+		generatedBroker := &AlpacaBroker{}
+		generatedBroker.initialize(accountType, entryPercent)
+	}
 	return generatedBroker
 }
 
