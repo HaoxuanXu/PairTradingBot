@@ -32,7 +32,7 @@ func GetBroker(accountType string, entryPercent float64) *AlpacaBroker {
 	defer lock.Unlock()
 
 	if generatedBroker == nil {
-		generatedBroker := &AlpacaBroker{}
+		generatedBroker = &AlpacaBroker{}
 		generatedBroker.initialize(accountType, entryPercent)
 	}
 	return generatedBroker
