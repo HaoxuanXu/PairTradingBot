@@ -130,6 +130,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 
 	// Close all positions and record data
 	tradingBroker.CloseAllPositions()
+	time.Sleep(5 * time.Second)
 	log.Printf("The amount you made today: $%.2f\n", tradingBroker.GetDailyProfit())
 	log.Printf("The number of round trips you made today: %d\n", tradingBroker.TransactionNums)
 	log.Printf("The number of losing trips you made todau: %d\n", dataModel.LoserNums)

@@ -8,42 +8,44 @@ import (
 )
 
 type PairTradingModel struct {
-	StrategyAssetType                                 string
-	ExpensiveStockSymbol                              string
-	CheapStockSymbol                                  string
-	EntryNetValue                                     float64
-	ExitNetValue                                      float64
-	LoserNums                                         int
-	MinProfitThreshold                                float64
-	PriceRatioThreshold                               float64
-	CheapStockEntryVolume                             float64
-	ExpensiveStockEntryVolume                         float64
-	ExpensiveStockFilledQuantity                      float64
-	CheapStockFilledQuantity                          float64
-	ExpensiveStockFilledPrice                         float64
-	CheapStockFilledPrice                             float64
-	ExpensiveStockShortQuotePrice                     float64
-	ExpensiveStockLongQuotePrice                      float64
-	CheapStockShortQuotePrice                         float64
-	CheapStockLongQuotePrice                          float64
-	IsShortExpensiveStockLongCheapStock               bool
-	IsLongExpensiveStockShortCheapStock               bool
-	ShortExpensiveStockLongCheapStockPriceRatio       float64
-	LongExpensiveStockShortCheapStockPriceRatio       float64
-	ShortExpensiveStockLongCheapStockPreviousRatio    float64
-	LongExpensiveStockShortCheapStockPreviousRatio    float64
-	ShortExpensiveStockLongCheapStockRepeatNumber     int
-	LongExpensiveStockShortCheapStockRepeatNumber     int
-	ShortExpensiveStockLongCheapStockPriceRatioRecord []float64
-	LongExpensiveStockShortCheapStockPriceRatioRecord []float64
-	LongExpensiveShortCheapRepeatArray                []int
-	ShortExpensiveLongCheapRepeatArray                []int
-	LongExpensiveShortCheapRepeatNumThreshold         int
-	ShortExpensiveLongCheapRepeatNumThreshold         int
-	DefaultRepeatArrayLength                          int
-	DefaultPriceRatioArrayLength                      int
-	ExpensiveStockOrderChannel                        chan *alpaca.Order
-	CheapStockOrderChannel                            chan *alpaca.Order
+	StrategyAssetType                                     string
+	ExpensiveStockSymbol                                  string
+	CheapStockSymbol                                      string
+	EntryNetValue                                         float64
+	ExitNetValue                                          float64
+	LoserNums                                             int
+	MinProfitThreshold                                    float64
+	PriceRatioThreshold                                   float64
+	CheapStockEntryVolume                                 float64
+	ExpensiveStockEntryVolume                             float64
+	ExpensiveStockFilledQuantity                          float64
+	CheapStockFilledQuantity                              float64
+	ExpensiveStockFilledPrice                             float64
+	CheapStockFilledPrice                                 float64
+	ExpensiveStockShortQuotePrice                         float64
+	ExpensiveStockLongQuotePrice                          float64
+	CheapStockShortQuotePrice                             float64
+	CheapStockLongQuotePrice                              float64
+	IsShortExpensiveStockLongCheapStock                   bool
+	IsLongExpensiveStockShortCheapStock                   bool
+	ShortExpensiveStockLongCheapStockPriceRatio           float64
+	LongExpensiveStockShortCheapStockPriceRatio           float64
+	ShortExpensiveStockLongCheapStockPreviousRatio        float64
+	LongExpensiveStockShortCheapStockPreviousRatio        float64
+	ShortExpensiveStockLongCheapStockRepeatNumber         int
+	LongExpensiveStockShortCheapStockRepeatNumber         int
+	ShortExpensiveStockLongCheapStockPreviousRepeatNumber int
+	LongExpensiveStockShortCheapStockPreviousRepeatNumber int
+	ShortExpensiveStockLongCheapStockPriceRatioRecord     []float64
+	LongExpensiveStockShortCheapStockPriceRatioRecord     []float64
+	LongExpensiveShortCheapRepeatArray                    []int
+	ShortExpensiveLongCheapRepeatArray                    []int
+	LongExpensiveShortCheapRepeatNumThreshold             int
+	ShortExpensiveLongCheapRepeatNumThreshold             int
+	DefaultRepeatArrayLength                              int
+	DefaultPriceRatioArrayLength                          int
+	ExpensiveStockOrderChannel                            chan *alpaca.Order
+	CheapStockOrderChannel                                chan *alpaca.Order
 }
 
 func (model *PairTradingModel) getStockSymbols(assetType string) (string, string) {
@@ -71,6 +73,8 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 	model.LongExpensiveShortCheapRepeatArray = readwrite.ReadRecordInt(longExpensiveShortCheapRepeatNumPath)
 	model.ShortExpensiveStockLongCheapStockRepeatNumber = 0
 	model.LongExpensiveStockShortCheapStockRepeatNumber = 0
+	model.ShortExpensiveStockLongCheapStockPreviousRepeatNumber = 0
+	model.LongExpensiveStockShortCheapStockPreviousRepeatNumber = 0
 	model.LongExpensiveStockShortCheapStockPriceRatio = 0.0
 	model.ShortExpensiveStockLongCheapStockPriceRatio = 0.0
 	model.LongExpensiveStockShortCheapStockPreviousRatio = 0.0

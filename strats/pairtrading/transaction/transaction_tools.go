@@ -19,6 +19,7 @@ func UpdateFieldsFromQuotes(m *model.PairTradingModel) {
 		m.ShortExpensiveStockLongCheapStockRepeatNumber++
 	} else {
 		util.UpdateIntSlice(&m.ShortExpensiveLongCheapRepeatArray, m.ShortExpensiveStockLongCheapStockRepeatNumber)
+		m.ShortExpensiveStockLongCheapStockPreviousRepeatNumber = m.ShortExpensiveStockLongCheapStockRepeatNumber
 		m.ShortExpensiveStockLongCheapStockRepeatNumber = 1
 		m.ShortExpensiveStockLongCheapStockPreviousRatio = m.ShortExpensiveStockLongCheapStockPriceRatio
 		util.UpdateFloatSlice(&m.ShortExpensiveStockLongCheapStockPriceRatioRecord, m.ShortExpensiveStockLongCheapStockPreviousRatio)
@@ -28,6 +29,7 @@ func UpdateFieldsFromQuotes(m *model.PairTradingModel) {
 		m.LongExpensiveStockShortCheapStockRepeatNumber++
 	} else {
 		util.UpdateIntSlice(&m.LongExpensiveShortCheapRepeatArray, m.LongExpensiveStockShortCheapStockRepeatNumber)
+		m.LongExpensiveStockShortCheapStockPreviousRepeatNumber = m.LongExpensiveStockShortCheapStockRepeatNumber
 		m.LongExpensiveStockShortCheapStockRepeatNumber = 1
 		m.LongExpensiveStockShortCheapStockPreviousRatio = m.LongExpensiveStockShortCheapStockPriceRatio
 		util.UpdateFloatSlice(&m.LongExpensiveStockShortCheapStockPriceRatioRecord, m.LongExpensiveStockShortCheapStockPreviousRatio)
@@ -89,29 +91,23 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 	if !broker.HasPosition {
 		if model.IsLongExpensiveStockShortCheapStock {
 			model.EntryNetValue = math.Abs(model.CheapStockFilledPrice*model.CheapStockFilledQuantity) - math.Abs(model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity)
-			log.Printf("long %s: %f shares; short %s: %f shares -- (longRepeatNum: %d, shortRepeatNum: %d, priceRatio: %f) -- (long: %d, short: %d)\n",
+			log.Printf("long %s: %f shares; short %s: %f shares -- (current long repeat num: %d, previous long repeat num: %d)\n",
 				model.ExpensiveStockSymbol,
 				model.ExpensiveStockEntryVolume,
 				model.CheapStockSymbol,
 				model.CheapStockEntryVolume,
-				model.LongExpensiveShortCheapRepeatNumThreshold,
-				model.ShortExpensiveLongCheapRepeatNumThreshold,
-				model.PriceRatioThreshold,
 				model.LongExpensiveStockShortCheapStockRepeatNumber,
-				model.ShortExpensiveStockLongCheapStockRepeatNumber,
+				model.LongExpensiveStockShortCheapStockPreviousRepeatNumber,
 			)
 		} else {
 			model.EntryNetValue = math.Abs(model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity) - math.Abs(model.CheapStockFilledPrice*model.CheapStockFilledQuantity)
-			log.Printf("short %s: %f shares; long %s: %f shares -- (longRepeatNum: %d, shortRepeatNum: %d, priceRatio: %f) -- (long: %d, short: %d)\n",
+			log.Printf("short %s: %f shares; long %s: %f shares -- (current short repeat num: %d, previous short repeat num: %d)\n",
 				model.ExpensiveStockSymbol,
 				model.ExpensiveStockEntryVolume,
 				model.CheapStockSymbol,
 				model.CheapStockEntryVolume,
-				model.LongExpensiveShortCheapRepeatNumThreshold,
-				model.ShortExpensiveLongCheapRepeatNumThreshold,
-				model.PriceRatioThreshold,
-				model.LongExpensiveStockShortCheapStockRepeatNumber,
 				model.ShortExpensiveStockLongCheapStockRepeatNumber,
+				model.ShortExpensiveStockLongCheapStockPreviousRepeatNumber,
 			)
 		}
 		broker.HasPosition = true
@@ -127,14 +123,13 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 		if actualProfit < 0 {
 			model.LoserNums++
 		}
-		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f -- (longRepeatNum: %d, shortRepeatNum: %d, priceRatio: %f) -- (long: %d, short: %d)\n",
+		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f -- (cur long repeat: %d, cur short repeat: %d) -- (prev long repeat: %d, prev short repeat: %d\n",
 			presumedProfit,
 			actualProfit,
-			model.LongExpensiveShortCheapRepeatNumThreshold,
-			model.ShortExpensiveLongCheapRepeatNumThreshold,
-			model.PriceRatioThreshold,
 			model.LongExpensiveStockShortCheapStockRepeatNumber,
 			model.ShortExpensiveStockLongCheapStockRepeatNumber,
+			model.LongExpensiveStockShortCheapStockPreviousRepeatNumber,
+			model.ShortExpensiveStockLongCheapStockPreviousRepeatNumber,
 		)
 		broker.HasPosition = false
 		broker.TransactionNums++
