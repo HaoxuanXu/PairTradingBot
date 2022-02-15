@@ -41,16 +41,17 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 		time.Sleep(timeToOpen)
 	}
 	// Warm up data for a specified period of time before trading
-	quotesprocessor.WarmUpData(startTime, assetType, dataModel, dataEngine, tradingBroker)
+	quotesprocessor.WarmUpData(startTime, assetType, dataModel, dataEngine)
 	log.Printf("Start Trading   --  (longExpensiveShortCheapRepeatNum -> %d, shortExpensiveLongCheapRepeatNum -> %d, priceRatio -> %f)\n",
 		dataModel.LongExpensiveShortCheapRepeatNumThreshold,
 		dataModel.ShortExpensiveLongCheapRepeatNumThreshold,
 		dataModel.PriceRatioThreshold,
 	)
+	tradingBroker.UpdateLastTradeTime()
 	baseTime := time.Now()
 	// Start the main trading loop
 	for time.Until(tradingBroker.Clock.NextClose) > 20*time.Minute {
-		pipeline.UpdateSignalThresholds(dataModel, &baseTime)
+		pipeline.UpdateSignalThresholds(dataModel, &baseTime, tradingBroker, false)
 		quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 		if signalcatcher.GetEntrySignal(true, dataModel, tradingBroker) {
 			pipeline.EntryShortExpensiveLongCheap(
@@ -107,7 +108,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 	}
 	log.Println("Preparing to close the trading session ...")
 	for time.Until(tradingBroker.Clock.NextClose) > time.Minute {
-		pipeline.UpdateSignalThresholds(dataModel, &baseTime)
+		pipeline.UpdateSignalThresholds(dataModel, &baseTime, tradingBroker, true)
 		quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 		if !tradingBroker.HasPosition {
 			break

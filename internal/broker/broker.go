@@ -19,6 +19,7 @@ type AlpacaBroker struct {
 	TransactionNums     int
 	MaxPortfolioPercent float64
 	HasPosition         bool
+	LastTradeTime       time.Time
 }
 
 var (
@@ -54,6 +55,7 @@ func (broker *AlpacaBroker) initialize(accountType string, entryPercent float64)
 	broker.TransactionNums = 0
 	broker.MaxPortfolioPercent = entryPercent
 	broker.HasPosition = false
+	broker.LastTradeTime = time.Now()
 }
 
 func (broker *AlpacaBroker) refreshOrderStatus(orderID string) (string, *alpaca.Order) {
@@ -61,6 +63,10 @@ func (broker *AlpacaBroker) refreshOrderStatus(orderID string) (string, *alpaca.
 	orderStatus := newOrder.Status
 
 	return orderStatus, newOrder
+}
+
+func (broker *AlpacaBroker) UpdateLastTradeTime() {
+	broker.LastTradeTime = time.Now()
 }
 
 func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) (*alpaca.Order, bool) {
