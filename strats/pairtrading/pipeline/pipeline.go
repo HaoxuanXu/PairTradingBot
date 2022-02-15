@@ -35,7 +35,7 @@ func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.
 	model.IsShortExpensiveStockLongCheapStock = true
 	model.IsLongExpensiveStockShortCheapStock = false
 
-	transaction.UpdateFieldsAfterTransaction(model, CheapStockOrder, ExpensiveStockOrder)
+	transaction.UpdateFieldsAfterTransaction(model, broker, CheapStockOrder, ExpensiveStockOrder)
 	transaction.VetPosition(model)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
 	transaction.RecordTransaction(model, broker)
@@ -69,7 +69,7 @@ func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.
 	model.IsLongExpensiveStockShortCheapStock = true
 	model.IsShortExpensiveStockLongCheapStock = false
 
-	transaction.UpdateFieldsAfterTransaction(model, CheapStockOrder, ExpensiveStockOrder)
+	transaction.UpdateFieldsAfterTransaction(model, broker, CheapStockOrder, ExpensiveStockOrder)
 	transaction.VetPosition(model)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
 	transaction.RecordTransaction(model, broker)
@@ -98,7 +98,7 @@ func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.A
 	CheapStockOrder := <-model.CheapStockOrderChannel
 	ExpensiveStockOrder := <-model.ExpensiveStockOrderChannel
 
-	transaction.UpdateFieldsAfterTransaction(model, CheapStockOrder, ExpensiveStockOrder)
+	transaction.UpdateFieldsAfterTransaction(model, broker, CheapStockOrder, ExpensiveStockOrder)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
 	transaction.RecordTransaction(model, broker)
 
@@ -129,7 +129,7 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 	CheapStockOrder := <-model.CheapStockOrderChannel
 	ExpensiveStockOrder := <-model.ExpensiveStockOrderChannel
 
-	transaction.UpdateFieldsAfterTransaction(model, CheapStockOrder, ExpensiveStockOrder)
+	transaction.UpdateFieldsAfterTransaction(model, broker, CheapStockOrder, ExpensiveStockOrder)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
 	transaction.RecordTransaction(model, broker)
 
@@ -140,10 +140,23 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 	WriteRecord(model)
 }
 
+<<<<<<< HEAD
 func UpdateSignalThresholds(model *model.PairTradingModel, baseTime *time.Time) {
+=======
+func UpdateSignalThresholds(model *model.PairTradingModel, baseTime *time.Time, broker *broker.AlpacaBroker, wrappingUp bool) {
+>>>>>>> 5de58389fa50b0e02d5db5e095a4b6fd8c29f1f9
 	if time.Since(*baseTime) > time.Minute {
 		transaction.SlideRepeatAndPriceRatioArrays(model)
 		*baseTime = time.Now()
+	}
+	if wrappingUp {
+		model.MinProfitThreshold = 0.0
+	} else if time.Since(broker.LastTradeTime) < 15*time.Minute {
+		model.MinProfitThreshold = model.CalculateMinProfitThreshold(2.0)
+	} else if time.Since(broker.LastTradeTime) < 30*time.Minute {
+		model.MinProfitThreshold = model.CalculateMinProfitThreshold(1.0)
+	} else {
+		model.MinProfitThreshold = 0.0
 	}
 }
 
