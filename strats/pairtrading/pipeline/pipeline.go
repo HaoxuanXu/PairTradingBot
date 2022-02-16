@@ -12,7 +12,8 @@ import (
 
 func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
 	entryValue := broker.MaxPortfolioPercent * broker.PortfolioValue
-	model.ExpensiveStockEntryVolume = float64(int((entryValue / 2.0) / model.ExpensiveStockShortQuotePrice))
+	// we try to use round lot here to imporve execution
+	model.ExpensiveStockEntryVolume = float64(int((entryValue/2.0)/(model.ExpensiveStockShortQuotePrice*100)) * 100)
 	model.CheapStockEntryVolume = (model.ExpensiveStockEntryVolume * model.ExpensiveStockShortQuotePrice) / model.CheapStockLongQuotePrice
 	go broker.SubmitOrderAsync(
 		model.ExpensiveStockEntryVolume,
@@ -46,7 +47,7 @@ func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.
 
 func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
 	entryValue := broker.MaxPortfolioPercent * broker.PortfolioValue
-	model.CheapStockEntryVolume = float64(int((entryValue / 2.0) / model.CheapStockShortQuotePrice))
+	model.CheapStockEntryVolume = float64(int((entryValue/2.0)/(model.CheapStockShortQuotePrice*100)) * 100)
 	model.ExpensiveStockEntryVolume = (model.CheapStockEntryVolume * model.CheapStockShortQuotePrice) / model.ExpensiveStockLongQuotePrice
 	go broker.SubmitOrderAsync(
 		model.CheapStockEntryVolume,
