@@ -64,6 +64,7 @@ func VetPosition(model *model.PairTradingModel) {
 
 	if overboughtPercent > 0.00003 {
 		model.MinProfitThreshold = model.MinProfitThreshold - (longPosition - shortPosition)
+		model.IsMinProfitAdjusted = true
 		log.Println("minimum profit adjusted")
 	}
 }
@@ -124,7 +125,7 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 		if actualProfit < 0 {
 			model.LoserNums++
 		}
-		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f -- (cur long repeat: %d, cur short repeat: %d) -- (prev long repeat: %d, prev short repeat: %d\n",
+		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f -- (cur long repeat: %d, cur short repeat: %d) -- (prev long repeat: %d, prev short repeat: %d)\n",
 			presumedProfit,
 			actualProfit,
 			model.LongExpensiveStockShortCheapStockRepeatNumber,
@@ -134,5 +135,30 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 		)
 		broker.HasPosition = false
 		broker.TransactionNums++
+	}
+}
+
+func CheckExistingPositions(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
+	expensiveStockPosition := broker.GetPosition(model.ExpensiveStockSymbol)
+	cheapStockPosition := broker.GetPosition(model.CheapStockSymbol)
+
+	if expensiveStockPosition != nil && cheapStockPosition != nil {
+		if expensiveStockPosition.Side == "long" {
+			model.IsLongExpensiveStockShortCheapStock = true
+			model.IsShortExpensiveStockLongCheapStock = false
+		} else {
+			model.IsShortExpensiveStockLongCheapStock = true
+			model.IsLongExpensiveStockShortCheapStock = false
+		}
+
+		model.CheapStockFilledPrice = cheapStockPosition.EntryPrice.Abs().InexactFloat64()
+		model.CheapStockFilledQuantity = cheapStockPosition.Qty.Abs().InexactFloat64()
+		model.ExpensiveStockFilledPrice = expensiveStockPosition.EntryPrice.Abs().InexactFloat64()
+		model.ExpensiveStockFilledQuantity = expensiveStockPosition.Qty.Abs().InexactFloat64()
+		model.MinProfitThreshold = model.CalculateMinProfitThreshold(2.0)
+		model.ExpensiveStockEntryVolume = math.Abs(model.ExpensiveStockFilledQuantity)
+		model.CheapStockEntryVolume = math.Abs(model.CheapStockFilledQuantity)
+
+		VetPosition(model)
 	}
 }

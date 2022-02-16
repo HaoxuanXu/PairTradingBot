@@ -1,6 +1,7 @@
 package broker
 
 import (
+	"log"
 	"sync"
 	"time"
 
@@ -104,6 +105,19 @@ func (broker *AlpacaBroker) SubmitOrderAsync(qty float64, symbol, side, orderTyp
 	)
 	finalOrder, _ := broker.MonitorOrder(order)
 	channel <- finalOrder
+}
+
+func (broker *AlpacaBroker) ListPositions() []alpaca.Position {
+	positions, err := broker.client.ListPositions()
+	if err != nil {
+		log.Panic(err)
+	}
+	return positions
+}
+
+func (broker *AlpacaBroker) GetPosition(symbol string) *alpaca.Position {
+	position, _ := broker.client.GetPosition(symbol)
+	return position
 }
 
 func (broker *AlpacaBroker) CloseAllPositions() {

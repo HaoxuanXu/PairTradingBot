@@ -28,6 +28,7 @@ type PairTradingModel struct {
 	CheapStockLongQuotePrice                              float64
 	IsShortExpensiveStockLongCheapStock                   bool
 	IsLongExpensiveStockShortCheapStock                   bool
+	IsMinProfitAdjusted                                   bool
 	ShortExpensiveStockLongCheapStockPriceRatio           float64
 	LongExpensiveStockShortCheapStockPriceRatio           float64
 	ShortExpensiveStockLongCheapStockPreviousRatio        float64
@@ -81,6 +82,7 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 	model.ShortExpensiveStockLongCheapStockPreviousRatio = 0.0
 	model.IsLongExpensiveStockShortCheapStock = false
 	model.IsShortExpensiveStockLongCheapStock = false
+	model.IsMinProfitAdjusted = false
 	model.CheapStockLongQuotePrice = 0.0
 	model.CheapStockShortQuotePrice = 0.0
 	model.ExpensiveStockLongQuotePrice = 0.0

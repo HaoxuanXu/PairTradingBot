@@ -111,6 +111,7 @@ func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.A
 
 	model.IsLongExpensiveStockShortCheapStock = false
 	model.IsShortExpensiveStockLongCheapStock = false
+	model.IsMinProfitAdjusted = false
 
 	// Write the current data to disk
 	WriteRecord(model)
@@ -142,6 +143,7 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 
 	model.IsLongExpensiveStockShortCheapStock = false
 	model.IsShortExpensiveStockLongCheapStock = false
+	model.IsMinProfitAdjusted = false
 
 	// Write the current data to disk
 	WriteRecord(model)
@@ -151,6 +153,9 @@ func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.Alpaca
 	if time.Since(*baseTime) > time.Minute {
 		transaction.SlideRepeatAndPriceRatioArrays(model)
 		*baseTime = time.Now()
+	}
+	if model.IsMinProfitAdjusted {
+		return
 	}
 	if wrappingUp {
 		model.MinProfitThreshold = 0.0

@@ -11,6 +11,7 @@ import (
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/pipeline"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/quotesprocessor"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/signalcatcher"
+	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/transaction"
 	"github.com/HaoxuanXu/TradingBot/tools/logging"
 	"github.com/HaoxuanXu/TradingBot/tools/util"
 )
@@ -49,6 +50,8 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 	)
 	tradingBroker.UpdateLastTradeTime()
 	baseTime := time.Now()
+	// Check if we currently have trades pending
+	transaction.CheckExistingPositions(dataModel, tradingBroker)
 	// Start the main trading loop
 	for time.Until(tradingBroker.Clock.NextClose) > 20*time.Minute {
 		pipeline.UpdateSignalThresholds(dataModel, tradingBroker, &baseTime, false)
@@ -134,7 +137,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 	time.Sleep(5 * time.Second)
 	log.Printf("The amount you made today: $%.2f\n", tradingBroker.GetDailyProfit())
 	log.Printf("The number of round trips you made today: %d\n", tradingBroker.TransactionNums)
-	log.Printf("The number of losing trips you made todau: %d\n", dataModel.LoserNums)
+	log.Printf("The number of losing trips you made today: %d\n", dataModel.LoserNums)
 	log.Println("Writing out record to json ...")
 	pipeline.WriteRecord(dataModel)
 	log.Println("Data successfully written to json!")
