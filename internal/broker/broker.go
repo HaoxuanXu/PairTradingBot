@@ -52,7 +52,7 @@ func (broker *AlpacaBroker) initialize(accountType string, entryPercent float64)
 	clock, _ := broker.client.GetClock()
 	broker.account = account
 	broker.Clock = *clock
-	broker.PortfolioValue = broker.account.PortfolioValue.InexactFloat64()
+	broker.PortfolioValue = broker.account.Equity.InexactFloat64()
 	broker.TransactionNums = 0
 	broker.MaxPortfolioPercent = entryPercent
 	broker.HasPosition = false
@@ -129,5 +129,5 @@ func (broker *AlpacaBroker) CloseAllPositions() {
 
 func (broker *AlpacaBroker) GetDailyProfit() float64 {
 	newAccount, _ := broker.client.GetAccount()
-	return newAccount.PortfolioValue.InexactFloat64() - broker.PortfolioValue
+	return newAccount.Equity.InexactFloat64() - broker.PortfolioValue
 }
