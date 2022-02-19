@@ -1,9 +1,5 @@
 package repeater
 
-import (
-	"github.com/HaoxuanXu/TradingBot/tools/util"
-)
-
 // This function calculates the hypothetical profit given that we choose to enter a position after repeatNum number of repeats
 func calculateHypotheticalProfit(repeatMapper map[int]int, repeatNum int) float64 {
 	var profit float64
@@ -31,7 +27,7 @@ func CalculateOptimalRepeatNum(repeatArray []int) int {
 		repeatMapper[val]++
 	}
 
-	for repeatNum := 1; repeatNum < util.GetMaxInt(repeatArray)+1; repeatNum++ {
+	for repeatNum := 1; repeatNum < 30; repeatNum++ {
 		currentProfit := calculateHypotheticalProfit(repeatMapper, repeatNum)
 		if currentProfit > highestProfit {
 			highestProfit = currentProfit
