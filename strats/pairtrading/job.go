@@ -26,8 +26,14 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 	// initialize the data model struct and the broker struct
 	tradingBroker := broker.GetBroker(accountType, entryPercent)
 	dataEngine := dataengine.GetDataEngine(accountType)
-	shortLongPath, longShortPath, longExpensiveShortCheapRepeatNumPath, shortExpensiveLongCheapRepeatNumPath := db.MapRecordPath("gold")
-	dataModel := model.GetModel(assetType, shortLongPath, longShortPath, longExpensiveShortCheapRepeatNumPath, shortExpensiveLongCheapRepeatNumPath)
+	tradingAssetParamConfig := db.MapRecordPath(assetType)
+	dataModel := model.GetModel(
+		assetType,
+		tradingAssetParamConfig.ShortExensiveLongCheapPriceRatioPath,
+		tradingAssetParamConfig.LongExpensiveShortCheapPriceRatioPath,
+		tradingAssetParamConfig.LongExpensiveShortCheapRepeatNumPath,
+		tradingAssetParamConfig.ShortExpensiveLongCheapRepeatNumPath,
+	)
 
 	// set up log file for today
 	logFile := logging.SetLogging(assetType)
@@ -42,7 +48,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 		time.Sleep(timeToOpen)
 	}
 	// Warm up data for a specified period of time before trading
-	quotesprocessor.WarmUpData(startTime, assetType, dataModel, dataEngine)
+	quotesprocessor.WarmUpData(startTime, assetType, dataModel, dataEngine, tradingAssetParamConfig)
 	log.Printf("Start Trading   --  (longExpensiveShortCheapRepeatNum -> %d, shortExpensiveLongCheapRepeatNum -> %d, priceRatio -> %f)\n",
 		dataModel.LongExpensiveShortCheapRepeatNumThreshold,
 		dataModel.ShortExpensiveLongCheapRepeatNumThreshold,
@@ -60,6 +66,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 			pipeline.EntryShortExpensiveLongCheap(
 				dataModel,
 				tradingBroker,
+				tradingAssetParamConfig,
 			)
 			// halt trading for a minute so the account is still treated as retail account
 			util.TimedFuncRun(
@@ -73,6 +80,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 			pipeline.EntryLongExpensiveShortCheap(
 				dataModel,
 				tradingBroker,
+				tradingAssetParamConfig,
 			)
 			util.TimedFuncRun(
 				time.Minute,
@@ -85,6 +93,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 			pipeline.ExitShortExpensiveLongCheap(
 				dataModel,
 				tradingBroker,
+				tradingAssetParamConfig,
 			)
 			util.TimedFuncRun(
 				time.Minute,
@@ -97,6 +106,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 			pipeline.ExitLongExpensiveShortCheap(
 				dataModel,
 				tradingBroker,
+				tradingAssetParamConfig,
 			)
 			util.TimedFuncRun(
 				time.Minute,
@@ -119,12 +129,14 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 			pipeline.ExitShortExpensiveLongCheap(
 				dataModel,
 				tradingBroker,
+				tradingAssetParamConfig,
 			)
 			break
 		} else if dataModel.IsLongExpensiveStockShortCheapStock && signalcatcher.GetExitSignal(dataModel) {
 			pipeline.ExitLongExpensiveShortCheap(
 				dataModel,
 				tradingBroker,
+				tradingAssetParamConfig,
 			)
 			break
 		} else {
@@ -139,7 +151,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 	log.Printf("The number of round trips you made today: %d\n", tradingBroker.TransactionNums)
 	log.Printf("The number of losing trips you made today: %d\n", dataModel.LoserNums)
 	log.Println("Writing out record to json ...")
-	pipeline.WriteRecord(dataModel)
+	pipeline.WriteRecord(dataModel, tradingAssetParamConfig)
 	log.Println("Data successfully written to json!")
 	logFile.Close()
 }

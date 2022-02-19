@@ -6,14 +6,31 @@ const (
 	longGLDShortIAURepeatNums = "./db/pairtrading/gold/repeat_num/long_gld_short_iau_num_repeat.json"
 	shortGLDLongIAURepeatNums = "./db/pairtrading/gold/repeat_num/short_gld_long_iau_num_repeat.json"
 	goldLogPath               = "./db/pairtrading/gold/log/"
-	monitorLogPath            = "./"
+
+	monitorLogPath = "./"
 )
 
-func MapRecordPath(strat string) (string, string, string, string) {
+type AssetParamConfig struct {
+	ShortExensiveLongCheapPriceRatioPath  string
+	LongExpensiveShortCheapPriceRatioPath string
+	ShortExpensiveLongCheapRepeatNumPath  string
+	LongExpensiveShortCheapRepeatNumPath  string
+}
+
+func getAssetParamConfig(strat string) *AssetParamConfig {
+	assetParamConfig := &AssetParamConfig{}
+
 	if strat == "gold" {
-		return shortGLDLongIAU, longGLDShortIAU, longGLDShortIAURepeatNums, shortGLDLongIAURepeatNums
+		assetParamConfig.ShortExensiveLongCheapPriceRatioPath = shortGLDLongIAU
+		assetParamConfig.LongExpensiveShortCheapPriceRatioPath = longGLDShortIAU
+		assetParamConfig.ShortExpensiveLongCheapRepeatNumPath = shortGLDLongIAURepeatNums
+		assetParamConfig.LongExpensiveShortCheapRepeatNumPath = longGLDShortIAURepeatNums
 	}
-	return "", "", "", ""
+	return assetParamConfig
+}
+
+func MapRecordPath(strat string) *AssetParamConfig {
+	return getAssetParamConfig(strat)
 }
 
 func MapLogPath(strat string) string {

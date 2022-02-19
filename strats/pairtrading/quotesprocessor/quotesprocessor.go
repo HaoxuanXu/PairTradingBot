@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/HaoxuanXu/TradingBot/db"
 	"github.com/HaoxuanXu/TradingBot/internal/dataengine"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/model"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/pipeline"
@@ -42,7 +43,7 @@ func GetAndProcessPairQuotes(model *model.PairTradingModel, dataEngine *dataengi
 	}
 }
 
-func WarmUpData(timeDuration, assetType string, model *model.PairTradingModel, dataEngine *dataengine.MarketDataEngine) {
+func WarmUpData(timeDuration, assetType string, model *model.PairTradingModel, dataEngine *dataengine.MarketDataEngine, assetParams *db.AssetParamConfig) {
 	now := time.Now()
 	timeDurationInt, _ := strconv.Atoi(timeDuration)
 	loc, _ := time.LoadLocation("America/New_York")
@@ -53,6 +54,6 @@ func WarmUpData(timeDuration, assetType string, model *model.PairTradingModel, d
 	}
 	transaction.SlideRepeatAndPriceRatioArrays(model)
 	model.UpdateParameters()
-	pipeline.WriteRecord(model)
+	pipeline.WriteRecord(model, assetParams)
 	log.Println("Data-warming complete!")
 }

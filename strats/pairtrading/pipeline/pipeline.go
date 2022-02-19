@@ -10,7 +10,7 @@ import (
 	"github.com/HaoxuanXu/TradingBot/tools/readwrite"
 )
 
-func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
+func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, assetParams *db.AssetParamConfig) {
 	entryValue := broker.MaxPortfolioPercent * broker.PortfolioValue
 	// we try to use round lot here to imporve execution
 	model.ExpensiveStockEntryVolume = float64(int((entryValue/2.0)/(model.ExpensiveStockShortQuotePrice*100)) * 100)
@@ -45,10 +45,10 @@ func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.
 	transaction.RecordTransaction(model, broker)
 
 	// Write the current data to disk
-	WriteRecord(model)
+	WriteRecord(model, assetParams)
 }
 
-func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
+func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, assetParams *db.AssetParamConfig) {
 	entryValue := broker.MaxPortfolioPercent * broker.PortfolioValue
 	model.CheapStockEntryVolume = float64(int((entryValue/2.0)/(model.CheapStockShortQuotePrice*100)) * 100)
 	if model.CheapStockEntryVolume == 0 {
@@ -82,10 +82,10 @@ func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.
 	transaction.RecordTransaction(model, broker)
 
 	// Write the current data to disk
-	WriteRecord(model)
+	WriteRecord(model, assetParams)
 }
 
-func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
+func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, assetParams *db.AssetParamConfig) {
 	go broker.SubmitOrderAsync(
 		model.CheapStockEntryVolume,
 		model.CheapStockSymbol,
@@ -114,10 +114,10 @@ func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.A
 	model.IsMinProfitAdjusted = false
 
 	// Write the current data to disk
-	WriteRecord(model)
+	WriteRecord(model, assetParams)
 }
 
-func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
+func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, assetParams *db.AssetParamConfig) {
 	go broker.SubmitOrderAsync(
 		model.ExpensiveStockEntryVolume,
 		model.ExpensiveStockSymbol,
@@ -146,7 +146,7 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 	model.IsMinProfitAdjusted = false
 
 	// Write the current data to disk
-	WriteRecord(model)
+	WriteRecord(model, assetParams)
 }
 
 func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.AlpacaBroker, baseTime *time.Time, wrappingUp bool) {
@@ -159,18 +159,16 @@ func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.Alpaca
 	}
 	if wrappingUp {
 		model.MinProfitThreshold = 0.0
-	} else if time.Since(broker.LastTradeTime) > 15*time.Minute && time.Since(broker.LastTradeTime) < 16*time.Minute {
+	} else if time.Since(broker.LastTradeTime) > 10*time.Minute && time.Since(broker.LastTradeTime) < 11*time.Minute {
 		model.MinProfitThreshold = model.CalculateMinProfitThreshold(1.0)
-	} else if time.Since(broker.LastTradeTime) > 30*time.Minute {
+	} else if time.Since(broker.LastTradeTime) > 15*time.Minute {
 		model.MinProfitThreshold = 0.0
 	}
 }
 
-func WriteRecord(model *model.PairTradingModel) {
-	shortExpensiveLongCheapPath, longExpensiveShortCheapPath,
-		longExpensiveShortCheapRepeatNumsPath, shortExpensiveLongCheapRepeatNumsPath := db.MapRecordPath(model.StrategyAssetType)
-	readwrite.WriteIntSlice(&model.LongExpensiveShortCheapRepeatArray, longExpensiveShortCheapRepeatNumsPath)
-	readwrite.WriteIntSlice(&model.ShortExpensiveLongCheapRepeatArray, shortExpensiveLongCheapRepeatNumsPath)
-	readwrite.WriteFloatSlice(&model.ShortExpensiveStockLongCheapStockPriceRatioRecord, shortExpensiveLongCheapPath)
-	readwrite.WriteFloatSlice(&model.LongExpensiveStockShortCheapStockPriceRatioRecord, longExpensiveShortCheapPath)
+func WriteRecord(model *model.PairTradingModel, assetParams *db.AssetParamConfig) {
+	readwrite.WriteIntSlice(&model.LongExpensiveShortCheapRepeatArray, assetParams.LongExpensiveShortCheapRepeatNumPath)
+	readwrite.WriteIntSlice(&model.ShortExpensiveLongCheapRepeatArray, assetParams.ShortExpensiveLongCheapRepeatNumPath)
+	readwrite.WriteFloatSlice(&model.ShortExpensiveStockLongCheapStockPriceRatioRecord, assetParams.ShortExensiveLongCheapPriceRatioPath)
+	readwrite.WriteFloatSlice(&model.LongExpensiveStockShortCheapStockPriceRatioRecord, assetParams.LongExpensiveShortCheapPriceRatioPath)
 }
