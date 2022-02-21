@@ -1,11 +1,11 @@
 package db
 
 const (
-	longGLDShortIAU           = "./db/pairtrading/gold/price_ratio/long_gld_short_iau.json"
-	shortGLDLongIAU           = "./db/pairtrading/gold/price_ratio/short_gld_long_iau.json"
-	longGLDShortIAURepeatNums = "./db/pairtrading/gold/repeat_num/long_gld_short_iau_num_repeat.json"
-	shortGLDLongIAURepeatNums = "./db/pairtrading/gold/repeat_num/short_gld_long_iau_num_repeat.json"
-	goldLogPath               = "./db/pairtrading/gold/log/"
+	longGLDShortIAU           = "./db/pairtrading/price_ratio/long_gld_short_iau.json"
+	shortGLDLongIAU           = "./db/pairtrading/price_ratio/short_gld_long_iau.json"
+	longGLDShortIAURepeatNums = "./db/pairtrading/repeat_num/long_gld_short_iau_num_repeat.json"
+	shortGLDLongIAURepeatNums = "./db/pairtrading/repeat_num/short_gld_long_iau_num_repeat.json"
+	goldLogPath               = "./db/pairtrading/log/"
 
 	monitorLogPath = "./"
 )
