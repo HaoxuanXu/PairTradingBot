@@ -59,7 +59,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 	// Check if we currently have trades pending
 	transaction.CheckExistingPositions(dataModel, tradingBroker)
 	// Start the main trading loop
-	for time.Until(tradingBroker.Clock.NextClose) > 20*time.Minute {
+	for time.Until(tradingBroker.Clock.NextClose) > 10*time.Minute {
 		pipeline.UpdateSignalThresholds(dataModel, tradingBroker, &baseTime, false)
 		quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 		if signalcatcher.GetEntrySignal(true, dataModel, tradingBroker) {
