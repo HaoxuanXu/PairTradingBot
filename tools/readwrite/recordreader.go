@@ -18,10 +18,6 @@ func ReadRecordInt(path string) []int {
 		log.Println(errReadBytes.Error())
 	}
 
-	// start with only 3600 data points (for repeat num specifically)
-	if len(recordContainer) > 3600 {
-		recordContainer = recordContainer[len(recordContainer)-3600:]
-	}
 	return recordContainer
 }
 
