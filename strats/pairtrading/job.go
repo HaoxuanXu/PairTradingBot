@@ -74,7 +74,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
-				10*time.Millisecond,
+				time.Millisecond,
 			)
 		} else if signalcatcher.GetEntrySignal(false, dataModel, tradingBroker) {
 			pipeline.EntryLongExpensiveShortCheap(
@@ -87,7 +87,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
-				10*time.Millisecond,
+				time.Millisecond,
 			)
 		} else if dataModel.IsShortExpensiveStockLongCheapStock && signalcatcher.GetExitSignal(dataModel) {
 			pipeline.ExitShortExpensiveLongCheap(
@@ -100,7 +100,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
-				10*time.Millisecond,
+				time.Millisecond,
 			)
 		} else if dataModel.IsLongExpensiveStockShortCheapStock && signalcatcher.GetExitSignal(dataModel) {
 			pipeline.ExitLongExpensiveShortCheap(
@@ -113,10 +113,10 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
-				10*time.Millisecond,
+				time.Millisecond,
 			)
 		} else {
-			time.Sleep(10 * time.Millisecond)
+			time.Sleep(time.Millisecond)
 		}
 	}
 	log.Println("Preparing to close the trading session ...")
@@ -140,13 +140,12 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 			)
 			break
 		} else {
-			time.Sleep(10 * time.Millisecond)
+			time.Sleep(time.Millisecond)
 		}
 	}
 
 	// Close all positions and record data
 	tradingBroker.CloseAllPositions()
-	time.Sleep(5 * time.Second)
 	log.Printf("The amount you made today: $%.2f\n", tradingBroker.GetDailyProfit())
 	log.Printf("The number of round trips you made today: %d\n", tradingBroker.TransactionNums)
 	log.Printf("The number of losing trips you made today: %d\n", dataModel.LoserNums)
