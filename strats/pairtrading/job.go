@@ -74,7 +74,6 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
-				time.Millisecond,
 			)
 		} else if signalcatcher.GetEntrySignal(false, dataModel, tradingBroker) {
 			pipeline.EntryLongExpensiveShortCheap(
@@ -87,7 +86,6 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
-				time.Millisecond,
 			)
 		} else if dataModel.IsShortExpensiveStockLongCheapStock && signalcatcher.GetExitSignal(dataModel) {
 			pipeline.ExitShortExpensiveLongCheap(
@@ -100,7 +98,6 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
-				time.Millisecond,
 			)
 		} else if dataModel.IsLongExpensiveStockShortCheapStock && signalcatcher.GetExitSignal(dataModel) {
 			pipeline.ExitLongExpensiveShortCheap(
@@ -113,10 +110,9 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
-				time.Millisecond,
 			)
 		} else {
-			time.Sleep(time.Millisecond)
+			continue
 		}
 	}
 	log.Println("Preparing to close the trading session ...")
@@ -140,7 +136,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 			)
 			break
 		} else {
-			time.Sleep(time.Millisecond)
+			continue
 		}
 	}
 
