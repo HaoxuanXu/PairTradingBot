@@ -51,6 +51,7 @@ func WarmUpData(timeDuration, assetType string, model *model.PairTradingModel, d
 	log.Printf("Start warming data until %s minutes after the market opens...", timeDuration)
 	for time.Since(marketOpen) < time.Duration(timeDurationInt)*time.Minute {
 		GetAndProcessPairQuotes(model, dataEngine)
+		time.Sleep(10 * time.Millisecond) // sleep for 0.01 second between each rest call
 	}
 	transaction.SlideRepeatAndPriceRatioArrays(model)
 	model.UpdateParameters()
