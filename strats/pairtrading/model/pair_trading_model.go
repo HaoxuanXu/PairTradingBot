@@ -52,6 +52,8 @@ type PairTradingModel struct {
 func (model *PairTradingModel) getStockSymbols(assetType string) (string, string) {
 	if assetType == "gold" {
 		return "GLD", "IAU"
+	} else if assetType == "bond" {
+		return "AGG", "BND"
 	}
 	return "", ""
 }
