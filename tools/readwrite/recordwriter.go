@@ -14,6 +14,7 @@ func WriteIntSlice(sli *[]int, path string) {
 			log.Printf("error in marshalling for float slice: %s\n", errMarshal.Error())
 		} else if errWrite != nil {
 			log.Printf("error in writing to disk for float slice: %s\n", errWrite.Error())
+			log.Printf("path: %s\n", path)
 		}
 		log.Println("Rewriting ...")
 		recordBytes, errMarshal = json.Marshal(sli)
