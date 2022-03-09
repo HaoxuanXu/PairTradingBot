@@ -54,6 +54,12 @@ func (model *PairTradingModel) getStockSymbols(assetType string) (string, string
 		return "GLD", "IAU"
 	} else if assetType == "bond" {
 		return "AGG", "BND"
+	} else if assetType == "spvalue" {
+		return "MDY", "IJH"
+	} else if assetType == "utilities" {
+		return "VPU", "XLU"
+	} else if assetType == "russell2000" {
+		return "IWM", "VTWO"
 	}
 	return "", ""
 }
