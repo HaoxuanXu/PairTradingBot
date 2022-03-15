@@ -149,9 +149,10 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 	WriteRecord(model, assetParams)
 }
 
-func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.AlpacaBroker, baseTime *time.Time, wrappingUp bool) {
+func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.AlpacaBroker, baseTime *time.Time, wrappingUp bool, assetParams *db.AssetParamConfig) {
 	if time.Since(*baseTime) > time.Minute {
 		transaction.SlideRepeatAndPriceRatioArrays(model)
+		WriteRecord(model, assetParams)
 		*baseTime = time.Now()
 	}
 	if model.IsMinProfitAdjusted {

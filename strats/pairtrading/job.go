@@ -60,7 +60,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 	transaction.CheckExistingPositions(dataModel, tradingBroker)
 	// Start the main trading loop
 	for time.Until(tradingBroker.Clock.NextClose) > 10*time.Minute {
-		pipeline.UpdateSignalThresholds(dataModel, tradingBroker, &baseTime, false)
+		pipeline.UpdateSignalThresholds(dataModel, tradingBroker, &baseTime, false, tradingAssetParamConfig)
 		quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 		if signalcatcher.GetEntrySignal(true, dataModel, tradingBroker) {
 			pipeline.EntryShortExpensiveLongCheap(
@@ -121,7 +121,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 	}
 	log.Println("Preparing to close the trading session ...")
 	for time.Until(tradingBroker.Clock.NextClose) > time.Minute {
-		pipeline.UpdateSignalThresholds(dataModel, tradingBroker, &baseTime, true)
+		pipeline.UpdateSignalThresholds(dataModel, tradingBroker, &baseTime, true, tradingAssetParamConfig)
 		quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 		if !tradingBroker.HasPosition {
 			break
