@@ -160,9 +160,7 @@ func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.Alpaca
 	}
 	if wrappingUp {
 		model.MinProfitThreshold = 0.0
-	} else if time.Since(broker.LastTradeTime) > 10*time.Minute && time.Since(broker.LastTradeTime) < 11*time.Minute {
-		model.MinProfitThreshold = model.CalculateMinProfitThreshold(1.0)
-	} else if time.Since(broker.LastTradeTime) > 15*time.Minute {
+	} else if time.Since(broker.LastTradeTime) > 10*time.Minute {
 		model.MinProfitThreshold = 0.0
 	}
 }
