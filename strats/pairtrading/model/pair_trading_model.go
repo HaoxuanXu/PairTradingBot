@@ -80,6 +80,7 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 	model.ShortExpensiveStockLongCheapStockPriceRatioRecord = readwrite.ReadRecordFloat(shortLongPath)
 	model.LongExpensiveStockShortCheapStockPriceRatioRecord = readwrite.ReadRecordFloat(longShortPath)
 	model.LongExpensiveShortCheapRepeatArray = readwrite.ReadRecordInt(longExpensiveShortCheapRepeatNumPath)
+	model.ShortExpensiveLongCheapRepeatArray = readwrite.ReadRecordInt(shortExpensiveLongCheapRepeatNumPath)
 	model.ShortExpensiveStockLongCheapStockRepeatNumber = 0
 	model.LongExpensiveStockShortCheapStockRepeatNumber = 0
 	model.ShortExpensiveStockLongCheapStockPreviousRepeatNumber = 0
