@@ -21,3 +21,10 @@ func GetMaxFloat(array []float64) float64 {
 	}
 	return maxVal
 }
+
+func MaxInt(x, y int) int {
+	if x > y {
+		return x
+	}
+	return y
+}
