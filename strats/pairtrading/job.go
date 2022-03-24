@@ -76,6 +76,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 				},
 				10*time.Millisecond,
 			)
+			dataModel.ClearRepeatNumber()
 		} else if signalcatcher.GetEntrySignal(false, dataModel, tradingBroker) {
 			pipeline.EntryLongExpensiveShortCheap(
 				dataModel,
@@ -89,6 +90,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 				},
 				10*time.Millisecond,
 			)
+			dataModel.ClearRepeatNumber()
 		} else if dataModel.IsShortExpensiveStockLongCheapStock && signalcatcher.GetExitSignal(dataModel) {
 			pipeline.ExitShortExpensiveLongCheap(
 				dataModel,
@@ -102,6 +104,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 				},
 				10*time.Millisecond,
 			)
+			dataModel.ClearRepeatNumber()
 		} else if dataModel.IsLongExpensiveStockShortCheapStock && signalcatcher.GetExitSignal(dataModel) {
 			pipeline.ExitLongExpensiveShortCheap(
 				dataModel,
@@ -115,6 +118,7 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 				},
 				10*time.Millisecond,
 			)
+			dataModel.ClearRepeatNumber()
 		} else {
 			time.Sleep(10 * time.Millisecond)
 		}

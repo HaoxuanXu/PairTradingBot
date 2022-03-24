@@ -139,3 +139,8 @@ func (model *PairTradingModel) UpdateParameters() {
 		repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/2:]),
 	)
 }
+
+func (model *PairTradingModel) ClearRepeatNumber() {
+	model.LongExpensiveStockShortCheapStockPreviousRepeatNumber = 1
+	model.ShortExpensiveStockLongCheapStockRepeatNumber = 1
+}
