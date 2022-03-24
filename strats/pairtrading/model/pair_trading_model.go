@@ -141,6 +141,6 @@ func (model *PairTradingModel) UpdateParameters() {
 }
 
 func (model *PairTradingModel) ClearRepeatNumber() {
-	model.LongExpensiveStockShortCheapStockPreviousRepeatNumber = 1
+	model.LongExpensiveStockShortCheapStockRepeatNumber = 1
 	model.ShortExpensiveStockLongCheapStockRepeatNumber = 1
 }
