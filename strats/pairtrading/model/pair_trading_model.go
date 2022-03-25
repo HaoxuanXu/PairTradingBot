@@ -4,7 +4,6 @@ import (
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/updater"
 	"github.com/HaoxuanXu/TradingBot/tools/readwrite"
 	"github.com/HaoxuanXu/TradingBot/tools/repeater"
-	"github.com/HaoxuanXu/TradingBot/tools/util"
 	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
 )
 
@@ -107,19 +106,9 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 		model.LongExpensiveStockShortCheapStockPriceRatioRecord,
 		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
 	)
-	model.LongExpensiveShortCheapRepeatNumThreshold = util.GetMaxInt(
-		[]int{
-			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray),
-			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/3:]),
-		},
-	)
-	model.ShortExpensiveLongCheapRepeatNumThreshold = util.GetMaxInt(
-		[]int{
-			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray),
-			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/2:]),
-		},
-	)
-	model.DefaultRepeatArrayLength = 7000
+	model.LongExpensiveShortCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray)
+	model.ShortExpensiveLongCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray)
+	model.DefaultRepeatArrayLength = 5000
 	model.DefaultPriceRatioArrayLength = 10000
 	model.EntryNetValue = 0.0
 	model.ExitNetValue = 0.0
@@ -134,20 +123,8 @@ func (model *PairTradingModel) UpdateParameters() {
 		model.LongExpensiveStockShortCheapStockPriceRatioRecord,
 		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
 	)
-	model.LongExpensiveShortCheapRepeatNumThreshold = util.GetMaxInt(
-		[]int{
-			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray),
-			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/2:]),
-			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/3:]),
-		},
-	)
-	model.ShortExpensiveLongCheapRepeatNumThreshold = util.GetMaxInt(
-		[]int{
-			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray),
-			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/2:]),
-			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/3:]),
-		},
-	)
+	model.LongExpensiveShortCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray)
+	model.ShortExpensiveLongCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray)
 }
 
 func (model *PairTradingModel) ClearRepeatNumber() {
