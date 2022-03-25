@@ -107,13 +107,21 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 		model.LongExpensiveStockShortCheapStockPriceRatioRecord,
 		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
 	)
-	model.LongExpensiveShortCheapRepeatNumThreshold = util.MaxInt(
-		repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray),
-		repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/2:]),
+	model.LongExpensiveShortCheapRepeatNumThreshold = util.GetMaxInt(
+		[]int{
+			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray),
+			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/2:]),
+			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/3:]),
+			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/4:]),
+		},
 	)
-	model.ShortExpensiveLongCheapRepeatNumThreshold = util.MaxInt(
-		repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray),
-		repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/2:]),
+	model.ShortExpensiveLongCheapRepeatNumThreshold = util.GetMaxInt(
+		[]int{
+			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray),
+			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/2:]),
+			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/3:]),
+			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/4:]),
+		},
 	)
 	model.DefaultRepeatArrayLength = 7000
 	model.DefaultPriceRatioArrayLength = 10000
@@ -130,13 +138,21 @@ func (model *PairTradingModel) UpdateParameters() {
 		model.LongExpensiveStockShortCheapStockPriceRatioRecord,
 		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
 	)
-	model.LongExpensiveShortCheapRepeatNumThreshold = util.MaxInt(
-		repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray),
-		repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/2:]),
+	model.LongExpensiveShortCheapRepeatNumThreshold = util.GetMaxInt(
+		[]int{
+			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray),
+			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/2:]),
+			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/3:]),
+			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/4:]),
+		},
 	)
-	model.ShortExpensiveLongCheapRepeatNumThreshold = util.MaxInt(
-		repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray),
-		repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/2:]),
+	model.ShortExpensiveLongCheapRepeatNumThreshold = util.GetMaxInt(
+		[]int{
+			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray),
+			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/2:]),
+			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/3:]),
+			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/4:]),
+		},
 	)
 }
 
