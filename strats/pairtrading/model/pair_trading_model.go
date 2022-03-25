@@ -110,17 +110,13 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 	model.LongExpensiveShortCheapRepeatNumThreshold = util.GetMaxInt(
 		[]int{
 			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray),
-			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/2:]),
 			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/3:]),
-			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/4:]),
 		},
 	)
 	model.ShortExpensiveLongCheapRepeatNumThreshold = util.GetMaxInt(
 		[]int{
 			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray),
 			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/2:]),
-			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/3:]),
-			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/4:]),
 		},
 	)
 	model.DefaultRepeatArrayLength = 7000
@@ -143,7 +139,6 @@ func (model *PairTradingModel) UpdateParameters() {
 			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray),
 			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/2:]),
 			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/3:]),
-			repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/4:]),
 		},
 	)
 	model.ShortExpensiveLongCheapRepeatNumThreshold = util.GetMaxInt(
@@ -151,7 +146,6 @@ func (model *PairTradingModel) UpdateParameters() {
 			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray),
 			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/2:]),
 			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/3:]),
-			repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/4:]),
 		},
 	)
 }
