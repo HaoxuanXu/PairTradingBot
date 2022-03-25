@@ -115,7 +115,7 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 		repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray),
 		repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/2:]),
 	)
-	model.DefaultRepeatArrayLength = 6000
+	model.DefaultRepeatArrayLength = 7000
 	model.DefaultPriceRatioArrayLength = 10000
 	model.EntryNetValue = 0.0
 	model.ExitNetValue = 0.0
