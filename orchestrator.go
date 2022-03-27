@@ -22,7 +22,8 @@ func main() {
 	s.Every(1).Days().At("9:30").Do(func() {
 		JobRunner(*assetType, *accountType, *serverType, *entryPercent, *startTime)
 	})
-	fmt.Printf("Planning to run the %s job for %.1f%% of the portfolio on the %s account...\n", *assetType, *entryPercent*100, *accountType)
+	fmt.Printf("Planning to run the %s job for %.1f%% of the portfolio on the %s %s account...\n",
+		*assetType, *entryPercent*100, *accountType, *serverType)
 	fmt.Printf("Wait for the actual trading to begin at %s minutes after the market opens\n", *startTime)
 	if broker.GetBroker(*accountType, *serverType, *entryPercent).Clock.IsOpen {
 		JobRunner(*assetType, *accountType, *serverType, *entryPercent, *startTime)
