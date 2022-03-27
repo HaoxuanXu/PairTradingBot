@@ -28,20 +28,20 @@ var (
 )
 
 // You can treat this as a constructor of the broker class
-func GetBroker(accountType string, entryPercent float64) *AlpacaBroker {
+func GetBroker(accountType, serverType string, entryPercent float64) *AlpacaBroker {
 
 	lock.Lock()
 	defer lock.Unlock()
 
 	if generatedBroker == nil {
 		generatedBroker = &AlpacaBroker{}
-		generatedBroker.initialize(accountType, entryPercent)
+		generatedBroker.initialize(accountType, serverType, entryPercent)
 	}
 	return generatedBroker
 }
 
-func (broker *AlpacaBroker) initialize(accountType string, entryPercent float64) {
-	cred := configs.GetCredentials(accountType)
+func (broker *AlpacaBroker) initialize(accountType, serverType string, entryPercent float64) {
+	cred := configs.GetCredentials(accountType, serverType)
 	broker.client = alpaca.NewClient(
 		alpaca.ClientOpts{
 			ApiKey:    cred.API_KEY,

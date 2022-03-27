@@ -16,7 +16,7 @@ import (
 	"github.com/HaoxuanXu/TradingBot/tools/util"
 )
 
-func PairTradingJob(assetType, accountType string, entryPercent float64, startTime string) {
+func PairTradingJob(assetType, accountType, serverType string, entryPercent float64, startTime string) {
 	// This job will not run if we are on weekends, so we will simply return if it is the weekends
 	today := time.Now().Weekday().String()
 	if today == "Saturday" || today == "Sunday" {
@@ -24,8 +24,8 @@ func PairTradingJob(assetType, accountType string, entryPercent float64, startTi
 		return
 	}
 	// initialize the data model struct and the broker struct
-	tradingBroker := broker.GetBroker(accountType, entryPercent)
-	dataEngine := dataengine.GetDataEngine(accountType)
+	tradingBroker := broker.GetBroker(accountType, serverType, entryPercent)
+	dataEngine := dataengine.GetDataEngine(accountType, serverType)
 	tradingAssetParamConfig := db.MapRecordPath(assetType)
 	dataModel := model.GetModel(
 		assetType,

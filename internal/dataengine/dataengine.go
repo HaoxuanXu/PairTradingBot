@@ -11,14 +11,14 @@ type MarketDataEngine struct {
 	client marketdata.Client
 }
 
-func GetDataEngine(accountType string) *MarketDataEngine {
+func GetDataEngine(accountType, serverType string) *MarketDataEngine {
 	engine := &MarketDataEngine{}
-	engine.initialize(accountType)
+	engine.initialize(accountType, serverType)
 	return engine
 }
 
-func (engine *MarketDataEngine) initialize(accountType string) {
-	cred := configs.GetCredentials(accountType)
+func (engine *MarketDataEngine) initialize(accountType, serverType string) {
+	cred := configs.GetCredentials(accountType, serverType)
 	engine.client = marketdata.NewClient(
 		marketdata.ClientOpts{
 			ApiKey:    cred.API_KEY,
