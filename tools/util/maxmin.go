@@ -22,9 +22,20 @@ func GetMaxFloat(array []float64) float64 {
 	return maxVal
 }
 
-func MaxInt(x, y int) int {
-	if x > y {
-		return x
+func GetAvgInt(array []int) int {
+	sum := int(0)
+	for i := 0; i < len(array); i++ {
+		sum += array[i]
 	}
-	return y
+
+	return int(sum / len(array))
+}
+
+func GetAvgFloat(array []float64) float64 {
+	sum := float64(0.0)
+	for i := 0; i < len(array); i++ {
+		sum += array[i]
+	}
+
+	return float64(sum / float64(len(array)))
 }
