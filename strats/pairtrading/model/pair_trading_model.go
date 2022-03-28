@@ -120,17 +120,9 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 }
 
 func (model *PairTradingModel) UpdateParameters() {
-	model.PriceRatioThreshold = util.GetAvgFloat(
-		[]float64{
-			updater.UpdatePriceRatioThreshold(
-				model.LongExpensiveStockShortCheapStockPriceRatioRecord,
-				model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
-			),
-			updater.UpdatePriceRatioThreshold(
-				model.LongExpensiveStockShortCheapStockPriceRatioRecord[len(model.LongExpensiveStockShortCheapStockPriceRatioRecord)/2:],
-				model.ShortExpensiveStockLongCheapStockPriceRatioRecord[len(model.ShortExpensiveStockLongCheapStockPriceRatioRecord)/2:],
-			),
-		},
+	model.PriceRatioThreshold = updater.UpdatePriceRatioThreshold(
+		model.LongExpensiveStockShortCheapStockPriceRatioRecord,
+		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
 	)
 	model.LongExpensiveShortCheapRepeatNumThreshold = util.GetAvgInt(
 		[]int{
