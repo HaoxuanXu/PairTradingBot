@@ -109,7 +109,7 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 	)
 	model.LongExpensiveShortCheapRepeatNumThreshold = 0
 	model.ShortExpensiveLongCheapRepeatNumThreshold = 0
-	model.DefaultRepeatArrayLength = 5000
+	model.DefaultRepeatArrayLength = 10000
 	model.DefaultPriceRatioArrayLength = 10000
 	model.EntryNetValue = 0.0
 	model.ExitNetValue = 0.0
