@@ -70,7 +70,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 			)
 			// halt trading for a minute so the account is still treated as retail account
 			util.TimedFuncRun(
-				50*time.Second,
+				time.Minute,
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
@@ -84,7 +84,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				tradingAssetParamConfig,
 			)
 			util.TimedFuncRun(
-				50*time.Second,
+				time.Minute,
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
@@ -98,7 +98,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				tradingAssetParamConfig,
 			)
 			util.TimedFuncRun(
-				50*time.Second,
+				time.Minute,
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
@@ -112,7 +112,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				tradingAssetParamConfig,
 			)
 			util.TimedFuncRun(
-				50*time.Second,
+				time.Minute,
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
