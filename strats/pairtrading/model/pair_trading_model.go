@@ -43,8 +43,6 @@ type PairTradingModel struct {
 	ShortExpensiveLongCheapRepeatArray                    []int
 	LongExpensiveShortCheapRepeatNumThreshold             int
 	ShortExpensiveLongCheapRepeatNumThreshold             int
-	FastLongExpensiveShortCheapRepeatNumThreshold         int
-	FastShortExpensiveLongCheapRepeatNumThreshold         int
 	DefaultRepeatArrayLength                              int
 	DefaultPriceRatioArrayLength                          int
 	ExpensiveStockOrderChannel                            chan *alpaca.Order
@@ -110,8 +108,6 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 	)
 	model.LongExpensiveShortCheapRepeatNumThreshold = 0
 	model.ShortExpensiveLongCheapRepeatNumThreshold = 0
-	model.FastLongExpensiveShortCheapRepeatNumThreshold = 0
-	model.FastShortExpensiveLongCheapRepeatNumThreshold = 0
 	model.DefaultRepeatArrayLength = 5000
 	model.DefaultPriceRatioArrayLength = 5000
 	model.EntryNetValue = 0.0
@@ -129,14 +125,6 @@ func (model *PairTradingModel) UpdateParameters() {
 	)
 	model.LongExpensiveShortCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray)
 	model.ShortExpensiveLongCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray)
-
-	// Calculate fast threshold
-	model.FastLongExpensiveShortCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(
-		model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/2:],
-	)
-	model.FastShortExpensiveLongCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(
-		model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/2:],
-	)
 }
 
 func (model *PairTradingModel) ClearRepeatNumber() {
