@@ -132,10 +132,10 @@ func (model *PairTradingModel) UpdateParameters() {
 
 	// Calculate fast threshold
 	model.FastLongExpensiveShortCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(
-		model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)*4/5:],
+		model.LongExpensiveShortCheapRepeatArray[len(model.LongExpensiveShortCheapRepeatArray)/2:],
 	)
 	model.FastShortExpensiveLongCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(
-		model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)*4/5:],
+		model.ShortExpensiveLongCheapRepeatArray[len(model.ShortExpensiveLongCheapRepeatArray)/2:],
 	)
 }
 
