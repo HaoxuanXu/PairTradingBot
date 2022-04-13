@@ -131,3 +131,10 @@ func (model *PairTradingModel) ClearRepeatNumber() {
 	model.LongExpensiveStockShortCheapStockRepeatNumber = 1
 	model.ShortExpensiveStockLongCheapStockRepeatNumber = 1
 }
+
+func (model *PairTradingModel) ClearDataArrays() {
+	model.LongExpensiveShortCheapRepeatArray = []int{}
+	model.ShortExpensiveLongCheapRepeatArray = []int{}
+	model.LongExpensiveStockShortCheapStockPriceRatioRecord = []float64{}
+	model.ShortExpensiveStockLongCheapStockPriceRatioRecord = []float64{}
+}
