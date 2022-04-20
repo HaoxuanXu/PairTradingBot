@@ -54,7 +54,6 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 		dataModel.ShortExpensiveLongCheapRepeatNumThreshold,
 		dataModel.PriceRatioThreshold,
 	)
-	log.Printf("Size of repeat num array -- %d\n", len(dataModel.LongExpensiveShortCheapRepeatArray))
 	tradingBroker.UpdateLastTradeTime()
 	baseTime := time.Now()
 	// Check if we currently have trades pending
