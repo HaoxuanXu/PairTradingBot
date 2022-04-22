@@ -93,23 +93,25 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 	if !broker.HasPosition {
 		if model.IsLongExpensiveStockShortCheapStock {
 			model.EntryNetValue = math.Abs(model.CheapStockFilledPrice*model.CheapStockFilledQuantity) - math.Abs(model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity)
-			log.Printf("long %s: %f shares; short %s: %f shares -- (current long repeat num: %d, previous long repeat num: %d)\n",
+			log.Printf("long %s: %f shares; short %s: %f shares -- (current long repeat num: %d, previous long repeat num: %d, timestamp diffs: %f)\n",
 				model.ExpensiveStockSymbol,
 				model.ExpensiveStockEntryVolume,
 				model.CheapStockSymbol,
 				model.CheapStockEntryVolume,
 				model.LongExpensiveStockShortCheapStockRepeatNumber,
 				model.LongExpensiveStockShortCheapStockPreviousRepeatNumber,
+				model.QuoteTimestampDifferenceMilliseconds,
 			)
 		} else {
 			model.EntryNetValue = math.Abs(model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity) - math.Abs(model.CheapStockFilledPrice*model.CheapStockFilledQuantity)
-			log.Printf("short %s: %f shares; long %s: %f shares -- (current short repeat num: %d, previous short repeat num: %d)\n",
+			log.Printf("short %s: %f shares; long %s: %f shares -- (current short repeat num: %d, previous short repeat num: %d, timestamp diffs: %f)\n",
 				model.ExpensiveStockSymbol,
 				model.ExpensiveStockEntryVolume,
 				model.CheapStockSymbol,
 				model.CheapStockEntryVolume,
 				model.ShortExpensiveStockLongCheapStockRepeatNumber,
 				model.ShortExpensiveStockLongCheapStockPreviousRepeatNumber,
+				model.QuoteTimestampDifferenceMilliseconds,
 			)
 		}
 		broker.HasPosition = true
@@ -125,13 +127,12 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 		if actualProfit < 0 {
 			model.LoserNums++
 		}
-		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f -- (cur long repeat: %d, cur short repeat: %d) -- (prev long repeat: %d, prev short repeat: %d)\n",
+		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f -- (cur long repeat: %d, cur short repeat: %d) timestamp diffs: %f \n",
 			presumedProfit,
 			actualProfit,
 			model.LongExpensiveStockShortCheapStockRepeatNumber,
 			model.ShortExpensiveStockLongCheapStockRepeatNumber,
-			model.LongExpensiveStockShortCheapStockPreviousRepeatNumber,
-			model.ShortExpensiveStockLongCheapStockPreviousRepeatNumber,
+			model.QuoteTimestampDifferenceMilliseconds,
 		)
 		broker.HasPosition = false
 		broker.TransactionNums++
@@ -143,6 +144,7 @@ func CheckExistingPositions(model *model.PairTradingModel, broker *broker.Alpaca
 	cheapStockPosition := broker.GetPosition(model.CheapStockSymbol)
 
 	if expensiveStockPosition != nil && cheapStockPosition != nil {
+		broker.HasPosition = true
 		if expensiveStockPosition.Side == "long" {
 			model.IsLongExpensiveStockShortCheapStock = true
 			model.IsShortExpensiveStockLongCheapStock = false

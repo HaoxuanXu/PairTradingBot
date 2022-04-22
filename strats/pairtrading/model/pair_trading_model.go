@@ -47,6 +47,7 @@ type PairTradingModel struct {
 	DefaultPriceRatioArrayLength                          int
 	ExpensiveStockOrderChannel                            chan *alpaca.Order
 	CheapStockOrderChannel                                chan *alpaca.Order
+	QuoteTimestampDifferenceMilliseconds                  float64
 }
 
 func (model *PairTradingModel) getStockSymbols(assetType string) (string, string) {
@@ -116,6 +117,7 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 	model.ExpensiveStockOrderChannel = make(chan *alpaca.Order)
 	model.CheapStockOrderChannel = make(chan *alpaca.Order)
 	model.MinProfitThreshold = 0.0
+	model.QuoteTimestampDifferenceMilliseconds = 0.0
 }
 
 func (model *PairTradingModel) UpdateParameters() {

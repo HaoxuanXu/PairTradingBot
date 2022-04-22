@@ -2,6 +2,7 @@ package quotesprocessor
 
 import (
 	"log"
+	"math"
 	"strconv"
 	"time"
 
@@ -25,6 +26,7 @@ func GetAndProcessPairQuotes(model *model.PairTradingModel, dataEngine *dataengi
 	pairQuotes := dataEngine.GetMultiQuotes(
 		[]string{model.ExpensiveStockSymbol, model.CheapStockSymbol},
 	)
+	model.QuoteTimestampDifferenceMilliseconds = math.Abs(float64(pairQuotes[model.CheapStockSymbol].Timestamp.UnixMilli()) - float64(pairQuotes[model.ExpensiveStockSymbol].Timestamp.UnixMilli()))
 
 	model.CheapStockLongQuotePrice = pairQuotes[model.CheapStockSymbol].AskPrice
 	model.CheapStockShortQuotePrice = pairQuotes[model.CheapStockSymbol].BidPrice
@@ -58,8 +60,6 @@ func WarmUpData(timeDuration, assetType string, model *model.PairTradingModel, d
 		time.Sleep(10 * time.Millisecond)
 	}
 	log.Printf("Size of repeat num array -- %d\n", len(model.LongExpensiveShortCheapRepeatArray))
-	model.DefaultRepeatArrayLength = len(model.LongExpensiveShortCheapRepeatArray)
-	model.DefaultPriceRatioArrayLength = len(model.LongExpensiveStockShortCheapStockPriceRatioRecord)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
 	model.UpdateParameters()
 	model.ClearRepeatNumber()
