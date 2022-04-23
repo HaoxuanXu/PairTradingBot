@@ -154,6 +154,7 @@ func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.Alpaca
 		transaction.SlideRepeatAndPriceRatioArrays(model)
 		WriteRecord(model, assetParams)
 		*baseTime = time.Now()
+		model.ClearRepeatNumber()
 	}
 	if model.IsMinProfitAdjusted {
 		return
