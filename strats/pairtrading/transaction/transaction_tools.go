@@ -126,7 +126,7 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 
 		if actualProfit < 0 {
 			model.LoserNums++
-			broker.SuccessInARow = 0
+			broker.LimitFunnel()
 		} else {
 			broker.SuccessInARow++
 		}

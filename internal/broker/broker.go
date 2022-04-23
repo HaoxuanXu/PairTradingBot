@@ -12,6 +12,12 @@ import (
 
 var lock = &sync.Mutex{}
 
+type PositionSizeMap struct {
+	Small  int
+	Medium int
+	Large  int
+}
+
 type AlpacaBroker struct {
 	client              alpaca.Client
 	account             *alpaca.Account
@@ -22,11 +28,20 @@ type AlpacaBroker struct {
 	HasPosition         bool
 	LastTradeTime       time.Time
 	SuccessInARow       int
+	PositionSizeMap     *PositionSizeMap
 }
 
 var (
 	generatedBroker *AlpacaBroker
 )
+
+func (broker *AlpacaBroker) GetMap() *PositionSizeMap {
+	return &PositionSizeMap{
+		Small:  4,
+		Medium: 6,
+		Large:  10,
+	}
+}
 
 // You can treat this as a constructor of the broker class
 func GetBroker(accountType, serverType string, entryPercent float64) *AlpacaBroker {
@@ -59,6 +74,7 @@ func (broker *AlpacaBroker) initialize(accountType, serverType string, entryPerc
 	broker.HasPosition = false
 	broker.LastTradeTime = time.Now()
 	broker.SuccessInARow = 0
+	broker.PositionSizeMap = broker.GetMap()
 }
 
 func (broker *AlpacaBroker) refreshOrderStatus(orderID string) (string, *alpaca.Order) {
@@ -95,14 +111,24 @@ func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) (*alpaca.Order, bo
 
 func (broker *AlpacaBroker) SizeFunnel(entryValue float64) float64 {
 	switch {
-	case broker.SuccessInARow < 4:
+	case broker.SuccessInARow < broker.PositionSizeMap.Small:
 		return entryValue / 8
-	case broker.SuccessInARow < 6:
+	case broker.SuccessInARow < broker.PositionSizeMap.Medium:
 		return entryValue / 4
-	case broker.SuccessInARow < 8:
+	case broker.SuccessInARow < broker.PositionSizeMap.Large:
 		return entryValue / 2
 	default:
 		return entryValue
+	}
+}
+
+func (broker *AlpacaBroker) LimitFunnel() {
+	if broker.SuccessInARow >= broker.PositionSizeMap.Large {
+		broker.SuccessInARow = broker.PositionSizeMap.Medium
+	} else if broker.SuccessInARow >= broker.PositionSizeMap.Medium {
+		broker.SuccessInARow = broker.PositionSizeMap.Small
+	} else {
+		broker.SuccessInARow = 0
 	}
 }
 
