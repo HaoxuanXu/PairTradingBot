@@ -95,9 +95,11 @@ func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) (*alpaca.Order, bo
 
 func (broker *AlpacaBroker) SizeFunnel(entryValue float64) float64 {
 	switch {
-	case broker.SuccessInARow < 5:
+	case broker.SuccessInARow < 4:
+		return entryValue / 8
+	case broker.SuccessInARow < 6:
 		return entryValue / 4
-	case broker.SuccessInARow < 10:
+	case broker.SuccessInARow < 8:
 		return entryValue / 2
 	default:
 		return entryValue
