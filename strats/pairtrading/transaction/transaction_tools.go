@@ -126,6 +126,9 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 
 		if actualProfit < 0 {
 			model.LoserNums++
+			broker.SuccessInARow = 0
+		} else {
+			broker.SuccessInARow++
 		}
 		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f -- (cur long repeat: %d, cur short repeat: %d) timestamp diffs: %f \n",
 			presumedProfit,

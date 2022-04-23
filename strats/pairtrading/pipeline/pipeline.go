@@ -11,7 +11,7 @@ import (
 )
 
 func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, assetParams *db.AssetParamConfig) {
-	entryValue := broker.MaxPortfolioPercent * broker.PortfolioValue
+	entryValue := broker.SizeFunnel(broker.MaxPortfolioPercent * broker.PortfolioValue)
 	// we try to use round lot here to imporve execution
 	model.ExpensiveStockEntryVolume = float64(int((entryValue/2.0)/(model.ExpensiveStockShortQuotePrice*100)) * 100)
 	if model.ExpensiveStockEntryVolume == 0 {
@@ -49,7 +49,7 @@ func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.
 }
 
 func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, assetParams *db.AssetParamConfig) {
-	entryValue := broker.MaxPortfolioPercent * broker.PortfolioValue
+	entryValue := broker.SizeFunnel(broker.MaxPortfolioPercent * broker.PortfolioValue)
 	model.CheapStockEntryVolume = float64(int((entryValue/2.0)/(model.CheapStockShortQuotePrice*100)) * 100)
 	if model.CheapStockEntryVolume == 0 {
 		model.CheapStockEntryVolume = float64(int((entryValue / 2.0) / (model.CheapStockShortQuotePrice)))

@@ -21,6 +21,7 @@ type AlpacaBroker struct {
 	MaxPortfolioPercent float64
 	HasPosition         bool
 	LastTradeTime       time.Time
+	SuccessInARow       int
 }
 
 var (
@@ -57,6 +58,7 @@ func (broker *AlpacaBroker) initialize(accountType, serverType string, entryPerc
 	broker.MaxPortfolioPercent = entryPercent
 	broker.HasPosition = false
 	broker.LastTradeTime = time.Now()
+	broker.SuccessInARow = 0
 }
 
 func (broker *AlpacaBroker) refreshOrderStatus(orderID string) (string, *alpaca.Order) {
@@ -89,6 +91,17 @@ func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) (*alpaca.Order, bo
 		}
 	}
 	return updatedOrder, success
+}
+
+func (broker *AlpacaBroker) SizeFunnel(entryValue float64) float64 {
+	switch {
+	case broker.SuccessInARow < 5:
+		return entryValue / 4
+	case broker.SuccessInARow < 10:
+		return entryValue / 2
+	default:
+		return entryValue
+	}
 }
 
 func (broker *AlpacaBroker) SubmitOrderAsync(qty float64, symbol, side, orderType, timeInForce string, channel chan *alpaca.Order) {
