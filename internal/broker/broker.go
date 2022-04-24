@@ -2,6 +2,7 @@ package broker
 
 import (
 	"log"
+	"math"
 	"sync"
 	"time"
 
@@ -112,7 +113,7 @@ func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) (*alpaca.Order, bo
 func (broker *AlpacaBroker) SizeFunnel(entryValue float64) float64 {
 	switch {
 	case broker.SuccessInARow < broker.PositionSizeMap.Small:
-		return entryValue / 8
+		return math.Min(25000, entryValue/8) // when the system starts, the first few runs cannot exceed $25000
 	case broker.SuccessInARow < broker.PositionSizeMap.Medium:
 		return entryValue / 4
 	case broker.SuccessInARow < broker.PositionSizeMap.Large:
