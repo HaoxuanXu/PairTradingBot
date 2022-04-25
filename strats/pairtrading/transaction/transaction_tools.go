@@ -42,7 +42,7 @@ func UpdateFieldsAfterTransaction(m *model.PairTradingModel, broker *broker.Alpa
 	m.CheapStockFilledQuantity = math.Abs(cheapStockOrder.FilledQty.InexactFloat64())
 	m.ExpensiveStockFilledPrice = math.Abs(expensiveStockOrder.FilledAvgPrice.InexactFloat64())
 	m.ExpensiveStockFilledQuantity = math.Abs(expensiveStockOrder.FilledQty.InexactFloat64())
-	m.MinProfitThreshold = m.CalculateMinProfitThreshold(1.0)
+	m.MinProfitThreshold = m.CalculateMinProfitThreshold(2.0)
 	m.ExpensiveStockEntryVolume = math.Abs(m.ExpensiveStockFilledQuantity)
 	m.CheapStockEntryVolume = math.Abs(m.CheapStockFilledQuantity)
 	broker.LastTradeTime = time.Now()
@@ -160,7 +160,7 @@ func CheckExistingPositions(model *model.PairTradingModel, broker *broker.Alpaca
 		model.CheapStockFilledQuantity = cheapStockPosition.Qty.Abs().InexactFloat64()
 		model.ExpensiveStockFilledPrice = expensiveStockPosition.EntryPrice.Abs().InexactFloat64()
 		model.ExpensiveStockFilledQuantity = expensiveStockPosition.Qty.Abs().InexactFloat64()
-		model.MinProfitThreshold = model.CalculateMinProfitThreshold(1.0)
+		model.MinProfitThreshold = model.CalculateMinProfitThreshold(2.0)
 		model.ExpensiveStockEntryVolume = math.Abs(model.ExpensiveStockFilledQuantity)
 		model.CheapStockEntryVolume = math.Abs(model.CheapStockFilledQuantity)
 
