@@ -128,7 +128,9 @@ func (broker *AlpacaBroker) SizeFunnel(entryValue float64) float64 {
 }
 
 func (broker *AlpacaBroker) LimitFunnel() {
-	if broker.SuccessInARow >= broker.PositionSizeMap.Large {
+	if broker.SuccessInARow >= broker.PositionSizeMap.Full {
+		broker.SuccessInARow = broker.PositionSizeMap.Large
+	} else if broker.SuccessInARow >= broker.PositionSizeMap.Large {
 		broker.SuccessInARow = broker.PositionSizeMap.Medium
 	} else if broker.SuccessInARow >= broker.PositionSizeMap.Medium {
 		broker.SuccessInARow = broker.PositionSizeMap.Small
