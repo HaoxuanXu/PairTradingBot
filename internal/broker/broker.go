@@ -17,6 +17,7 @@ type PositionSizeMap struct {
 	Small  int
 	Medium int
 	Large  int
+	Full   int
 }
 
 type AlpacaBroker struct {
@@ -41,6 +42,7 @@ func (broker *AlpacaBroker) GetMap() *PositionSizeMap {
 		Small:  3,
 		Medium: 6,
 		Large:  9,
+		Full:   12,
 	}
 }
 
@@ -113,10 +115,12 @@ func (broker *AlpacaBroker) MonitorOrder(order *alpaca.Order) (*alpaca.Order, bo
 func (broker *AlpacaBroker) SizeFunnel(entryValue float64) float64 {
 	switch {
 	case broker.SuccessInARow < broker.PositionSizeMap.Small:
-		return math.Min(25000, entryValue/8) // when the system starts, the first few runs cannot exceed $25000
+		return math.Min(25000, entryValue/16) // when the system starts, the first few runs cannot exceed $25000
 	case broker.SuccessInARow < broker.PositionSizeMap.Medium:
-		return entryValue / 4
+		return entryValue / 8
 	case broker.SuccessInARow < broker.PositionSizeMap.Large:
+		return entryValue / 4
+	case broker.SuccessInARow < broker.PositionSizeMap.Full:
 		return entryValue / 2
 	default:
 		return entryValue
