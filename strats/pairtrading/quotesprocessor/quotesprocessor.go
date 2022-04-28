@@ -59,9 +59,7 @@ func WarmUpData(timeDuration, assetType string, model *model.PairTradingModel, d
 		GetAndProcessPairQuotes(model, dataEngine)
 		time.Sleep(10 * time.Millisecond)
 	}
-	model.DefaultRepeatArrayLength = len(model.LongExpensiveShortCheapRepeatArray)
-	model.DefaultPriceRatioArrayLength = len(model.LongExpensiveStockShortCheapStockPriceRatioRecord)
-	log.Printf("Size of repeat num array -- %d\n", len(model.LongExpensiveShortCheapRepeatArray))
+	log.Printf("Size of repeat num array -- %d\n", model.DefaultRepeatArrayLength)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
 	model.UpdateParameters()
 	model.ClearRepeatNumber()
