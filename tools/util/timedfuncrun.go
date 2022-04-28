@@ -4,10 +4,13 @@ import (
 	"time"
 )
 
-func TimedFuncRun(runDuration time.Duration, runFunc func(), interval time.Duration) {
+func TimedFuncRun(runDuration time.Duration, runFunc func(), interval int) {
 	beginTime := time.Now()
 	for time.Since(beginTime) <= runDuration {
 		runFunc()
-		time.Sleep(interval)
+		if interval > 0 {
+			time.Sleep(time.Duration(interval) * time.Millisecond)
+		}
+
 	}
 }

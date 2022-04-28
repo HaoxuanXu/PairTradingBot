@@ -74,7 +74,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
-				10*time.Millisecond,
+				0,
 			)
 			dataModel.ClearRepeatNumber()
 		} else if signalcatcher.GetEntrySignal(false, dataModel, tradingBroker) {
@@ -88,7 +88,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
-				10*time.Millisecond,
+				0,
 			)
 			dataModel.ClearRepeatNumber()
 		} else if dataModel.IsShortExpensiveStockLongCheapStock && signalcatcher.GetExitSignal(dataModel) {
@@ -102,7 +102,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
-				10*time.Millisecond,
+				0,
 			)
 			dataModel.ClearRepeatNumber()
 		} else if dataModel.IsLongExpensiveStockShortCheapStock && signalcatcher.GetExitSignal(dataModel) {
@@ -116,11 +116,11 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
-				10*time.Millisecond,
+				0,
 			)
 			dataModel.ClearRepeatNumber()
 		} else {
-			time.Sleep(10 * time.Millisecond)
+			continue
 		}
 	}
 	log.Println("Preparing to close the trading session ...")
@@ -144,7 +144,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 			)
 			break
 		} else {
-			time.Sleep(10 * time.Millisecond)
+			continue
 		}
 	}
 

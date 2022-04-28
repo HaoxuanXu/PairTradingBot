@@ -39,10 +39,10 @@ var (
 
 func (broker *AlpacaBroker) GetMap() *PositionSizeMap {
 	return &PositionSizeMap{
-		Small:  2,
-		Medium: 4,
-		Large:  6,
-		Full:   8,
+		Small:  3,
+		Medium: 6,
+		Large:  9,
+		Full:   12,
 	}
 }
 
