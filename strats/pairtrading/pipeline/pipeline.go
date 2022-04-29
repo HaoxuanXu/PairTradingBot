@@ -158,7 +158,7 @@ func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.Alpaca
 	}
 	if counter.Incrementer == 15 {
 		WriteRecord(model, assetParams)
-		counter.Incrementer = 0
+		counter.RefreshIncrementer()
 	}
 	if model.IsMinProfitAdjusted {
 		return

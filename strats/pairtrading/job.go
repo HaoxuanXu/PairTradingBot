@@ -69,6 +69,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				tradingBroker,
 				tradingAssetParamConfig,
 			)
+			counter.RefreshIncrementer()
 			// halt trading for a minute so the account is still treated as retail account
 			util.TimedFuncRun(
 				time.Minute,
@@ -84,6 +85,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				tradingBroker,
 				tradingAssetParamConfig,
 			)
+			counter.RefreshIncrementer()
 			util.TimedFuncRun(
 				time.Minute,
 				func() {
@@ -98,6 +100,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				tradingBroker,
 				tradingAssetParamConfig,
 			)
+			counter.RefreshIncrementer()
 			util.TimedFuncRun(
 				time.Minute,
 				func() {
@@ -112,6 +115,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				tradingBroker,
 				tradingAssetParamConfig,
 			)
+			counter.RefreshIncrementer()
 			util.TimedFuncRun(
 				time.Minute,
 				func() {

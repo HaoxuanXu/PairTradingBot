@@ -39,6 +39,7 @@ const (
 )
 
 type AssetParamConfig struct {
+	AssetType                             string
 	ShortExensiveLongCheapPriceRatioPath  string
 	LongExpensiveShortCheapPriceRatioPath string
 	ShortExpensiveLongCheapRepeatNumPath  string
@@ -49,26 +50,31 @@ func getAssetParamConfig(strat string) *AssetParamConfig {
 	assetParamConfig := &AssetParamConfig{}
 
 	if strat == "gold" {
+		assetParamConfig.AssetType = "gold"
 		assetParamConfig.ShortExensiveLongCheapPriceRatioPath = shortGLDLongIAU
 		assetParamConfig.LongExpensiveShortCheapPriceRatioPath = longGLDShortIAU
 		assetParamConfig.ShortExpensiveLongCheapRepeatNumPath = shortGLDLongIAURepeatNums
 		assetParamConfig.LongExpensiveShortCheapRepeatNumPath = longGLDShortIAURepeatNums
 	} else if strat == "bond" {
+		assetParamConfig.AssetType = "bond"
 		assetParamConfig.ShortExensiveLongCheapPriceRatioPath = shortAGGLongBND
 		assetParamConfig.LongExpensiveShortCheapPriceRatioPath = longAGGShortBND
 		assetParamConfig.ShortExpensiveLongCheapRepeatNumPath = shortAGGLongBNDRepeatNums
 		assetParamConfig.LongExpensiveShortCheapRepeatNumPath = longAGGShortBNDRepeatNums
 	} else if strat == "spvalue" {
+		assetParamConfig.AssetType = "spvalue"
 		assetParamConfig.ShortExensiveLongCheapPriceRatioPath = shortMDYLongIJH
 		assetParamConfig.LongExpensiveShortCheapPriceRatioPath = longMDYShortIJH
 		assetParamConfig.ShortExpensiveLongCheapRepeatNumPath = shortMDYLongIJHRepeatNums
 		assetParamConfig.LongExpensiveShortCheapRepeatNumPath = longMDYShortIJHRepeatNums
 	} else if strat == "utilities" {
+		assetParamConfig.AssetType = "utilities"
 		assetParamConfig.ShortExensiveLongCheapPriceRatioPath = shortVPULongXLU
 		assetParamConfig.LongExpensiveShortCheapPriceRatioPath = longVPUShortXLU
 		assetParamConfig.ShortExpensiveLongCheapRepeatNumPath = shortVPULongXLURepeatNums
 		assetParamConfig.LongExpensiveShortCheapRepeatNumPath = longVPUShortXLURepeatNums
 	} else if strat == "russell2000" {
+		assetParamConfig.AssetType = "russell2000"
 		assetParamConfig.ShortExensiveLongCheapPriceRatioPath = shortIWMLongVTWO
 		assetParamConfig.LongExpensiveShortCheapPriceRatioPath = longIWMShortVTWO
 		assetParamConfig.ShortExpensiveLongCheapRepeatNumPath = shortIWMLongVTWORepeatNums

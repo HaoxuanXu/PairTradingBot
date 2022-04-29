@@ -25,3 +25,7 @@ func GetCounter() *Counter {
 	}
 	return counter
 }
+
+func (counter *Counter) RefreshIncrementer() {
+	counter.Incrementer = 0
+}
