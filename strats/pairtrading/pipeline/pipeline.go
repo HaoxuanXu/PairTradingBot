@@ -8,6 +8,7 @@ import (
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/model"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/transaction"
 	"github.com/HaoxuanXu/TradingBot/tools/readwrite"
+	"github.com/HaoxuanXu/TradingBot/tools/util"
 )
 
 func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, assetParams *db.AssetParamConfig) {
@@ -149,12 +150,15 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 	WriteRecord(model, assetParams)
 }
 
-func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.AlpacaBroker, baseTime *time.Time, wrappingUp bool, assetParams *db.AssetParamConfig) {
-	if time.Since(*baseTime) > time.Minute {
+func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.AlpacaBroker, counter *util.Counter, wrappingUp bool, assetParams *db.AssetParamConfig) {
+	if time.Since(counter.BaseTime) > time.Minute {
 		transaction.SlideRepeatAndPriceRatioArrays(model)
+		counter.BaseTime = time.Now()
+		counter.Incrementer++
+	}
+	if counter.Incrementer == 15 {
 		WriteRecord(model, assetParams)
-		*baseTime = time.Now()
-		model.ClearRepeatNumber()
+		counter.Incrementer = 0
 	}
 	if model.IsMinProfitAdjusted {
 		return

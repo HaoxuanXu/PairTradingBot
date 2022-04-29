@@ -55,12 +55,13 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 		dataModel.PriceRatioThreshold,
 	)
 	tradingBroker.UpdateLastTradeTime()
-	baseTime := time.Now()
+
+	counter := util.GetCounter()
 	// Check if we currently have trades pending
 	transaction.CheckExistingPositions(dataModel, tradingBroker)
 	// Start the main trading loop
 	for time.Until(tradingBroker.Clock.NextClose) > 10*time.Minute {
-		pipeline.UpdateSignalThresholds(dataModel, tradingBroker, &baseTime, false, tradingAssetParamConfig)
+		pipeline.UpdateSignalThresholds(dataModel, tradingBroker, counter, false, tradingAssetParamConfig)
 		quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 		if signalcatcher.GetEntrySignal(true, dataModel, tradingBroker) {
 			pipeline.EntryShortExpensiveLongCheap(
@@ -74,7 +75,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
-				0,
+				10,
 			)
 			dataModel.ClearRepeatNumber()
 		} else if signalcatcher.GetEntrySignal(false, dataModel, tradingBroker) {
@@ -88,7 +89,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
-				0,
+				10,
 			)
 			dataModel.ClearRepeatNumber()
 		} else if dataModel.IsShortExpensiveStockLongCheapStock && signalcatcher.GetExitSignal(dataModel) {
@@ -102,7 +103,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
-				0,
+				10,
 			)
 			dataModel.ClearRepeatNumber()
 		} else if dataModel.IsLongExpensiveStockShortCheapStock && signalcatcher.GetExitSignal(dataModel) {
@@ -116,16 +117,16 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				func() {
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
-				0,
+				10,
 			)
 			dataModel.ClearRepeatNumber()
 		} else {
-			continue
+			time.Sleep(10 * time.Millisecond)
 		}
 	}
 	log.Println("Preparing to close the trading session ...")
 	for time.Until(tradingBroker.Clock.NextClose) > time.Minute {
-		pipeline.UpdateSignalThresholds(dataModel, tradingBroker, &baseTime, true, tradingAssetParamConfig)
+		pipeline.UpdateSignalThresholds(dataModel, tradingBroker, counter, true, tradingAssetParamConfig)
 		quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 		if !tradingBroker.HasPosition {
 			break
@@ -144,7 +145,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 			)
 			break
 		} else {
-			continue
+			time.Sleep(10 * time.Millisecond)
 		}
 	}
 

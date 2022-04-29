@@ -48,7 +48,6 @@ func (broker *AlpacaBroker) GetMap() *PositionSizeMap {
 
 // You can treat this as a constructor of the broker class
 func GetBroker(accountType, serverType string, entryPercent float64) *AlpacaBroker {
-
 	lock.Lock()
 	defer lock.Unlock()
 

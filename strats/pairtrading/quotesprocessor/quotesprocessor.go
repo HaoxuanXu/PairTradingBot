@@ -57,6 +57,7 @@ func WarmUpData(timeDuration, assetType string, model *model.PairTradingModel, d
 	}
 	for time.Since(marketOpen) < time.Duration(timeDurationInt)*time.Minute {
 		GetAndProcessPairQuotes(model, dataEngine)
+		time.Sleep(10 * time.Millisecond)
 	}
 	log.Printf("Size of repeat num array -- %d\n", model.DefaultRepeatArrayLength)
 	transaction.SlideRepeatAndPriceRatioArrays(model)
