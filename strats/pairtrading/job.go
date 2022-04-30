@@ -27,13 +27,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 	tradingBroker := broker.GetBroker(accountType, serverType, entryPercent)
 	dataEngine := dataengine.GetDataEngine(accountType, serverType)
 	tradingAssetParamConfig := db.MapRecordPath(assetType)
-	dataModel := model.GetModel(
-		assetType,
-		tradingAssetParamConfig.ShortExensiveLongCheapPriceRatioPath,
-		tradingAssetParamConfig.LongExpensiveShortCheapPriceRatioPath,
-		tradingAssetParamConfig.LongExpensiveShortCheapRepeatNumPath,
-		tradingAssetParamConfig.ShortExpensiveLongCheapRepeatNumPath,
-	)
+	dataModel := model.GetModel(tradingAssetParamConfig)
 
 	// set up log file for today
 	logFile := logging.SetLogging(assetType)

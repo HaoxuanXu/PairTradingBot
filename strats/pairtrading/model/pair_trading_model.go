@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/HaoxuanXu/TradingBot/db"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/updater"
 	"github.com/HaoxuanXu/TradingBot/tools/readwrite"
 	"github.com/HaoxuanXu/TradingBot/tools/repeater"
@@ -65,9 +66,15 @@ func (model *PairTradingModel) getStockSymbols(assetType string) (string, string
 	return "", ""
 }
 
-func GetModel(assetType, shortLongPath, longShortPath, longExpensiveShortCheapRepeatNumPath, shortExpensiveLongCheapRepeatNumPath string) *PairTradingModel {
+func GetModel(assetParamConfig *db.AssetParamConfig) *PairTradingModel {
 	dataModel := &PairTradingModel{}
-	dataModel.initialize(assetType, shortLongPath, longShortPath, longExpensiveShortCheapRepeatNumPath, shortExpensiveLongCheapRepeatNumPath)
+	dataModel.initialize(
+		assetParamConfig.AssetType,
+		assetParamConfig.ShortExensiveLongCheapPriceRatioPath,
+		assetParamConfig.LongExpensiveShortCheapPriceRatioPath,
+		assetParamConfig.LongExpensiveShortCheapRepeatNumPath,
+		assetParamConfig.ShortExpensiveLongCheapRepeatNumPath,
+	)
 	return dataModel
 }
 
