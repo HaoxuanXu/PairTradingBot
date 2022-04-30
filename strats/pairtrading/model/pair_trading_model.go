@@ -8,6 +8,12 @@ import (
 	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
 )
 
+type profitThreshold struct {
+	Low     float64
+	High    float64
+	Applied float64
+}
+
 type PairTradingModel struct {
 	StrategyAssetType                                     string
 	ExpensiveStockSymbol                                  string
@@ -15,7 +21,7 @@ type PairTradingModel struct {
 	EntryNetValue                                         float64
 	ExitNetValue                                          float64
 	LoserNums                                             int
-	MinProfitThreshold                                    float64
+	MinProfitThreshold                                    *profitThreshold
 	PriceRatioThreshold                                   float64
 	CheapStockEntryVolume                                 float64
 	ExpensiveStockEntryVolume                             float64
@@ -123,7 +129,7 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 	model.LoserNums = 0
 	model.ExpensiveStockOrderChannel = make(chan *alpaca.Order)
 	model.CheapStockOrderChannel = make(chan *alpaca.Order)
-	model.MinProfitThreshold = 0.0
+	model.MinProfitThreshold = &profitThreshold{}
 	model.QuoteTimestampDifferenceMilliseconds = 0.0
 }
 
@@ -134,6 +140,12 @@ func (model *PairTradingModel) UpdateParameters() {
 	)
 	model.LongExpensiveShortCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray)
 	model.ShortExpensiveLongCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray)
+}
+
+func (model *PairTradingModel) UpdateProfitThreshold() {
+	model.MinProfitThreshold.Low = model.CalculateMinProfitThreshold(1.0)
+	model.MinProfitThreshold.High = model.CalculateMinProfitThreshold(2.0)
+	model.MinProfitThreshold.Applied = model.MinProfitThreshold.High
 }
 
 func (model *PairTradingModel) ClearRepeatNumber() {

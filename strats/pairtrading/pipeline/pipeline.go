@@ -156,7 +156,7 @@ func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.Alpaca
 		counter.BaseTime = time.Now()
 		counter.Incrementer++
 	}
-	if counter.Incrementer == 15 {
+	if counter.Incrementer == 5 {
 		WriteRecord(model, assetParams)
 		counter.RefreshIncrementer()
 	}
@@ -164,9 +164,11 @@ func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.Alpaca
 		return
 	}
 	if wrappingUp {
-		model.MinProfitThreshold = 0.0
-	} else if time.Since(broker.LastTradeTime) > 15*time.Minute {
-		model.MinProfitThreshold = 0.0
+		model.MinProfitThreshold.Applied = 0.0
+	} else if time.Since(broker.LastTradeTime) > 10*time.Minute {
+		model.MinProfitThreshold.Applied = model.MinProfitThreshold.Low
+	} else if time.Since(broker.LastTradeTime) > 20*time.Minute {
+		model.MinProfitThreshold.Applied = 0
 	}
 }
 

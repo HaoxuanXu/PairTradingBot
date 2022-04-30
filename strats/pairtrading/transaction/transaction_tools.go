@@ -42,7 +42,9 @@ func UpdateFieldsAfterTransaction(m *model.PairTradingModel, broker *broker.Alpa
 	m.CheapStockFilledQuantity = math.Abs(cheapStockOrder.FilledQty.InexactFloat64())
 	m.ExpensiveStockFilledPrice = math.Abs(expensiveStockOrder.FilledAvgPrice.InexactFloat64())
 	m.ExpensiveStockFilledQuantity = math.Abs(expensiveStockOrder.FilledQty.InexactFloat64())
-	m.MinProfitThreshold = m.CalculateMinProfitThreshold(2.0)
+
+	m.UpdateProfitThreshold()
+
 	m.ExpensiveStockEntryVolume = math.Abs(m.ExpensiveStockFilledQuantity)
 	m.CheapStockEntryVolume = math.Abs(m.CheapStockFilledQuantity)
 	broker.LastTradeTime = time.Now()
@@ -63,7 +65,7 @@ func VetPosition(model *model.PairTradingModel) {
 	overboughtPercent := (longPosition - shortPosition) / longPosition
 
 	if overboughtPercent > 0.00003 {
-		model.MinProfitThreshold = model.MinProfitThreshold - (longPosition - shortPosition)
+		model.MinProfitThreshold.Applied = model.MinProfitThreshold.Applied - (longPosition - shortPosition)
 		model.IsMinProfitAdjusted = true
 		log.Println("minimum profit adjusted")
 	}
@@ -160,7 +162,9 @@ func CheckExistingPositions(model *model.PairTradingModel, broker *broker.Alpaca
 		model.CheapStockFilledQuantity = cheapStockPosition.Qty.Abs().InexactFloat64()
 		model.ExpensiveStockFilledPrice = expensiveStockPosition.EntryPrice.Abs().InexactFloat64()
 		model.ExpensiveStockFilledQuantity = expensiveStockPosition.Qty.Abs().InexactFloat64()
-		model.MinProfitThreshold = model.CalculateMinProfitThreshold(2.0)
+
+		model.UpdateProfitThreshold()
+
 		model.ExpensiveStockEntryVolume = math.Abs(model.ExpensiveStockFilledQuantity)
 		model.CheapStockEntryVolume = math.Abs(model.CheapStockFilledQuantity)
 
