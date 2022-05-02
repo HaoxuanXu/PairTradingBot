@@ -1,7 +1,6 @@
 package transaction
 
 import (
-	"fmt"
 	"log"
 	"math"
 	"time"
@@ -72,7 +71,7 @@ func VetPosition(model *model.PairTradingModel) {
 		model.MinProfitThreshold.Applied = 0
 		model.IsMinProfitAdjusted = true
 	}
-	log.Println(fmt.Sprintf("minimum profit adjusted to %f\n", model.MinProfitThreshold.Applied))
+	log.Printf("minimum profit adjusted to %f\n", model.MinProfitThreshold.Applied)
 }
 
 func SlideRepeatAndPriceRatioArrays(model *model.PairTradingModel) {
