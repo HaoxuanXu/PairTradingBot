@@ -64,11 +64,8 @@ func VetPosition(model *model.PairTradingModel) {
 
 	overboughtPercent := (longPosition - shortPosition) / longPosition
 
-	if overboughtPercent > 0.00006 {
+	if overboughtPercent > 0.00003 {
 		model.MinProfitThreshold.Applied = model.MinProfitThreshold.Applied - (longPosition - shortPosition)
-		model.IsMinProfitAdjusted = true
-	} else if overboughtPercent > 0.00003 {
-		model.MinProfitThreshold.Applied = 0
 		model.IsMinProfitAdjusted = true
 	}
 	log.Printf("minimum profit adjusted to %f\n", model.MinProfitThreshold.Applied)
@@ -142,6 +139,7 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 			model.ShortExpensiveStockLongCheapStockRepeatNumber,
 			model.QuoteTimestampDifferenceMilliseconds,
 		)
+		log.Println()
 		broker.HasPosition = false
 		broker.TransactionNums++
 	}
