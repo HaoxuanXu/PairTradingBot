@@ -68,7 +68,7 @@ func VetPosition(model *model.PairTradingModel) {
 		model.MinProfitThreshold.Applied = model.MinProfitThreshold.Applied - (longPosition - shortPosition)
 		model.IsMinProfitAdjusted = true
 	}
-	log.Printf("minimum profit adjusted to %f\n", model.MinProfitThreshold.Applied)
+	log.Printf("minimum profit adjusted to $%f\n", model.MinProfitThreshold.Applied)
 }
 
 func SlideRepeatAndPriceRatioArrays(model *model.PairTradingModel) {
@@ -139,7 +139,6 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 			model.ShortExpensiveStockLongCheapStockRepeatNumber,
 			model.QuoteTimestampDifferenceMilliseconds,
 		)
-		log.Println()
 		broker.HasPosition = false
 		broker.TransactionNums++
 	}
