@@ -2,7 +2,6 @@ package quotesprocessor
 
 import (
 	"log"
-	"math"
 	"strconv"
 	"time"
 
@@ -28,7 +27,6 @@ func GetAndProcessPairQuotes(model *model.PairTradingModel, dataEngine *dataengi
 	pairQuotes := dataEngine.GetMultiQuotes(
 		[]string{model.ExpensiveStockSymbol, model.CheapStockSymbol},
 	)
-	model.QuoteTimestampDifferenceMilliseconds = math.Abs(float64(pairQuotes[model.CheapStockSymbol].Timestamp.UnixMilli()) - float64(pairQuotes[model.ExpensiveStockSymbol].Timestamp.UnixMilli()))
 
 	model.CheapStockLongQuotePrice = pairQuotes[model.CheapStockSymbol].AskPrice
 	model.CheapStockShortQuotePrice = pairQuotes[model.CheapStockSymbol].BidPrice

@@ -56,7 +56,6 @@ type PairTradingModel struct {
 	DefaultVolatilityRecordLength                         int
 	ExpensiveStockOrderChannel                            chan *alpaca.Order
 	CheapStockOrderChannel                                chan *alpaca.Order
-	QuoteTimestampDifferenceMilliseconds                  float64
 	PreviousQuotePrice                                    float64
 	QuotePriceStore                                       []float64
 	PriceVolatilityRecord                                 []float64
@@ -130,6 +129,7 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 		model.LongExpensiveStockShortCheapStockPriceRatioRecord,
 		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
 	)
+	model.PreviousQuotePrice = 0.0
 	model.LongExpensiveShortCheapRepeatNumThreshold = 0
 	model.ShortExpensiveLongCheapRepeatNumThreshold = 0
 	model.DefaultRepeatArrayLength = 5000
@@ -141,7 +141,6 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 	model.ExpensiveStockOrderChannel = make(chan *alpaca.Order)
 	model.CheapStockOrderChannel = make(chan *alpaca.Order)
 	model.MinProfitThreshold = &profitThreshold{}
-	model.QuoteTimestampDifferenceMilliseconds = 0.0
 }
 
 func (model *PairTradingModel) UpdateParameters() {

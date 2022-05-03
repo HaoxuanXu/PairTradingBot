@@ -13,7 +13,7 @@ import (
 )
 
 func UpdateFieldsFromQuotes(m *model.PairTradingModel) {
-	if m.PreviousQuotePrice == 0 {
+	if m.PreviousQuotePrice == 0.0 {
 		m.PreviousQuotePrice = m.ExpensiveStockLongQuotePrice
 	} else if m.PreviousQuotePrice != m.ExpensiveStockLongQuotePrice {
 		util.UpdateFloatSlice(&m.QuotePriceStore, m.PreviousQuotePrice)
