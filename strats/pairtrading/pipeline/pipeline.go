@@ -153,11 +153,11 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.AlpacaBroker, counter *util.Counter, wrappingUp bool, assetParams *db.AssetParamConfig) {
 	if time.Since(counter.BaseTime) > 10*time.Second {
 		model.UpdateCurrentVolatility()
-		transaction.SlideRepeatAndPriceRatioArrays(model)
 		counter.BaseTime = time.Now()
 		counter.Incrementer++
 	}
 	if counter.Incrementer == 6 {
+		transaction.SlideRepeatAndPriceRatioArrays(model)
 		WriteRecord(model, assetParams)
 		counter.RefreshIncrementer()
 	}
