@@ -152,7 +152,7 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 
 func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.AlpacaBroker, counter *util.Counter, wrappingUp bool, assetParams *db.AssetParamConfig) {
 	if time.Since(counter.BaseTime) > 20*time.Second {
-		model.CurrentPriceVolatility = util.GetMaxMinDistance(model.QuotePriceStore)
+		model.CalculateCurrentVolatility()
 		util.UpdateFloatSlice(&model.PriceVolatilityRecord, model.CurrentPriceVolatility)
 		transaction.SlideRepeatAndPriceRatioArrays(model)
 		counter.BaseTime = time.Now()

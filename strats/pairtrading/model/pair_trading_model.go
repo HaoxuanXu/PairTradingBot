@@ -5,6 +5,7 @@ import (
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/updater"
 	"github.com/HaoxuanXu/TradingBot/tools/readwrite"
 	"github.com/HaoxuanXu/TradingBot/tools/repeater"
+	"github.com/HaoxuanXu/TradingBot/tools/util"
 	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
 )
 
@@ -151,6 +152,13 @@ func (model *PairTradingModel) UpdateParameters() {
 	model.LongExpensiveShortCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray)
 	model.ShortExpensiveLongCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray)
 	model.AvgPriceVolatility = updater.UpdateAvgPriceVolatilityThreshold(model.PriceVolatilityRecord)
+}
+
+func (model *PairTradingModel) CalculateCurrentVolatility() {
+	if len(model.QuotePriceStore) > 0 {
+		model.CurrentPriceVolatility = util.GetMaxMinDistance(model.QuotePriceStore)
+		model.QuotePriceStore = []float64{}
+	}
 }
 
 func (model *PairTradingModel) UpdateProfitThreshold() {
