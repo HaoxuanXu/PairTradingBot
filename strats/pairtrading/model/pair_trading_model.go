@@ -154,9 +154,10 @@ func (model *PairTradingModel) UpdateParameters() {
 	model.AvgPriceVolatility = updater.UpdateAvgPriceVolatilityThreshold(model.PriceVolatilityRecord)
 }
 
-func (model *PairTradingModel) CalculateCurrentVolatility() {
+func (model *PairTradingModel) UpdateCurrentVolatility() {
 	if len(model.QuotePriceStore) > 0 {
 		model.CurrentPriceVolatility = util.GetMaxMinDistance(model.QuotePriceStore)
+		util.UpdateFloatSlice(&model.PriceVolatilityRecord, model.CurrentPriceVolatility)
 		model.QuotePriceStore = []float64{}
 	}
 }
