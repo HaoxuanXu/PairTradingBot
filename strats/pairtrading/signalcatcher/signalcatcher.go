@@ -26,15 +26,13 @@ func GetEntrySignal(shortExpensiveStock bool, model *model.PairTradingModel, bro
 
 func GetExitSignal(model *model.PairTradingModel) bool {
 	if model.IsShortExpensiveStockLongCheapStock &&
-		model.LongExpensiveStockShortCheapStockRepeatNumber >= model.LongExpensiveShortCheapRepeatNumThreshold &&
-		model.CurrentPriceVolatility <= model.AvgPriceVolatility {
+		model.LongExpensiveStockShortCheapStockRepeatNumber >= model.LongExpensiveShortCheapRepeatNumThreshold {
 		model.ExitNetValue = model.CheapStockShortQuotePrice*model.CheapStockEntryVolume - model.ExpensiveStockLongQuotePrice*model.ExpensiveStockEntryVolume
 		if model.ExitNetValue+model.EntryNetValue >= model.MinProfitThreshold.Applied {
 			return true
 		}
 	} else if model.IsLongExpensiveStockShortCheapStock &&
-		model.ShortExpensiveStockLongCheapStockRepeatNumber >= model.ShortExpensiveLongCheapRepeatNumThreshold &&
-		model.CurrentPriceVolatility <= model.AvgPriceVolatility {
+		model.ShortExpensiveStockLongCheapStockRepeatNumber >= model.ShortExpensiveLongCheapRepeatNumThreshold {
 		model.ExitNetValue = model.ExpensiveStockShortQuotePrice*model.ExpensiveStockEntryVolume - model.CheapStockLongQuotePrice*model.CheapStockEntryVolume
 		if model.ExitNetValue+model.EntryNetValue >= model.MinProfitThreshold.Applied {
 			return true
