@@ -7,10 +7,12 @@ import (
 	"time"
 
 	"github.com/HaoxuanXu/TradingBot/db"
+	"github.com/HaoxuanXu/TradingBot/internal/broker"
 	"github.com/HaoxuanXu/TradingBot/internal/dataengine"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/model"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/pipeline"
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/transaction"
+	"github.com/HaoxuanXu/TradingBot/tools/util"
 )
 
 func checkIfNotZeros(input []float64) bool {
@@ -45,17 +47,19 @@ func GetAndProcessPairQuotes(model *model.PairTradingModel, dataEngine *dataengi
 	}
 }
 
-func WarmUpData(timeDuration, assetType string, model *model.PairTradingModel, dataEngine *dataengine.MarketDataEngine, assetParams *db.AssetParamConfig) {
+func WarmUpData(timeDuration, assetType string, model *model.PairTradingModel, broker *broker.AlpacaBroker, dataEngine *dataengine.MarketDataEngine, assetParams *db.AssetParamConfig) {
 	now := time.Now()
 	timeDurationInt, _ := strconv.Atoi(timeDuration)
 	loc, _ := time.LoadLocation("America/New_York")
 	marketOpen := time.Date(now.Year(), now.Month(), now.Day(), 9, 30, 0, 0, loc)
 	log.Printf("Start warming data until %s minutes after the market opens...", timeDuration)
+	counter := util.GetCounter()
 	// If we have time to warm the data, we will only use today's data
 	if time.Since(marketOpen) < time.Duration(timeDurationInt/2)*time.Minute {
 		model.ClearDataArrays()
 	}
 	for time.Since(marketOpen) < time.Duration(timeDurationInt)*time.Minute {
+		pipeline.UpdateSignalThresholds(model, broker, counter, false, assetParams)
 		GetAndProcessPairQuotes(model, dataEngine)
 		time.Sleep(10 * time.Millisecond)
 	}

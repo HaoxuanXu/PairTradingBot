@@ -42,7 +42,7 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 		time.Sleep(timeToOpen)
 	}
 	// Warm up data for a specified period of time before trading
-	quotesprocessor.WarmUpData(startTime, assetType, dataModel, dataEngine, tradingAssetParamConfig)
+	quotesprocessor.WarmUpData(startTime, assetType, dataModel, tradingBroker, dataEngine, tradingAssetParamConfig)
 	log.Printf("Start Trading   --  (longExpensiveShortCheapRepeatNum -> %d, shortExpensiveLongCheapRepeatNum -> %d, priceRatio -> %f)\n",
 		dataModel.LongExpensiveShortCheapRepeatNumThreshold,
 		dataModel.ShortExpensiveLongCheapRepeatNumThreshold,

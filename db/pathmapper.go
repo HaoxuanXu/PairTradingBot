@@ -3,12 +3,14 @@ package db
 const (
 	repeatNumPath  = "./db/pairtrading/repeat_num/"
 	priceRatioPath = "./db/pairtrading/price_ratio/"
+	volatilityPath = "./db/pairtrading/volatility/"
 
 	// Gold
 	longGLDShortIAU           = priceRatioPath + "long_gld_short_iau.json"
 	shortGLDLongIAU           = priceRatioPath + "short_gld_long_iau.json"
 	longGLDShortIAURepeatNums = repeatNumPath + "long_gld_short_iau_num_repeat.json"
 	shortGLDLongIAURepeatNums = repeatNumPath + "short_gld_long_iau_num_repeat.json"
+	goldVolatility            = volatilityPath + "gold.json"
 
 	// Bond
 	longAGGShortBND           = priceRatioPath + "long_agg_short_bnd.json"
@@ -44,6 +46,7 @@ type AssetParamConfig struct {
 	LongExpensiveShortCheapPriceRatioPath string
 	ShortExpensiveLongCheapRepeatNumPath  string
 	LongExpensiveShortCheapRepeatNumPath  string
+	VolatilityPath                        string
 }
 
 func getAssetParamConfig(strat string) *AssetParamConfig {
@@ -55,6 +58,7 @@ func getAssetParamConfig(strat string) *AssetParamConfig {
 		assetParamConfig.LongExpensiveShortCheapPriceRatioPath = longGLDShortIAU
 		assetParamConfig.ShortExpensiveLongCheapRepeatNumPath = shortGLDLongIAURepeatNums
 		assetParamConfig.LongExpensiveShortCheapRepeatNumPath = longGLDShortIAURepeatNums
+		assetParamConfig.VolatilityPath = goldVolatility
 	} else if strat == "bond" {
 		assetParamConfig.AssetType = "bond"
 		assetParamConfig.ShortExensiveLongCheapPriceRatioPath = shortAGGLongBND

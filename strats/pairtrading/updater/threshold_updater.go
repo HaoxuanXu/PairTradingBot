@@ -23,3 +23,11 @@ func UpdatePriceRatioThreshold(longShortRatios, shortLongRatios []float64) float
 
 	return (minVal + maxVal) / 2.0
 }
+
+func UpdateAvgPriceVolatilityThreshold(volatilityRecord []float64) float64 {
+	sum := 0.0
+	for _, val := range volatilityRecord {
+		sum += val
+	}
+	return sum / float64(len(volatilityRecord))
+}
