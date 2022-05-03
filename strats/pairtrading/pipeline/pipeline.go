@@ -178,4 +178,5 @@ func WriteRecord(model *model.PairTradingModel, assetParams *db.AssetParamConfig
 	readwrite.WriteIntSlice(&model.ShortExpensiveLongCheapRepeatArray, assetParams.ShortExpensiveLongCheapRepeatNumPath)
 	readwrite.WriteFloatSlice(&model.ShortExpensiveStockLongCheapStockPriceRatioRecord, assetParams.ShortExensiveLongCheapPriceRatioPath)
 	readwrite.WriteFloatSlice(&model.LongExpensiveStockShortCheapStockPriceRatioRecord, assetParams.LongExpensiveShortCheapPriceRatioPath)
+	readwrite.WriteFloatSlice(&model.PriceVolatilityRecord, assetParams.VolatilityPath)
 }
