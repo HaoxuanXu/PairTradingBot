@@ -134,7 +134,7 @@ func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPat
 	model.ShortExpensiveLongCheapRepeatNumThreshold = 0
 	model.DefaultRepeatArrayLength = 5000
 	model.DefaultPriceRatioArrayLength = 5000
-	model.DefaultVolatilityRecordLength = 60
+	model.DefaultVolatilityRecordLength = 180
 	model.EntryNetValue = 0.0
 	model.ExitNetValue = 0.0
 	model.LoserNums = 0
