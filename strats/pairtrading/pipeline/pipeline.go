@@ -14,7 +14,7 @@ import (
 func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, assetParams *db.AssetParamConfig) {
 	entryValue := broker.SizeFunnel(broker.MaxPortfolioPercent * broker.PortfolioValue)
 	// we try to use round lot here to imporve execution
-	model.ExpensiveStockEntryVolume = float64(int((entryValue/2.0)/(model.ExpensiveStockShortQuotePrice*100)) * 100)
+	model.ExpensiveStockEntryVolume = float64(int((entryValue / 2.0) / (model.ExpensiveStockShortQuotePrice)))
 	if model.ExpensiveStockEntryVolume == 0 {
 		model.ExpensiveStockEntryVolume = float64(int((entryValue / 2.0) / (model.ExpensiveStockShortQuotePrice)))
 	}
@@ -51,7 +51,7 @@ func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.
 
 func EntryLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, assetParams *db.AssetParamConfig) {
 	entryValue := broker.SizeFunnel(broker.MaxPortfolioPercent * broker.PortfolioValue)
-	model.CheapStockEntryVolume = float64(int((entryValue/2.0)/(model.CheapStockShortQuotePrice*100)) * 100)
+	model.CheapStockEntryVolume = float64(int((entryValue / 2.0) / (model.CheapStockShortQuotePrice)))
 	if model.CheapStockEntryVolume == 0 {
 		model.CheapStockEntryVolume = float64(int((entryValue / 2.0) / (model.CheapStockShortQuotePrice)))
 	}
@@ -152,7 +152,6 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 
 func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.AlpacaBroker, counter *util.Counter, wrappingUp bool, assetParams *db.AssetParamConfig) {
 	if time.Since(counter.BaseTime) > 20*time.Second {
-		model.UpdateCurrentVolatility()
 		counter.BaseTime = time.Now()
 		counter.Incrementer++
 	}
@@ -168,7 +167,7 @@ func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.Alpaca
 		model.MinProfitThreshold.Applied = 0.0
 	} else if time.Since(broker.LastTradeTime) > 10*time.Minute {
 		model.MinProfitThreshold.Applied = model.MinProfitThreshold.Low
-	} else if time.Since(broker.LastTradeTime) > 20*time.Minute {
+	} else if time.Since(broker.LastTradeTime) > 15*time.Minute {
 		model.MinProfitThreshold.Applied = 0
 	}
 }
@@ -178,5 +177,4 @@ func WriteRecord(model *model.PairTradingModel, assetParams *db.AssetParamConfig
 	readwrite.WriteIntSlice(&model.ShortExpensiveLongCheapRepeatArray, assetParams.ShortExpensiveLongCheapRepeatNumPath)
 	readwrite.WriteFloatSlice(&model.ShortExpensiveStockLongCheapStockPriceRatioRecord, assetParams.ShortExensiveLongCheapPriceRatioPath)
 	readwrite.WriteFloatSlice(&model.LongExpensiveStockShortCheapStockPriceRatioRecord, assetParams.LongExpensiveShortCheapPriceRatioPath)
-	readwrite.WriteFloatSlice(&model.PriceVolatilityRecord, assetParams.VolatilityPath)
 }

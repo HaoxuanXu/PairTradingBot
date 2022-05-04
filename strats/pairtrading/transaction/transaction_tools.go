@@ -13,13 +13,6 @@ import (
 )
 
 func UpdateFieldsFromQuotes(m *model.PairTradingModel) {
-	if m.PreviousQuotePrice == 0.0 {
-		m.PreviousQuotePrice = m.ExpensiveStockLongQuotePrice
-	} else if m.PreviousQuotePrice != m.ExpensiveStockLongQuotePrice {
-		util.UpdateFloatSlice(&m.QuotePriceStore, m.PreviousQuotePrice)
-		m.PreviousQuotePrice = m.ExpensiveStockLongQuotePrice
-	}
-
 	m.ShortExpensiveStockLongCheapStockPriceRatio = m.ExpensiveStockShortQuotePrice / m.CheapStockLongQuotePrice
 	m.LongExpensiveStockShortCheapStockPriceRatio = m.ExpensiveStockLongQuotePrice / m.CheapStockShortQuotePrice
 
@@ -71,7 +64,7 @@ func VetPosition(model *model.PairTradingModel) {
 
 	overboughtPercent := (longPosition - shortPosition) / longPosition
 
-	if overboughtPercent > 0.00003 {
+	if overboughtPercent > 0.00004 {
 		model.MinProfitThreshold.Applied = model.MinProfitThreshold.Applied - (longPosition - shortPosition)
 		model.IsMinProfitAdjusted = true
 	}
@@ -95,10 +88,6 @@ func SlideRepeatAndPriceRatioArrays(model *model.PairTradingModel) {
 		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
 		model.DefaultPriceRatioArrayLength,
 	)
-	model.PriceVolatilityRecord = windowslider.SlideWindowFloat(
-		model.PriceVolatilityRecord,
-		model.DefaultVolatilityRecordLength,
-	)
 	model.UpdateParameters()
 }
 
@@ -106,27 +95,23 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 	if !broker.HasPosition {
 		if model.IsLongExpensiveStockShortCheapStock {
 			model.EntryNetValue = math.Abs(model.CheapStockFilledPrice*model.CheapStockFilledQuantity) - math.Abs(model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity)
-			log.Printf("long %s: %f shares; short %s: %f shares -- (current long repeat num: %d, previous long repeat num: %d, allowed volatility: %f, current volatility: %f)\n",
+			log.Printf("long %s: %f shares; short %s: %f shares -- (current long repeat num: %d, previous long repeat num: %d)\n",
 				model.ExpensiveStockSymbol,
 				model.ExpensiveStockEntryVolume,
 				model.CheapStockSymbol,
 				model.CheapStockEntryVolume,
 				model.LongExpensiveStockShortCheapStockRepeatNumber,
 				model.LongExpensiveStockShortCheapStockPreviousRepeatNumber,
-				model.AvgPriceVolatility+model.PriceVolatilityStd*2,
-				model.CurrentPriceVolatility,
 			)
 		} else {
 			model.EntryNetValue = math.Abs(model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity) - math.Abs(model.CheapStockFilledPrice*model.CheapStockFilledQuantity)
-			log.Printf("short %s: %f shares; long %s: %f shares -- (current short repeat num: %d, previous short repeat num: %d, allowed volatility: %f, current volatility: %f)\n",
+			log.Printf("short %s: %f shares; long %s: %f shares -- (current short repeat num: %d, previous short repeat num: %d)\n",
 				model.ExpensiveStockSymbol,
 				model.ExpensiveStockEntryVolume,
 				model.CheapStockSymbol,
 				model.CheapStockEntryVolume,
 				model.ShortExpensiveStockLongCheapStockRepeatNumber,
 				model.ShortExpensiveStockLongCheapStockPreviousRepeatNumber,
-				model.AvgPriceVolatility+2*model.PriceVolatilityStd,
-				model.CurrentPriceVolatility,
 			)
 		}
 		broker.HasPosition = true
@@ -145,13 +130,11 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 		} else {
 			broker.SuccessInARow++
 		}
-		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f -- (cur long repeat: %d, cur short repeat: %d) allowed volatility: %f, current volatility: %f \n",
+		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f -- (cur long repeat: %d, cur short repeat: %d)\n",
 			presumedProfit,
 			actualProfit,
 			model.LongExpensiveStockShortCheapStockRepeatNumber,
 			model.ShortExpensiveStockLongCheapStockRepeatNumber,
-			model.AvgPriceVolatility+2*model.PriceVolatilityStd,
-			model.CurrentPriceVolatility,
 		)
 		broker.HasPosition = false
 		broker.TransactionNums++
