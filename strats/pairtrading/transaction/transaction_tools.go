@@ -106,26 +106,26 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 	if !broker.HasPosition {
 		if model.IsLongExpensiveStockShortCheapStock {
 			model.EntryNetValue = math.Abs(model.CheapStockFilledPrice*model.CheapStockFilledQuantity) - math.Abs(model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity)
-			log.Printf("long %s: %f shares; short %s: %f shares -- (current long repeat num: %d, previous long repeat num: %d, avg volatility: %f, current volatility: %f)\n",
+			log.Printf("long %s: %f shares; short %s: %f shares -- (current long repeat num: %d, previous long repeat num: %d, allowed volatility: %f, current volatility: %f)\n",
 				model.ExpensiveStockSymbol,
 				model.ExpensiveStockEntryVolume,
 				model.CheapStockSymbol,
 				model.CheapStockEntryVolume,
 				model.LongExpensiveStockShortCheapStockRepeatNumber,
 				model.LongExpensiveStockShortCheapStockPreviousRepeatNumber,
-				model.AvgPriceVolatility,
+				model.AvgPriceVolatility+model.PriceVolatilityStd*2,
 				model.CurrentPriceVolatility,
 			)
 		} else {
 			model.EntryNetValue = math.Abs(model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity) - math.Abs(model.CheapStockFilledPrice*model.CheapStockFilledQuantity)
-			log.Printf("short %s: %f shares; long %s: %f shares -- (current short repeat num: %d, previous short repeat num: %d, avg volatility: %f, current volatility: %f)\n",
+			log.Printf("short %s: %f shares; long %s: %f shares -- (current short repeat num: %d, previous short repeat num: %d, allowed volatility: %f, current volatility: %f)\n",
 				model.ExpensiveStockSymbol,
 				model.ExpensiveStockEntryVolume,
 				model.CheapStockSymbol,
 				model.CheapStockEntryVolume,
 				model.ShortExpensiveStockLongCheapStockRepeatNumber,
 				model.ShortExpensiveStockLongCheapStockPreviousRepeatNumber,
-				model.AvgPriceVolatility,
+				model.AvgPriceVolatility+2*model.PriceVolatilityStd,
 				model.CurrentPriceVolatility,
 			)
 		}
@@ -145,12 +145,12 @@ func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroke
 		} else {
 			broker.SuccessInARow++
 		}
-		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f -- (cur long repeat: %d, cur short repeat: %d) avg volatility: %f, current volatility: %f \n",
+		log.Printf("position closed. Presumed Profit: $%f. Actual Profit: $%f -- (cur long repeat: %d, cur short repeat: %d) allowed volatility: %f, current volatility: %f \n",
 			presumedProfit,
 			actualProfit,
 			model.LongExpensiveStockShortCheapStockRepeatNumber,
 			model.ShortExpensiveStockLongCheapStockRepeatNumber,
-			model.AvgPriceVolatility,
+			model.AvgPriceVolatility+2*model.PriceVolatilityStd,
 			model.CurrentPriceVolatility,
 		)
 		broker.HasPosition = false
