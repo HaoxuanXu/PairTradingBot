@@ -1,6 +1,10 @@
 package util
 
-import "math"
+import (
+	"math"
+
+	"github.com/montanaflynn/stats"
+)
 
 func GetMaxInt(array []int) int {
 	maxVal := int(math.Inf(-1))
@@ -50,9 +54,7 @@ func GetAvgFloat(array []float64) float64 {
 	return float64(sum / float64(len(array)))
 }
 
-func GetMaxMinDistance(array []float64) float64 {
-	maxVal := GetMaxFloat(array)
-	minVal := GetMinFloat(array)
-
-	return maxVal - minVal
+func GetInterQuartileRange(array []float64) float64 {
+	interQuartileRange, _ := stats.InterQuartileRange(array)
+	return interQuartileRange
 }

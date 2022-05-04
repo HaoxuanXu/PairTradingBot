@@ -1,5 +1,7 @@
 package updater
 
+import "github.com/montanaflynn/stats"
+
 func findMinMax(sli []float64) (float64, float64) {
 	min := sli[0]
 	max := sli[0]
@@ -30,4 +32,9 @@ func UpdateAvgPriceVolatilityThreshold(volatilityRecord []float64) float64 {
 		sum += val
 	}
 	return sum / float64(len(volatilityRecord))
+}
+
+func UpdateStdPriceVolatility(volatilityRecord []float64) float64 {
+	std, _ := stats.StandardDeviation(volatilityRecord)
+	return std
 }

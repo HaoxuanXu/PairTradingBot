@@ -10,13 +10,13 @@ func GetEntrySignal(shortExpensiveStock bool, model *model.PairTradingModel, bro
 		if shortExpensiveStock {
 			if model.ShortExpensiveStockLongCheapStockPriceRatio > model.PriceRatioThreshold &&
 				model.ShortExpensiveStockLongCheapStockRepeatNumber >= model.ShortExpensiveLongCheapRepeatNumThreshold &&
-				model.CurrentPriceVolatility <= model.AvgPriceVolatility {
+				model.IsVolatilityWithin2Std() {
 				return true
 			}
 		} else {
 			if model.LongExpensiveStockShortCheapStockPriceRatio < model.PriceRatioThreshold &&
 				model.LongExpensiveStockShortCheapStockRepeatNumber >= model.LongExpensiveShortCheapRepeatNumThreshold &&
-				model.CurrentPriceVolatility <= model.AvgPriceVolatility {
+				model.IsVolatilityWithin2Std() {
 				return true
 			}
 		}

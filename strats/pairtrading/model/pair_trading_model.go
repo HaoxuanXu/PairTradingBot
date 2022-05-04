@@ -60,6 +60,7 @@ type PairTradingModel struct {
 	QuotePriceStore                                       []float64
 	PriceVolatilityRecord                                 []float64
 	AvgPriceVolatility                                    float64
+	PriceVolatilityStd                                    float64
 	CurrentPriceVolatility                                float64
 }
 
@@ -150,12 +151,18 @@ func (model *PairTradingModel) UpdateParameters() {
 	)
 	model.LongExpensiveShortCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.LongExpensiveShortCheapRepeatArray)
 	model.ShortExpensiveLongCheapRepeatNumThreshold = repeater.CalculateOptimalRepeatNum(model.ShortExpensiveLongCheapRepeatArray)
+
 	model.AvgPriceVolatility = updater.UpdateAvgPriceVolatilityThreshold(model.PriceVolatilityRecord)
+	model.PriceVolatilityStd = updater.UpdateStdPriceVolatility(model.PriceVolatilityRecord)
+}
+
+func (model *PairTradingModel) IsVolatilityWithin2Std() bool {
+	return model.CurrentPriceVolatility <= model.AvgPriceVolatility+2*model.PriceVolatilityStd
 }
 
 func (model *PairTradingModel) UpdateCurrentVolatility() {
 	if len(model.QuotePriceStore) > 0 {
-		model.CurrentPriceVolatility = util.GetMaxMinDistance(model.QuotePriceStore)
+		model.CurrentPriceVolatility = util.GetInterQuartileRange(model.QuotePriceStore)
 		util.UpdateFloatSlice(&model.PriceVolatilityRecord, model.CurrentPriceVolatility)
 		model.QuotePriceStore = []float64{}
 	}
