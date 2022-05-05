@@ -149,7 +149,7 @@ func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.Alpaca
 		counter.BaseTime = time.Now()
 		counter.Incrementer++
 	}
-	if counter.Incrementer == 5 {
+	if counter.Incrementer == 2 {
 		transaction.SlideRepeatAndPriceRatioArrays(model)
 		WriteRecord(model, assetParams)
 		counter.RefreshIncrementer()
