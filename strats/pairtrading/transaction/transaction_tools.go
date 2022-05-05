@@ -64,7 +64,7 @@ func VetPosition(model *model.PairTradingModel) {
 
 	overboughtPercent := (longPosition - shortPosition) / longPosition
 
-	if overboughtPercent > 0.00004 {
+	if overboughtPercent > 0.00003 {
 		model.MinProfitThreshold.Applied = model.MinProfitThreshold.Applied - (longPosition - shortPosition)
 		model.IsMinProfitAdjusted = true
 	}
