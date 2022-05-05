@@ -63,11 +63,11 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				tradingBroker,
 				tradingAssetParamConfig,
 			)
-			counter.RefreshIncrementer()
 			// halt trading for a minute so the account is still treated as retail account
 			util.TimedFuncRun(
 				45*time.Second,
 				func() {
+					pipeline.UpdateSignalThresholds(dataModel, tradingBroker, counter, false, tradingAssetParamConfig)
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
 				10,
@@ -78,10 +78,10 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				tradingBroker,
 				tradingAssetParamConfig,
 			)
-			counter.RefreshIncrementer()
 			util.TimedFuncRun(
 				45*time.Second,
 				func() {
+					pipeline.UpdateSignalThresholds(dataModel, tradingBroker, counter, false, tradingAssetParamConfig)
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
 				10,
@@ -92,10 +92,10 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				tradingBroker,
 				tradingAssetParamConfig,
 			)
-			counter.RefreshIncrementer()
 			util.TimedFuncRun(
 				45*time.Second,
 				func() {
+					pipeline.UpdateSignalThresholds(dataModel, tradingBroker, counter, false, tradingAssetParamConfig)
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
 				10,
@@ -106,10 +106,10 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				tradingBroker,
 				tradingAssetParamConfig,
 			)
-			counter.RefreshIncrementer()
 			util.TimedFuncRun(
 				45*time.Second,
 				func() {
+					pipeline.UpdateSignalThresholds(dataModel, tradingBroker, counter, false, tradingAssetParamConfig)
 					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
 				},
 				10,

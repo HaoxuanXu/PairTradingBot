@@ -88,7 +88,7 @@ func SlideRepeatAndPriceRatioArrays(model *model.PairTradingModel) {
 		model.ShortExpensiveStockLongCheapStockPriceRatioRecord,
 		model.DefaultPriceRatioArrayLength,
 	)
-	model.UpdateParameters()
+
 }
 
 func RecordTransaction(model *model.PairTradingModel, broker *broker.AlpacaBroker) {
