@@ -151,7 +151,7 @@ func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.Alpaca
 		counter.BaseTime = time.Now()
 		counter.Incrementer++
 	}
-	if counter.Incrementer == 2 {
+	if counter.Incrementer == 1 {
 		model.UpdateParameters()
 		counter.RefreshIncrementer()
 	}
