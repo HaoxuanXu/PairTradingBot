@@ -109,6 +109,8 @@ func ExitShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.A
 	model.IsLongExpensiveStockShortCheapStock = false
 	model.IsShortExpensiveStockLongCheapStock = false
 	model.IsMinProfitAdjusted = false
+	model.IsTrimmable = false
+	model.TrimmedAmount = 0.0
 
 	// Write the current data to disk
 	WriteRecord(model, assetParams)
@@ -141,6 +143,8 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 	model.IsLongExpensiveStockShortCheapStock = false
 	model.IsShortExpensiveStockLongCheapStock = false
 	model.IsMinProfitAdjusted = false
+	model.IsTrimmable = false
+	model.TrimmedAmount = 0.0
 
 	// Write the current data to disk
 	WriteRecord(model, assetParams)
