@@ -79,6 +79,8 @@ func VetPosition(model *model.PairTradingModel) {
 	if model.IsTrimmable {
 		model.TrimmedAmount = longPosition - shortPosition
 		return
+	} else {
+		model.TrimmedAmount = 0.0
 	}
 
 	if overboughtPercent > 0.00003 {

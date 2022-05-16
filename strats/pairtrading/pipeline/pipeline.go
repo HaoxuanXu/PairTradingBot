@@ -178,8 +178,6 @@ func TrimPosition(model *model.PairTradingModel, broker *broker.AlpacaBroker, as
 		profit = qty * (order.FilledAvgPrice.InexactFloat64() - model.CheapStockFilledPrice)
 	}
 	transaction.VetPosition(model)
-	model.IsTrimmable = false
-	model.TrimmedAmount = 0.0
 
 	log.Printf("Position successfully trimmed. Trimming Profit: $%.2f", profit)
 
