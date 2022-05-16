@@ -1,6 +1,7 @@
 package pipeline
 
 import (
+	"log"
 	"time"
 
 	"github.com/HaoxuanXu/TradingBot/db"
@@ -9,6 +10,7 @@ import (
 	"github.com/HaoxuanXu/TradingBot/strats/pairtrading/transaction"
 	"github.com/HaoxuanXu/TradingBot/tools/readwrite"
 	"github.com/HaoxuanXu/TradingBot/tools/util"
+	"github.com/alpacahq/alpaca-trade-api-go/v2/alpaca"
 )
 
 func EntryShortExpensiveLongCheap(model *model.PairTradingModel, broker *broker.AlpacaBroker, assetParams *db.AssetParamConfig) {
@@ -144,15 +146,52 @@ func ExitLongExpensiveShortCheap(model *model.PairTradingModel, broker *broker.A
 	WriteRecord(model, assetParams)
 }
 
+func TrimPosition(model *model.PairTradingModel, broker *broker.AlpacaBroker, assetParams *db.AssetParamConfig) {
+	var qty float64
+	var profit float64
+	var order *alpaca.Order
+	if model.IsLongExpensiveStockShortCheapStock {
+		qty = model.TrimmedAmount / model.ExpensiveStockFilledPrice
+		order = broker.SubmitOrder(
+			qty,
+			model.ExpensiveStockSymbol,
+			"sell",
+			"market",
+			"day",
+		)
+		model.ExpensiveStockFilledQuantity -= qty
+		profit = qty * (order.FilledAvgPrice.InexactFloat64() - model.ExpensiveStockFilledPrice)
+	} else if model.IsShortExpensiveStockLongCheapStock {
+		qty = model.TrimmedAmount / model.CheapStockFilledPrice
+		order = broker.SubmitOrder(
+			qty,
+			model.CheapStockSymbol,
+			"sell",
+			"market",
+			"day",
+		)
+		model.CheapStockFilledQuantity -= qty
+		profit = qty * (order.FilledAvgPrice.InexactFloat64() - model.CheapStockFilledPrice)
+	}
+	transaction.VetPosition(model)
+	model.IsTrimmable = false
+	model.TrimmedAmount = 0.0
+
+	log.Printf("Position successfully trimmed. Trimming Profit: $%.2f", profit)
+
+	WriteRecord(model, assetParams)
+
+}
+
 func UpdateSignalThresholds(model *model.PairTradingModel, broker *broker.AlpacaBroker, counter *util.Counter, wrappingUp bool, assetParams *db.AssetParamConfig) {
 	if time.Since(counter.BaseTime) > time.Minute {
 		transaction.SlideRepeatAndPriceRatioArrays(model)
 		WriteRecord(model, assetParams)
+		model.UpdateParameters()
 		counter.BaseTime = time.Now()
 		counter.Incrementer++
 	}
 	if counter.Incrementer == 1 {
-		model.UpdateParameters()
 		counter.RefreshIncrementer()
 	}
 	if model.IsMinProfitAdjusted {

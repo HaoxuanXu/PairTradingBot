@@ -38,3 +38,14 @@ func GetExitSignal(model *model.PairTradingModel) bool {
 	}
 	return false
 }
+
+func GetTrimSignal(model *model.PairTradingModel) bool {
+	if model.IsLongExpensiveStockShortCheapStock &&
+		model.IsTrimmable && model.ExpensiveStockShortQuotePrice > model.ExpensiveStockFilledPrice {
+		return true
+	} else if model.IsShortExpensiveStockLongCheapStock &&
+		model.IsTrimmable && model.CheapStockShortQuotePrice > model.CheapStockFilledPrice {
+		return true
+	}
+	return false
+}

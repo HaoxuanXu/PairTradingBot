@@ -64,6 +64,23 @@ func VetPosition(model *model.PairTradingModel) {
 
 	overboughtPercent := (longPosition - shortPosition) / longPosition
 
+	if model.ExpensiveStockFilledPrice/model.CheapStockFilledPrice < model.PriceRatioThreshold &&
+		overboughtPercent > 0.00003 && model.IsLongExpensiveStockShortCheapStock {
+		model.IsTrimmable = true
+		log.Println("Position Trimmable")
+	} else if model.ExpensiveStockFilledPrice/model.CheapStockFilledPrice > model.PriceRatioThreshold &&
+		overboughtPercent > 0.00003 && model.IsShortExpensiveStockLongCheapStock {
+		model.IsTrimmable = true
+		log.Println("Position Trimmable")
+	} else {
+		model.IsTrimmable = false
+	}
+
+	if model.IsTrimmable {
+		model.TrimmedAmount = longPosition - shortPosition
+		return
+	}
+
 	if overboughtPercent > 0.00003 {
 		model.MinProfitThreshold.Applied = model.MinProfitThreshold.Applied - (longPosition - shortPosition)
 		model.IsMinProfitAdjusted = true

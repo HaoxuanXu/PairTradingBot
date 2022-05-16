@@ -148,6 +148,22 @@ func (broker *AlpacaBroker) SubmitOrderAsync(qty float64, symbol, side, orderTyp
 	channel <- finalOrder
 }
 
+func (broker *AlpacaBroker) SubmitOrder(qty float64, symbol, side, orderType, timeInForce string) *alpaca.Order {
+	quantity := decimal.NewFromFloat(qty)
+	order, _ := broker.client.PlaceOrder(
+		alpaca.PlaceOrderRequest{
+			AssetKey:    &symbol,
+			AccountID:   broker.account.ID,
+			Qty:         &quantity,
+			Side:        alpaca.Side(side),
+			Type:        alpaca.OrderType(orderType),
+			TimeInForce: alpaca.TimeInForce(timeInForce),
+		},
+	)
+	finalOrder, _ := broker.MonitorOrder(order)
+	return finalOrder
+}
+
 func (broker *AlpacaBroker) ListPositions() []alpaca.Position {
 	positions, err := broker.client.ListPositions()
 	if err != nil {

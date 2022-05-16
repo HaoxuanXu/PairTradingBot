@@ -114,6 +114,20 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				},
 				10,
 			)
+		} else if dataModel.IsTrimmable {
+			pipeline.TrimPosition(
+				dataModel,
+				tradingBroker,
+				tradingAssetParamConfig,
+			)
+			util.TimedFuncRun(
+				45*time.Second,
+				func() {
+					pipeline.UpdateSignalThresholds(dataModel, tradingBroker, counter, false, tradingAssetParamConfig)
+					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
+				},
+				10,
+			)
 		} else {
 			time.Sleep(10 * time.Millisecond)
 		}
@@ -138,6 +152,20 @@ func PairTradingJob(assetType, accountType, serverType string, entryPercent floa
 				tradingAssetParamConfig,
 			)
 			break
+		} else if dataModel.IsTrimmable {
+			pipeline.TrimPosition(
+				dataModel,
+				tradingBroker,
+				tradingAssetParamConfig,
+			)
+			util.TimedFuncRun(
+				45*time.Second,
+				func() {
+					pipeline.UpdateSignalThresholds(dataModel, tradingBroker, counter, false, tradingAssetParamConfig)
+					quotesprocessor.GetAndProcessPairQuotes(dataModel, dataEngine)
+				},
+				10,
+			)
 		} else {
 			time.Sleep(10 * time.Millisecond)
 		}
