@@ -146,8 +146,8 @@ func (model *PairTradingModel) UpdateParameters() {
 }
 
 func (model *PairTradingModel) UpdateProfitThreshold() {
-	model.MinProfitThreshold.Low = model.CalculateMinProfitThreshold(1.0)
-	model.MinProfitThreshold.High = model.CalculateMinProfitThreshold(2.0)
+	model.MinProfitThreshold.Low = model.CalculateMinProfitThreshold(2.0)
+	model.MinProfitThreshold.High = model.CalculateMinProfitThreshold(4.0)
 	model.MinProfitThreshold.Applied = model.MinProfitThreshold.High
 }
 
