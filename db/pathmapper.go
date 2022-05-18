@@ -4,6 +4,12 @@ const (
 	repeatNumPath  = "./db/pairtrading/repeat_num/"
 	priceRatioPath = "./db/pairtrading/price_ratio/"
 
+	// Overall
+	longSPYShortDIA           = priceRatioPath + "long_spy_short_dia.json"
+	shortSPYLongDIA           = priceRatioPath + "short_spy_long_dia.json"
+	longSPYShortDIARepeatNums = repeatNumPath + "long_spy_short_dia_num_repeat.json"
+	shortSPYLongDIARepeatNums = repeatNumPath + "short_spy_long_dia_num_repeat.json"
+
 	// Gold
 	longGLDShortIAU           = priceRatioPath + "long_gld_short_iau.json"
 	shortGLDLongIAU           = priceRatioPath + "short_gld_long_iau.json"
@@ -55,7 +61,13 @@ type AssetParamConfig struct {
 func getAssetParamConfig(strat string) *AssetParamConfig {
 	assetParamConfig := &AssetParamConfig{}
 
-	if strat == "gold" {
+	if strat == "overall" {
+		assetParamConfig.AssetType = "overall"
+		assetParamConfig.ShortExensiveLongCheapPriceRatioPath = shortSPYLongDIA
+		assetParamConfig.LongExpensiveShortCheapPriceRatioPath = longSPYShortDIA
+		assetParamConfig.ShortExpensiveLongCheapRepeatNumPath = shortSPYLongDIARepeatNums
+		assetParamConfig.LongExpensiveShortCheapRepeatNumPath = longSPYShortDIARepeatNums
+	} else if strat == "gold" {
 		assetParamConfig.AssetType = "gold"
 		assetParamConfig.ShortExensiveLongCheapPriceRatioPath = shortGLDLongIAU
 		assetParamConfig.LongExpensiveShortCheapPriceRatioPath = longGLDShortIAU
