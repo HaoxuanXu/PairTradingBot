@@ -10,6 +10,12 @@ const (
 	longGLDShortIAURepeatNums = repeatNumPath + "long_gld_short_iau_num_repeat.json"
 	shortGLDLongIAURepeatNums = repeatNumPath + "short_gld_long_iau_num_repeat.json"
 
+	// Technology
+	longQQQShortXLK           = priceRatioPath + "long_qqq_short_xlk.json"
+	shortQQQLongXLK           = priceRatioPath + "short_qqq_long_xlk.json"
+	longQQQShortXLKRepeatNums = repeatNumPath + "long_qqq_short_xlk_num_repeat.json"
+	shortQQQLongXLKRepeatNums = repeatNumPath + "short_qqq_long_xlk_num_repeat.json"
+
 	// Bond
 	longAGGShortBND           = priceRatioPath + "long_agg_short_bnd.json"
 	shortAGGLongBND           = priceRatioPath + "short_agg_long_bnd.json"
@@ -79,6 +85,12 @@ func getAssetParamConfig(strat string) *AssetParamConfig {
 		assetParamConfig.LongExpensiveShortCheapPriceRatioPath = longIWMShortVTWO
 		assetParamConfig.ShortExpensiveLongCheapRepeatNumPath = shortIWMLongVTWORepeatNums
 		assetParamConfig.LongExpensiveShortCheapRepeatNumPath = longIWMShortVTWORepeatNums
+	} else if strat == "technology" {
+		assetParamConfig.AssetType = "technology"
+		assetParamConfig.ShortExensiveLongCheapPriceRatioPath = shortQQQLongXLK
+		assetParamConfig.LongExpensiveShortCheapPriceRatioPath = longQQQShortXLK
+		assetParamConfig.ShortExpensiveLongCheapRepeatNumPath = shortQQQLongXLKRepeatNums
+		assetParamConfig.LongExpensiveShortCheapRepeatNumPath = longQQQShortXLKRepeatNums
 	}
 	return assetParamConfig
 }
