@@ -75,7 +75,7 @@ func VetPosition(model *model.PairTradingModel) {
 	}
 
 	if model.IsTrimmable {
-		model.TrimmedAmount = (longPosition - shortPosition)
+		model.TrimmedAmount = (longPosition - shortPosition) + model.MinProfitThreshold.High*2
 		return
 	} else {
 		model.TrimmedAmount = 0.0
