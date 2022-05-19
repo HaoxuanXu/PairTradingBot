@@ -69,6 +69,8 @@ func (model *PairTradingModel) getStockSymbols(assetType string) (string, string
 		return "VPU", "XLU"
 	} else if assetType == "russell2000" {
 		return "IWM", "VTWO"
+	} else if assetType == "technology" {
+		return "QQQ", "XLK"
 	}
 	return "", ""
 }
