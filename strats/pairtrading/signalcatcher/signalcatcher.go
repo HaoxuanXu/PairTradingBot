@@ -9,8 +9,7 @@ func GetEntrySignal(shortExpensiveStock bool, model *model.PairTradingModel, bro
 	if !broker.HasPosition {
 		if shortExpensiveStock {
 			if model.ShortExpensiveStockLongCheapStockPriceRatio > model.PriceRatioThreshold &&
-				model.ShortExpensiveStockLongCheapStockRepeatNumber >= model.ShortExpensiveLongCheapRepeatNumThreshold &&
-				model.StrategyAssetType != "technology" {
+				model.ShortExpensiveStockLongCheapStockRepeatNumber >= model.ShortExpensiveLongCheapRepeatNumThreshold {
 				return true
 			}
 		} else {
