@@ -88,7 +88,7 @@ func GetModel(assetParamConfig *db.AssetParamConfig) *PairTradingModel {
 }
 
 func (model *PairTradingModel) CalculateMinProfitThreshold(baseNum float64) float64 {
-	return baseNum * (model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity + model.CheapStockFilledPrice*model.CheapStockFilledQuantity) / 120000
+	return baseNum * (model.ExpensiveStockFilledPrice*model.ExpensiveStockFilledQuantity + model.CheapStockFilledPrice*model.CheapStockFilledQuantity) / 1000000
 }
 
 func (model *PairTradingModel) initialize(assetType, shortLongPath, longShortPath, longExpensiveShortCheapRepeatNumPath,
@@ -148,8 +148,8 @@ func (model *PairTradingModel) UpdateParameters() {
 }
 
 func (model *PairTradingModel) UpdateProfitThreshold() {
-	model.MinProfitThreshold.Low = model.CalculateMinProfitThreshold(1)
-	model.MinProfitThreshold.High = model.CalculateMinProfitThreshold(2)
+	model.MinProfitThreshold.Low = model.CalculateMinProfitThreshold(22.9)
+	model.MinProfitThreshold.High = model.CalculateMinProfitThreshold(35.0)
 	model.MinProfitThreshold.Applied = model.MinProfitThreshold.High
 }
 
