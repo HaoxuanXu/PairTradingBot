@@ -163,13 +163,6 @@ func TrimPosition(model *model.PairTradingModel, broker *broker.AlpacaBroker, as
 			"market",
 			"day",
 		)
-
-		time.Sleep(5 * time.Second) // make sure the positions are updated
-		model.ExpensiveStockFilledQuantity = broker.GetPosition(model.ExpensiveStockSymbol).Qty.Abs().InexactFloat64()
-		model.CheapStockFilledQuantity = broker.GetPosition(model.CheapStockSymbol).Qty.Abs().InexactFloat64()
-		model.ExpensiveStockEntryVolume = model.ExpensiveStockFilledQuantity
-		model.CheapStockEntryVolume = model.CheapStockFilledQuantity
-
 		profit = qty * (order.FilledAvgPrice.InexactFloat64() - model.ExpensiveStockFilledPrice)
 	} else if model.IsShortExpensiveStockLongCheapStock {
 		qty = model.TrimmedAmount / model.CheapStockFilledPrice
@@ -180,12 +173,18 @@ func TrimPosition(model *model.PairTradingModel, broker *broker.AlpacaBroker, as
 			"market",
 			"day",
 		)
-		model.CheapStockFilledQuantity -= qty
 		profit = qty * (order.FilledAvgPrice.InexactFloat64() - model.CheapStockFilledPrice)
 	}
+
+	time.Sleep(5 * time.Second) // make sure the positions are updated
+	model.ExpensiveStockFilledQuantity = broker.GetPosition(model.ExpensiveStockSymbol).Qty.Abs().InexactFloat64()
+	model.CheapStockFilledQuantity = broker.GetPosition(model.CheapStockSymbol).Qty.Abs().InexactFloat64()
+	model.ExpensiveStockEntryVolume = model.ExpensiveStockFilledQuantity
+	model.CheapStockEntryVolume = model.CheapStockFilledQuantity
+
 	transaction.VetPosition(model)
 
-	log.Printf("Position successfully trimmed. Trimming Profit: $%.2f", profit)
+	log.Printf("Position successfully trimmed. Trimming Profit: $%f", profit)
 
 	WriteRecord(model, assetParams)
 
